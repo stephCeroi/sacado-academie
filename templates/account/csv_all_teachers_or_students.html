@@ -1,0 +1,124 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+{% comment %}
+Ce fichier permet d'enregistrer des élèves ou des enseignants dans la base de données 
+ 
+{% endcomment %}
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common2.js' %}"></script> 
+    <script>   
+        require(['script/ajax-dashboard']);        
+        require(['script/full_csv']);
+    </script>
+{% endblock %}
+ 
+ 
+{% block page_title %}
+    <i class='fa fa-users'></i> {{ request.user.school.name}} <img src="{% static 'img/angle-right.png' %}"/>   Import d'{% if key == 0  %}élèves  {% else %}enseignant.e.s     {% endif %}par csv
+{% endblock %}
+ 
+
+
+ 
+{% block page_menu_right %}
+    {% if idg == 0  %}
+ 
+        <li> <a href="{% url 'register_teacher_from_admin' %}" class="btn btn-new"  > <i class="bi bi-plus"></i> Nouvel.le enseignant.e manuellement</a></li>        
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+{% block body %}
+ 
+ 
+ 
+<section class="content_main"> 
+
+
+ 
+
+
+    {% if key > 0  %}
+    <form action="{% url 'register_users_by_csv' 2  %}" method="POST" enctype="multipart/form-data" > 
+    {% else %}
+    <form action="{% url 'register_users_by_csv' 0 %}" method="POST" enctype="multipart/form-data" > 
+    {% endif %}
+
+ 
+
+ 
+ 
+ 
+        <h3 class="thin"><img src="{% static 'img/excel.png' %}" /> Gestion des identifiants {% if idg == 0  %}Enseignant.e.s{% else %}Élève {% endif %}</h3>        
+        <ul>
+            <li><label>Laisser SACADO attribuer des identifiants  <input type="radio" id="show_without_username" name="manage_username" value="auto" /></label> </li> 
+            <li><label> Gérer manuellement les identifiants  <input type="radio" id="show_with_username" name="manage_username" value="hand" /></label> </li>
+        </ul>      
+
+
+        <div id="without_username">
+            <p>Vous avez choisi la gestion automatisée des identifiants par SACADO. </p>
+            <p>Quel niveau de complexité souhaitez-vous pour ces identifiants ? 
+                 <label><input type="radio" name="simple" value=0 /> Facile</label> 
+                <label><input type="radio" name="simple" value=1 /> Complexe</label>
+            </p>
+            <ul style="margin:10px"> 4 champs sont demandés :
+                <li>Niveau de classe <i class="fa fa-warning"></i> Noter le code du niveau : CP = 1 | CE1 = 2 | CE2 = 3 ..... 6ème = 6 | 5ème = 7 | ... 2nde = 10 | Term = 12</li>
+                <li>Nom</li>
+                <li>Prénom</li>                
+                <li>Courriel, {% if idg > 0  %}optionnel mais préférable pour la correspondance et les notifications.{% else %}renseigner votre adresse professionnelle.{% endif %}</li>
+            </ul> 
+            Ces trois données s'écrivent sur une seule ligne. Dans l'exemple ci-dessous, 4 personnes sont enregistrées.<br>
+            <pre style="font-size:20px">1;Turing;Alan{% if idg == 0  %};alan.turing@enigma.edu{% endif  %}<br>1;Agnesi;Maria;maria.agnesi@curves.edu<br>2;Chasles;Michel{% if idg == 0  %};michel.chasles@vector.edu {% endif %}<br>3;de Fermat;Pierre;pierre.fermat@rsa.edu</pre>
+ 
+        </div>
+
+        <div id="with_username">
+            5 champs sont demandés :
+            <ul style="margin:10px">
+                <li>Niveau de classe <i class="fa fa-warning"></i> Noter le code du niveau : CP = 1 | CE1 = 2 | CE2 = 3 ..... 6ème = 6 | 5ème = 7 | ... 2nde = 10 | Term = 12</li> 
+                <li>Nom</li>
+                <li>Prénom</li> 
+                <li>Identifiant</li>            
+                <li>Courriel, {% if idg > 0  %}optionnel mais préférable pour la correspondance et les notifications.{% else %}renseigner votre adresse professionnelle.{% endif %}</li>
+            </ul> 
+            Ces trois données s'écrivent sur une seule ligne. Dans l'exemple ci-dessous, 4 personnes sont enregistrées.<br>
+ 
+            <pre style="font-size:20px">1;Turing;Alan;alan.T;alan.turing@enigma.edu <br>1;Agnesi;Maria;A.maria<br>2;Chasles;Michel;Ch.michel;michel.chasles@vector.edu<br>3;de Fermat;Pierre;dfpierre;pierre.fermat@rsa.edu</pre>
+ 
+        </div>
+
+        <div class="row alert alert-warning">
+            <div class="col-sm-12 col-md-12">
+                <b>Le fichier CSV doit être enregistré au format UTF-8.</b><br/>{% include 'help_utf.html' %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" >Veuillez sélectionner votre fichier d'import puis cliquer sur le bouton "Téléverser"</label>
+                    <input type="file" name="csv_file" id="csv_file" required="True" class="btn btn-default">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:10px;">
+                <div class="form-group">                    
+                    <button class="btn btn-primary"> <span class="glyphicon glyphicon-upload" style="margin-right:5px;"></span> Téléverser </button>
+                    <a href="javascript:history.back()"  class="btn btn-default" > Annuler</a>
+                </div> 
+            </div>
+        </div>
+    </form>
+</section>
+
+
+{% endblock %}

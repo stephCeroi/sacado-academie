@@ -1,0 +1,79 @@
+{% extends 'group/result_group.html' %}
+{% load item_tags %} 
+ 
+ 
+ 
+
+{% block skill_block %} 
+ 
+        {% for skill in skills %}
+             <td style="font-size: 12px">
+             	{{ skill.name }}
+             </td>
+        {% endfor %}
+  
+ 
+{% endblock %}
+
+ 
+
+{% block skill_result %} 
+		
+    {% for skill in skills %}
+    	<td>
+    		{% get_result_skills_custom student skill as resultskill_custom %}
+    		{% get_result_skills student skill as data %} 
+
+			{% for r in data.results %}
+				{% with data.relationships|index:forloop.counter0 as looper %}
+
+					{% if r.point %}
+					    <a class="helper_tip  square  markdown
+					            {% if r.point < 30 %}
+					             red 
+					            {% elif r.point < 60 %}
+					            orange
+					            {% elif r.point < 80 %}
+					            green
+					            {% else %}
+					            darkgreen
+					            {% endif %}" style="cursor: help" >
+					         {{ r.point }}
+					        <span class="helper_tip_text_flex"> <img src="{{ looper.exercise.supportfile.imagefile.url }}" width="400px" /></span>
+					    </a>
+ 
+					{% endif %} 
+					
+				{% endwith %} 
+	    	{% endfor %} 
+
+			{% for r in resultskill_custom.results %}
+				{% with resultskill_custom.customexercises|index:forloop.counter0 as loopp %}
+					{% if r.point %}
+					    <a  title="Exercice personnalisé" class="square helper_tip markdown
+					            {% if r.point < 30 %}
+					             red 
+					            {% elif r.point < 60 %}
+					            orange
+					            {% elif r.point < 80 %}
+					            green
+					            {% else %}
+					            darkgreen
+					            {% endif %}"  style="cursor: help" >
+					  
+					        <span class="helper_tip_text_flex"><b>Score = {{ r.point }}%</b><img src="{{ loopp.imagefile.url }}" width="400px" /></span>
+					    </a>
+ 
+					{% endif %} 
+				{% endwith %} 
+	    	{% endfor %} 
+
+
+
+
+	    </td>
+	{% endfor %} 
+{% endblock %}
+
+
+ 

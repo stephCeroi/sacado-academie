@@ -1,0 +1,169 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-group']);    
+        require(['script/ajax-dashboard']);
+    </script>
+{% endblock %}
+
+
+ 
+ 
+{% block page_title %}
+     <a href="{% url 'admin_tdb' %}"> <i class="fa fa-cloud"></i></a> {{  school.name}} <img src="{% static 'img/angle-right.png' %}"/> Elèves
+{% endblock %}
+ 
+
+
+ 
+{% block page_menu_right %}
+
+
+                                <a href="{% if sacado_asso %}{% url 'csv_full_group'  %}{% else %}#{% endif %}" class="btn btn-danger"> Initialiser tous les groupes d'élèves </a> 
+
+
+<li class="dropdown">
+    <a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-new"> Gestion des élèves <b class="caret"></b> </a>
+
+    <ul id="products-menu" class="dropdown-menu clearfix pull-right" role="menu">
+        
+        {% comment %}
+        <li> <a href="{% url 'school_groups' %}"  >Ajouter un élève (passer par sa classe) </a></li> 
+        <li> <a href="{% url 'school_groups' %}"  >Ajouter plusieurs élèves (passer par leur classe) </a></li>
+        {% endcomment %}
+        <li> <a href="{% url 'register_users_by_csv' 0 %}">Importer à partir d'un csv</a></li>
+
+        <li> <a href="{% url 'print_school_ids' %}">Imprimer les identifiants par groupes</a></li>
+
+
+        <li> <a href="{% url 'delete_school_students' %}"  onclick="return deleteAllStudents()">Supprimer tous les élèves</a></li>
+
+
+        <li class="divider">  </li>         
+        <li>  <a href="{% url 'get_school_students' %}"  onclick="return getAllStudents()">Récupérer les comptes élèves déjà existants</a> </li>
+
+
+ 
+    </ul>
+</li>  
+
+
+
+
+
+    
+
+   
+{% endblock %}
+
+
+
+
+{% block body %}
+ 
+ 
+ 
+<section class="content_list"> 
+    <form action="{% url 'delete_selected_students' %}"  method="POST">            
+    {% csrf_token %}
+
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-bordered table-hover standard_tab_sort">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th> 
+                        <th>Identifiant</th>                
+                        <th>Courriel</th>
+                        <th>Groupe</th>
+                        <th>Dernière connexion</th>
+                        <th style="width:150px">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody> 
+                        {% for user in users %}
+                            <tr>
+                                <td><input type="checkbox" name="user_ids" value="{{ user.id }}" />
+                                    <a href="{% url 'update_student_by_admin' user.id  %}">{{ user.last_name }} </a>
+                                    {% if  user.student.ebep %}
+                                       <i class="fa fa-key pull-right" title="Elèves à Besoins Educatifs Particuliers"></i>
+                                    {% endif %}   
+                                </td>
+                                <td>
+                                    <a href="{% url 'update_student_by_admin' user.id  %}"> {{ user.first_name }}</a>
+                                    {% if not user.student %} <i class="fa fa-warning pull-right"></i>
+
+                                <span class="helper_tip">  <i class="fa fa-warning pull-right"></i>
+                                    <div class="helper_tip_text" >La création de cet élève ne s'est pas déroulée correctement. Cocher la case précédant le nom puis cliquer sur supprimer en haut de page.</div>
+                                </span>
+
+
+                                    {% endif %}  
+                                </td>
+                                <td>
+                                    {{ user.username }}   
+                                </td>
+                                <td>
+                                    {{ user.email }}   
+                                </td>
+                                <td>  
+                                     {{ user.my_groups|safe }} 
+                               </td>
+                                <td>
+                                     {{ user.last_login }} 
+                                </td>
+                                <td>
+                                    <a  href="{% url 'newpassword_student' user.id  0   %}" data-student_id="{{ user.id }}" title="mot de passe par défaut : sacado2020" 
+                                        onclick="return Newpassword()" style="font-size:11px; margin-right:5px"  >
+                                        Init. mot de passe
+                                    </a> 
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">          
+                <input type="submit" name="delete" value="Supprimer les élèves sélectionnés" class="btn btn-danger" onclick="return deleteSelectedStudents()" />   
+                
+                <input type="submit" name="ebep" value="Ajouter/Enlever les outils inclusifs aux élèves sélectionnés" class="btn btn-primary" onclick="return ebepSelectedStudents('ces élèves')" />
+                <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+    </form>           
+</section>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                
+                    <h5 class="modal-title" id="exampleModalLabel">Liste des élèves - <span id="modal_group_name"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div id="list_students"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

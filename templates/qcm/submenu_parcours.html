@@ -1,0 +1,193 @@
+{% load static %}
+
+ 
+
+
+<li class="dropdown">
+        <a href="#" data-toggle="dropdown" class="dropdown-toggle no_button {% if  'result_parcours_skill' in request.path %} active {% endif %}"> Bilans et suivis <b class="caret"></b> </a>
+
+    <ul   class="dropdown-menu clearfix pull-right" role="menu">
+
+
+
+        
+        <li {% if 'parcours_stat/' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'stat_evaluation' parcours.id %}" > Lire les {% if parcours.is_evaluation %}résultats de l'évaluation{% elif parcours.is_sequence %} résultats de la séquence{% else %}stats du parcours{% endif %}   </a>   
+        </li>
+        
+        
+        <li {% if 'parcours_progression/' in request.path %} class="active" {% endif %}>
+            {% if group_id %}
+            <a href="{% url 'parcours_progression' parcours.id group_id  %}" >
+            {% else %}
+            <a href="{% url 'parcours_progression' parcours.id 0  %}" >  
+            {% endif  %}
+                Lire les avancements
+            </a>
+        </li> 
+
+        <li class="divider"></li>
+
+
+
+        <li {% if  'skill' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'result_parcours_skill' parcours.id %}"  class="no_button {% if not sacado_asso %}no_sacado_asso{% endif %}" >
+                Lire le bilan par compétences
+            </a>
+        </li> 
+
+        <li {% if 'waiting' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'result_parcours_waiting' parcours.id 0 %}"  class="no_button {% if not sacado_asso %}no_sacado_asso{% endif %}" >
+                Lire le bilan par attendus 
+            </a> 
+        </li>  
+
+        <li class="divider"></li>
+
+        <li {% if 'knowledge' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'result_parcours_knowledge' parcours.id 0 %}"  class="no_button" >
+                Lire le suivi par savoir faire 
+            </a>
+        </li> 
+
+ 
+
+        <li {% if 'parcours_result/' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'result_parcours' parcours.id 0 %}"  class="no_button" > 
+                Lire le suivi par exercice/élève 
+            </a> 
+        </li>    
+        {% if not parcours.is_folder %}
+            {% if group_id %}
+            <li {% if 'result_parcours_exercise_students/' in request.path %} class="active" {% endif %}>
+                    <a href="{% url 'result_parcours_exercise_students' parcours.id  %}"  class="no_button" >
+                    Lire le suivi par élève/exercice 
+                    </a> 
+            </li>
+            {% endif %}
+        {% endif %}
+
+
+
+    </ul>
+</li>
+ 
+ 
+
+{% if role  %}
+
+<li class="dropdown">
+    <a href="#" data-toggle="dropdown" class="dropdown-toggle no_button {% if 'parcours_show/' in request.path or 'parcours_update/' in request.path or 'parcours_peuplate/' in request.path or 'parcours_tasks_and_publishes/' in request.path  or 'parcours_individualise/' in request.path  or 'parcours_stat/' in request.path   %} active{% endif %}"> Paramètres <b class="caret"></b> </a>
+    <ul id="products-menu" class="dropdown-menu clearfix pull-right" role="menu">
+        {% if group_id %}
+            {% if parcours.is_evaluation %}
+                <li {% if 'evaluation_update/' in request.path %} class="active" {% endif %}><a href="{% url 'update_evaluation' parcours.id group_id  %}"><i class="bi bi-gear"></i> Modifier l'évaluation</a>   </li>
+            {% elif parcours.is_sequence %} 
+                <li {% if 'parcours_update/' in request.path %} class="active" {% endif %}><a href="{% url 'update_parcours' parcours.id group_id  %}"><i class="bi bi-gear"></i> Modifier la séquence</a>   </li>
+            {% else %}
+                <li {% if 'parcours_update/' in request.path %} class="active" {% endif %}><a href="{% url 'update_parcours' parcours.id group_id  %}"><i class="bi bi-gear"></i> Modifier le parcours</a>   </li>
+            {% endif %} 
+        {% else %}  
+            {% if parcours.is_evaluation %}
+                <li {% if 'evaluation_update/' in request.path %} class="active" {% endif %}><a href="{% url 'update_evaluation' parcours.id 0 %}"><i class="bi bi-gear"></i> Modifier l'évaluation</a>   </li>
+            {% elif parcours.is_sequence %} 
+                <li {% if 'parcours_update/' in request.path %} class="active" {% endif %}><a href="{% url 'update_parcours' parcours.id 0  %}"><i class="bi bi-gear"></i> Modifier la séquence</a>   </li>
+            {% else %}
+                <li {% if 'parcours_update/' in request.path %} class="active" {% endif %}><a href="{% url 'update_parcours' parcours.id 0  %}"><i class="bi bi-gear"></i> Modifier le parcours</a>   </li>
+            {% endif %} 
+        {% endif %} 
+
+
+        {% if not parcours.is_evaluation %}
+        <li {% if 'parcours_tasks_and_publishes/' in request.path %} class="active" {% endif %}><a href="{% url 'parcours_tasks_and_publishes' parcours.id %}" ><i class="bi bi-text-indent-left"></i> Gérer les sections</a></li>  
+        {% endif %} 
+
+
+        {% if parcours.is_evaluation %}
+        <li {% if 'parcours_peuplate_evaluation/' in request.path %} class="active" {% endif %}><a href="{% url 'peuplate_parcours_evaluation' parcours.id   %}"><i class="bi bi-explicit"></i> Sélectionner les exercices</a>   </li>
+  
+            {% if sacado_asso %}
+            <li {% if 'parcours_new_exercice_evaluation/' in request.path %} class="active" {% endif %}>
+                <a href="{% url 'parcours_create_custom_exercise' parcours.id 0  %}" ><i class="bi bi-explicit-fill"></i> Créer un exercice personnalisé</a> 
+            </li> 
+            {% else %}
+            <li>
+                <a href="#" class="no_sacado_asso" ><i class="bi bi-explicit-fill"></i> Créer un exercice personnalisé</a> 
+            </li> 
+            {% endif %}
+
+        {% else %}         
+        <li {% if 'parcours_peuplate/' in request.path %} class="active" {% endif %}><a href="{% url 'peuplate_parcours' parcours.id   %}"><i class="bi bi-explicit"></i> Sélectionner les exercices GGB</a>   </li>
+            {% if sacado_asso %}   
+                <li {% if 'parcours_new_exercice/' in request.path %} class="active" {% endif %}>
+                    <a href="{% url 'parcours_create_custom_exercise' parcours.id  1 %}" ><i class="bi bi-explicit-fill"></i> Créer un exercice personnalisé</a> 
+                </li> 
+                <li {% if 'parcours_new_exercice/' in request.path %} class="active" {% endif %}>
+                    <a href="{% url 'customexercise_shared_inside_parcours' parcours.id   %}" ><i class="bi bi-cloud-download-fill"></i> Récupérer un exercice personnalisé</a> 
+                </li> 
+            {% else %}
+                <li>
+                    <a href="#" class="no_sacado_asso" title="Version établissement requise"><i class="bi bi-explicit-fill"></i> Créer un exercice personnalisé</a> 
+                </li> 
+
+
+
+            {% endif %}
+        {% endif %}
+
+        <li><a href="#"  id="handler_order_exercises" ><i class="bi bi-filter-circle"></i> Organiser les exercices </a> </li>
+
+
+
+        <li {% if 'parcours_individualise/' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'individualise_parcours' parcours.id  %}" ><i class="bi bi-people"></i> Individualiser les exercices</a> 
+        </li> 
+
+        <li {% if 'real_time/' in request.path %} class="active" {% endif %}>
+            {% if sacado_asso %}
+            <a href="{% url 'real_time' parcours.id %}" class="{% if not sacado_asso %}no_sacado_asso{% endif %}"  >
+                <i class="bi bi-clock-history"></i> Suivre en temps réel 
+            </a>
+            {% else %} 
+            <a href="" class="no_sacado_asso" title="Version établissement requise">
+                <i class="bi bi-clock-history"></i> Suivre en temps réel 
+            </a>
+            {% endif %} 
+
+        </li> 
+
+        {% if group %}
+        <li {% if 'parcours_progression/' in request.path %} class="active" {% endif %}>
+            <a href="{% url 'parcours_progression' parcours.id  group.id %}"><i class="bi bi-bar-chart-steps"></i> <span class="tool_tip">Avancement
+                <div class="tool_tip_text"><label><small>Avancement des exercices du groupe </small></label></div>
+            </span>
+            </a> 
+        </li> 
+        {% endif %} 
+
+
+    </ul>
+</li>
+{% endif %}
+
+ 
+
+
+
+{% if not '_update' in request.path  %}
+<li>
+    <form action="" method="POST" enctype='multipart/form-data'>     
+        {% csrf_token %}
+        <div class="btn-group no_padding_margin" >
+
+            <a href="#" class="btn btn-default btn-publisher publisher"  data-from="2" id="parcours_publisher{{parcours.id}}" data-parcours_id="{{parcours.id}}" data-statut="{{parcours.is_publish }}">  
+                <i class="fa fa-circle-o-notch"></i>
+            </a><span class="legend-btn legend-btn-{% if not parcours.is_publish %}danger{% else  %}success{% endif  %}" id="parcours_statut{{parcours.id}}" style="cursor:auto"  >  
+              {% if parcours.is_publish %} Publié  {% else %} Dépublié {% endif  %} 
+            </span>
+
+        </div>
+    </form>
+</li>
+{% endif %} 
+

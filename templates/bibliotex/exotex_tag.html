@@ -1,0 +1,57 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+           
+{%  get_is_selected  exotex  bibliotex as  is_selected %} 
+<div class="exotex">
+
+    <div>
+        <label class="container_checkbox">
+
+            <input type="checkbox"  data-exotex_id="{{ exotex.id }}"  data-bibliotex_id="{{ bibliotex.id}}" class="selector_exotex" name="exotexs"
+                   id="selected_exotex{{ exotex.id }}"  data-statut="{{ is_selected }}" {% if is_selected %}checked{% endif  %}/>
+            <span class="checkmark" ></span>
+
+            <span class="container_checkbox_title">{{ exotex.title }} </span>
+
+                    {% if exotex.calculator  %}
+                         <img src="{% static 'img/calculator.png' %}" width="25px" />
+                    {% else %}
+                         <img src="{% static 'img/no_calculator.png' %}" width="25px" />
+                    {% endif %}
+                    {% if exotex.is_python  %}
+                          <img src="{% static 'img/is_python.png' %}" width="25px" />
+                    {% endif %}
+                    {% if exotex.is_scratch  %}
+                          <img src="{% static 'img/is_scratch.png' %}" width="25px" />
+                    {% endif %}
+                    {% if exotex.is_tableur  %}
+                          <img src="{% static 'img/is_tableur.png' %}" width="25px" />
+                    {% endif %}
+            
+
+            <small class="pull-right">
+                {% for s in exotex.skills.all %}
+                    {{ s.name }}.
+                {% endfor %}
+            </small>
+
+        </label> 
+    </div>
+
+    <div class="exotex_knowledges fontsize12">
+        {{ exotex.knowledge.name }} {% if exotex.knowledges.all|length > 0 %}<br/>{% endif %}
+        {% for k in exotex.knowledges.all %}
+            {{ k.name }} {% if not forloop.last %}<br/> {% endif %}
+        {% endfor %}
+    </div>
+
+    <div id="this_exotex{{ exotex.id }}">
+    {{ exotex.content_html|safe }}
+    </div>
+    {% comment %}
+    <div data-toggle='modal' data-target='#show_exotex_by_pop' class="show_by_popup" data-exotex_id="{{ exotex.id }}" >Voir l'exercice</div>
+    {% endcomment %}
+</div>
+ 
+ 

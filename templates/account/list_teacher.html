@@ -1,0 +1,164 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-group']);    
+        require(['script/ajax-dashboard']);
+    </script>
+{% endblock %}
+
+
+ 
+ 
+{% block page_title %}
+    <i class='fa fa-users'></i> Enseignants
+
+
+{% endblock %}
+ 
+
+
+ 
+{% block page_menu_right %}
+     
+    
+    <a href="#" data-toggle='modal' data-target='#email_div' class="btn btn-primary">
+        Export des courriels
+    </a>
+
+{% endblock %}
+
+
+
+
+{% block body %}
+ 
+ 
+ 
+    <section class="content_main"> 
+ 
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-bordered table-hover standard_tab_sort">
+                    <thead>
+                    <tr>
+                        <th>Nom Prénom</th>
+                        <th>Courriel</th>
+                        <th>Admin Etab.</th>
+                        <th>SuperUser</th>
+                        <th>Créateur</th>
+                        <th>Connexion</th>
+                        <th>Etablissement</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in teachers %}
+                            <tr>
+                                <td style="min-width:250px">
+                                    <a href="{% url 'update_teacher' teacher.id %}">{{ teacher.last_name }}  {{ teacher.first_name }}</a> 
+
+                                    {% if request.user.is_superuser %}
+                                        <a href="{% url 'delete_teacher' teacher.id %}" class="pull-right edit" onclick="return TestDelete('cet enseignant')"><i class="fa fa-trash"></i></a>
+                                        <a href="{% url 'init_password_teacher' teacher.id %}" class="pull-right edit" title="Ré initialise le mot de passe avec envoi d'email"><i class="fa fa-gavel"></i></a> 
+                                        <a href="{% url 'get_the_teacher_profile' teacher.id %}" class="pull-right edit" title="Prend le profil"><i class="fa fa-wrench"></i></a> 
+
+                                    {% endif %}
+
+                                </td>
+                                <td style="min-width:200px">
+                                    {{ teacher.email }}   
+                                </td>
+                                <td>
+                                    {% if teacher.is_manager %} 
+                                        <span style="font-size: 8px;color:#FFF"> oui</span> 
+                                        <i class="fa fa-check-circle text-success"></i>{% else %} 
+                                        <span style="font-size: 8px;color:#FFF"> non</span>  
+                                        <i class="fa fa-ban text-danger"></i> 
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if teacher.is_superuser %} 
+                                        <span style="font-size: 8px;color:#FFF"> oui</span> 
+                                        <i class="fa fa-check-circle text-success"></i>{% else %} 
+                                        <span style="font-size: 8px;color:#FFF"> non</span>  
+                                        <i class="fa fa-ban text-danger"></i> 
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if teacher.is_extra %} 
+                                        <span style="font-size: 8px;color:#FFF"> oui</span> 
+                                        <i class="fa fa-check-circle text-success"></i>{% else %} 
+                                        <span style="font-size: 8px;color:#FFF"> non</span>  
+                                        <i class="fa fa-ban text-danger"></i> 
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ teacher.last_login|date:"Y m d" }}   
+                                </td>
+                                <td style="font-size: 14px; min-width:400px">
+                                    {% if teacher.school %}<i class="fa fa-university fa-xs"></i> {{ teacher.school.name }} {{ teacher.school.country }}{% else %} isolé {{ teacher.user.country }}{% endif %}
+                                    {% if teacher.schools.all|length > 0 %}<br/>{% endif %}
+
+                                    {% for s in teacher.schools.all %}<i class="fa fa-university fa-xs"></i>  {{ s.name }} {{ s.country }}
+                                        {% if not forloop.last %}<br/> {% endif %}
+                                    {% endfor %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">     
+                    <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+    </section>
+   
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                
+                    <h5 class="modal-title" id="exampleModalLabel">Liste des élèves - <span id="modal_group_name"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <div id="list_students"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="email_div" tabindex="-1" role="dialog" aria-labelledby="email_div"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                
+                    <h5>Liste des adresses mails  </h5>
+                </div>
+                <div class="modal-body">
+                    {% for teacher in teachers %}
+                        {{ teacher.email }};
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

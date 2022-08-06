@@ -1,0 +1,408 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+    {% block require %}
+
+        {% if not new %}
+        <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+        {% else %}
+        <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-index.js' %}"></script> 
+        {% endif %}
+    {% endblock %}
+
+
+
+{% block page_title %}<i class="fa fa-user"></i> 
+    {% if new %}
+        Nouvel.le enseignant.e
+    {% elif request.user.is_superuser or request.user.is_manager %}
+        Profil  de {{ teacher.user.last_name}} {{ teacher.user.first_name}}
+    {% else %}
+        Mon profil 
+    {% endif %}
+{% endblock %}
+ 
+{% block page_menu_right %}
+
+    {% if request.user.is_manager %}
+    <li> <a href="{% url 'register_by_csv' 2 0 %}" class="btn btn-new"  > <img src="{% static 'img/excel.png' %}" width="15px"/> Ajouter Enseignant.e.s par csv</a></li>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+    <section class="content_main">
+    {% if new %}
+    <div class="row">  
+        <div class="col-sm-12 col-md-12">
+            <div class="alert alert-info">
+                Si un enseignant est déjà inscrit sur SACADO, il suffit de lui donner ce token pour qu'il rejoigne votre établissement. 
+                Ne le ré-inscrivez pas. <br/>
+                <b>Token à fournir : {{ school.code_acad}}_{{ school.id}}</b><br/>
+                Procédure à donner au collègue <b>déjà inscrit</b> : A partir de l'icone <i class="fa fa-user"></i> <small>Compte</small>, sélectionner Rejoindre un établissement et suivre les indications.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+        <form action="" method="POST">
+            {% csrf_token %}
+
+            {% if not 'admin' in request.path %} 
+            <div class="row">
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="row">
+                        <div class="col-sm-10 col-md-8">
+                        {% if teacher.user.username|length > 50 %}
+                            <div class="form-group">
+                                {{ user_form.username.label_tag }}<br/>
+                                <label>Connexion via le GAR</label>
+                                {{ user_form.username |attr:"hidden" }}
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                {{ user_form.username.label_tag }}
+                                {{ user_form.username |add_class:"form-control" }}
+                                {{ user_form.username.errors }}
+                            </div>
+                        {% endif %}
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <div id="ajaxresult"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-md-2">
+                            <div class="form-group">
+                                {{ user_form.civilite.label_tag }}
+                                {{ user_form.civilite  |add_class:"form-control select2" }}
+                                {{ user_form.civilite.errors }}
+                            </div>
+                        </div>
+                        <div class="col-sm-8 col-md-10">
+                            <div class="form-group">                        
+                            {% if teacher.user.username|length > 50 %}
+                                {{ user_form.last_name.label_tag }}
+                                {{ user_form.last_name  |add_class:"form-control"|attr:"readonly" }}
+                                {{ user_form.last_name.errors }}
+                            {% else %}
+                                {{ user_form.last_name.label_tag }}
+                                {{ user_form.last_name |add_class:"form-control" }}
+                                {{ user_form.last_name.errors }}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-sm-12 col-md-5">
+                            <div class="form-group">
+                                {% if teacher.user.username|length > 50 %}
+                                    {{ user_form.first_name.label_tag }}
+                                    {{ user_form.first_name  |add_class:"form-control"|attr:"readonly" }}
+                                    {{ user_form.first_name.errors }}
+                                {% else %}
+                                    {{ user_form.first_name.label_tag }}
+                                    {{ user_form.first_name |add_class:"form-control" }}
+                                    {{ user_form.first_name.errors }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+                <div class="col-sm-12  col-md-3">
+                    <div class="form-group {% if not teacher.user.country  %} alert alert-danger{% endif %}"> 
+                        <label>Pays :  {% if not teacher.user.country  %} A renseigner{% endif %}</label>
+                        {{ user_form.country |add_class:"form-control select2" }}
+                        {{ user_form.country.errors }}
+                    </div>
+
+                    <div class="form-group"> 
+                        {% if sacado_asso %}
+                        <a href="{% url 'avatar' %}">Choisir mon avatar</a><br/>
+                        {% else  %}
+                        <a href="#">Choisir mon avatar</a><br/>
+                        {% endif  %}
+                        {% if user.avatar != "" %}  
+                            <img src="{{ user.avatar  }}" class="avatar" />
+                        {% else %}
+                            <i class="bi bi-person-circle" style="font-size: 50px"></i>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            {% else %}
+            <div class="row">
+                <div class="col-sm-12 col-md-2">
+                    <div class="form-group">
+                        {{ user_form.civilite.label_tag }}
+                        {{ user_form.civilite  |add_class:"form-control select2" }}
+                        {{ user_form.civilite.errors }}
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-group">
+                        {{ user_form.last_name.label_tag }}
+                        {{ user_form.last_name  |add_class:"form-control" }}
+                        {{ user_form.last_name.errors }}
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group">
+                        {{ user_form.first_name.label_tag }}
+                        {{ user_form.first_name  |add_class:"form-control" }}
+                        {{ user_form.first_name.errors }}
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group"> 
+                        <label>Pays : </label>
+                        {{ user_form.country |add_class:"form-control select2" }}
+                        {{ user_form.country.errors }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row">
+                {% if teacher.user.username|length < 50 %}
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label>{{ user_form.email.label_tag }}</label>
+ 
+ 
+                            {{ user_form.email |add_class:"form-control" }}
+                            {{ user_form.email.errors }}
+ 
+
+
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-sm-12 col-md-6">
+                    <div class="{% if teacher.levels.all.count == 0 %} alert alert-danger{% else %}form-group{% endif %}">
+                        <label>{{ user_form.time_zone.label_tag }}{% if not teacher.time_zone %} <i class="fa fa-warning"></i> Renseigner{% endif %}</label> 
+                        {{ user_form.time_zone  |add_class:"form-control select2" }}
+                        {{ user_form.time_zone.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <div class="{% if teacher.subjects.all.count == 0 %} alert alert-danger{% else %}form-group{% endif %}">
+                            <label>{{ teacher_form.subjects.label_tag }} {% if teacher.subjects.count == 0 %} <i class="fa fa-warning"></i> Renseigner{% endif %} 
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >Choisir votre (ou vos) enseignement(s) pour sélectionner les exercices correspondants.</div>
+                                </span> 
+                            </label>
+                            {{ teacher_form.subjects  |add_class:"form-control select2" }}
+                            {{ teacher_form.subjects.errors }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="{% if teacher.levels.all.count == 0 %} alert alert-danger{% else %}form-group{% endif %}">
+                            <label>{{ teacher_form.levels.label_tag }} {% if teacher.levels.count == 0 %} <i class="fa fa-warning"></i> Renseigner{% endif %}  
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >Choisir votre (ou vos) niveau(x) préféré(s) qui apparait(ront) dans votre espace personnalisé. Sans choix, vous ne pouvez pas sélectionner d'exercices.</div>
+                                </span> 
+                            </label>
+                            {{ teacher_form.levels  |add_class:"form-control select2" }}
+                            {{ teacher_form.levels.errors }}
+                        </div> 
+                    </div>
+                </div>
+                {% if  teacher  %}
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group">
+                        <label>Groupes en charge</label>
+                        <ul style="padding-left:0px;">
+                        {% for g in teacher.groups.all %}
+                            <li class="sanspuce">
+                                <a href="{% url 'show_group' g.id %}" style="color:{{g.color}}">{{ g.name }} </a><small>- {{ g.level.shortname|abreviation|safe }}  - {{ g.subject.shortname }}</small>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-3">
+                    <div class="form-group">
+                        <label>Groupes en co-animation</label>
+                        <ul style="padding-left:0px;">
+                        {% for g in teacher.teacher_group.all %}
+                            <li class="sanspuce">
+                                <a href="{% url 'show_group' g.id %}" style="color:{{g.color}}">{{ g.name }} </a><small>- {{ g.level.shortname|abreviation|safe }}  - {{ g.subject.shortname }}</small>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+
+
+
+            </div>
+
+            {% if teacher.user.username|length < 50 %}
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        Notifications
+                            {% if sacado_asso %}
+                             <table class="table">
+                                <tr>
+                                    <td><label><small> Recevoir chaque fois qu'un élève effectue une tache ?</small></label></td>
+                                    <td>{{ teacher_form.notification |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}    
+                                        {{ teacher_form.notification.errors }}
+                                    </td>                            
+                                </tr>
+                                <tr>
+                                    <td><label><small>Recevoir lorsqu'un exercice d'un de mes niveaux préférés est mis en ligne ?</small></label></td>
+                                    <td>{{ teacher_form.exercise_post |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}    
+                                        {{ teacher_form.exercise_post.errors }}
+                                    </td>                            
+                                </tr>
+                                <tr>
+                                    <td><label><small>Recevoir des messages de ses élèves via sacado ? <small>le nom de l'émetteur apparait dans le message.</small></small></label></td>
+                                    <td>{{ teacher_form.is_mailing |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}    
+                                        {{ teacher_form.is_mailing.errors }}
+                                    </td>                            
+                                </tr>
+                            </table>
+                            {% else %}
+                            <div class="alert alert-danger">Fonctionnalité réservée à la version établissement</div>
+                            <table class="table">
+                                <tr>
+                                    <td><label><small> Recevoir chaque fois qu'un élève effectue une tache ?</small></label></td>
+                                    <td>{{ teacher_form.notification |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"|attr:"disabled"}}    
+                                        {{ teacher_form.notification.errors }}
+                                    </td>                            
+                                </tr>
+                                <tr>
+                                    <td><label><small>Recevoir lorsqu'un exercice d'un de mes niveaux préférés est mis en ligne ?</small></label></td>
+                                    <td>{{ teacher_form.exercise_post |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"|attr:"disabled"}}    
+                                        {{ teacher_form.exercise_post.errors }}
+                                    </td>                            
+                                </tr>
+                                <tr>
+                                    <td><label><small>Recevoir des messages de ses élèves via sacado ? <small>le nom de l'émetteur apparait dans le message.</small></small></label></td>
+                                    <td>{{ teacher_form.is_mailing |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"|attr:"disabled"}}    
+                                        {{ teacher_form.is_mailing.errors }}
+                                    </td>                            
+                                </tr>
+                            </table>
+                            {% endif  %}                   
+                    </div>
+                    <div class="form-group">
+                        Aide à distance
+                            {% if sacado_asso %}
+                             <table class="table">
+                                <tr>
+                                    <td><label><small> Permettre l'aide à distance ?</small></label></td>
+                                    <td>{{ teacher_form.helping_right |attr:"data-toggle:toggle" |attr:"data-onstyle:danger"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}    
+                                        {{ teacher_form.helping_right.errors }}
+                                    </td>                            
+                                </tr> 
+                            </table>
+                            {% else %}
+                                <div class="alert alert-danger">
+                                    Version établissement requise
+                                </div>
+                            {% endif  %}                   
+                    </div>
+                </div>
+
+                {% if request.user.is_superuser or request.user.is_manager %}
+                <div class="col-sm-12 col-md-6">                 
+                    <div class="alert alert-danger"> 
+                        <h4 cLass="thin">Attribution des droits</h4>
+                        <div class="form-group">
+                            <label>Administrateur établissement ?</label>
+                            {{ user_form.is_manager |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"  }}
+                            {{ user_form.is_manager.errors }}
+                        </div>  
+                        {% if request.user.is_superuser %}
+                        <div class="form-group"> 
+                            <label>Propose des leçons</label> <small>(facultatif)</small> 
+                            {{ teacher_form.is_lesson |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"  }}
+                            {{ teacher_form.is_lesson.errors }}
+                        </div>
+                        <div class="form-group"> 
+                            <label>Descriptif pour les leçons</label> <small>(facultatif)</small> 
+                            {{ teacher_form.comment |add_class:"form-control"|attr:"rows:3"   }}
+                            {{ teacher_form.comment.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label>Créateur d'exercices ?</label>
+                            {{ user_form.is_extra |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"  }}
+                            {{ user_form.is_extra.errors }}
+                        </div>
+                        <div class="form-group">
+                            <label>Testeur de documents ?</label>
+                            {{ user_form.is_testeur |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"  }}
+                            {{ user_form.is_testeur.errors }}
+                        </div>
+                        <div class="form-group"> 
+                            <label>Etablissement principal</label><a href="{% url 'create_school' %}" class="pull-right" style="font-size: 12px">+ Nouvel établissement</a>
+                            {{ user_form.school|add_class:"form-control select2"   }}
+                            {{ user_form.school.errors }}
+                        </div>
+                        <div class="form-group"> 
+                            <label>Autre établissement en gestion</label> <small>(facultatif)</small> 
+                            {{ user_form.schools|add_class:"form-control select2"   }}
+                            {{ user_form.schools.errors }}
+                        </div>
+                        {% endif  %} 
+                    </div>
+                </div>
+                {% endif  %}
+            </div>
+            {% endif %}
+
+
+
+            <div class="row" style="margin-top:20px">
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <input value="Enregistrer" type="submit" {% if teacher.user.username|length < 50 %} id="submitter" {%endif %} class="btn btn-primary"/>
+                            {% if request.user.is_superuser %}
+                                <input value="Enregistrer et retour à toute la liste des enseignants" type="submit" name="listing" class="btn btn-info"/>
+                            {% endif  %} 
+                        <a href="javascript:history.back()">
+                            <input type="button" value="Annuler"
+                                   class="btn btn-default "/>
+                        </a>
+                    </div>   
+                </div>
+            {% if request.user.is_manager %}     
+                {% if teacher %}
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-group">
+                        <a href="{% url 'dissociate_teacher' teacher.user.id %}" class="btn btn-warning" onclick="return TestRemove('cet enseignant')" > Dissocier cet enseignant de mon établissement</a>
+                    </div>   
+                </div>
+
+                <div class="col-sm-12 col-md-2">
+                    <div class="form-group">
+                        <a href="{% url 'delete_teacher' teacher.user.id %}" class="btn btn-danger" onclick="return TestDelete('cet enseignant')" > Supprimer cet enseignant</a>
+                    </div>   
+                </div>
+                {% endif  %} 
+            {% endif  %}
+            </div>
+        </form>
+    </section>
+{% endblock %}
+
+ 
+ 

@@ -1,0 +1,175 @@
+{% load item_tags %}
+{% load static %}
+<div class="col-sm-12 col-md-7" style="padding-top:10px">
+ 
+{% if w_a %}
+ 
+
+    {% block annotate %} 
+    <!-- Caractéristique pour les AJAX pour la correction en ligne -->
+    <input type="hidden" id="answer_id" value="{{ w_a.id}}" />
+    <input type="hidden" id="custom" value="0" />
+    <!-- Caractéristique pour les AJAX pour la correction en ligne -->
+    {% endblock %} 
+ 
+
+    <div id="corrector">        
+        <canvas id="myCanvas" style="border:1px solid #f8f8f8;position: absolute;z-index:-1"></canvas>
+        {% if relationship.exercise.supportfile.is_python or  relationship.exercise.supportfile.is_scratch %}
+           <pre>{{ w_a.answer|safe }}</pre>
+        {% elif relationship.exercise.supportfile.is_file  and   w_a.file %}
+            <iframe src="{{  w_a.file.url }}" height="700" width="100%"></iframe>
+        {%  elif relationship.exercise.supportfile.is_text %}
+           {{ w_a.answer|safe }}
+        {%  elif relationship.exercise.supportfile.is_image   and   w_a.imagefile  %}
+            <img src="{{  w_a.imagefile.url }}" width="100%"/>
+        {% endif %}
+
+        {% for a in annotations %} 
+            <div id="{{ a.attr_id }}" class="{{ a.classe }}" style="{{ a.style }}">{{ a.content|safe }}</div>
+        {% endfor %}
+
+        {% if relationship.exercise.supportfile.is_python %}
+            {% include 'basthon/python_correction_editor.html' %}
+        {% endif %}
+
+
+    </div>    
+{% else %}
+
+    <div class="alert alert-danger">  
+        Document non rendu
+    </div>
+{% endif %}
+</div>
+
+<div class="col-sm-12 col-md-5" style="padding-right:0px">
+    {% if relationship.is_mark %}
+        {% get_mark_to_this relationship student relationship as this_mark %}  
+        <div class="row">
+            <div class="col-sm-6 col-md-4" style="padding-top: 5px">  
+            Note sur {{relationship.mark}}
+            </div>
+            <div class="col-sm-5 col-md-3">  
+            <input  type="number" {% if this_mark.is_marked %} value="{{ this_mark.marked }}" {% endif %} max="{{relationship.mark}}" min="0" 
+                    step="0.25" data-relationship_id="{{ relationship.id }}" name="mark" class="form-control" data-student_id="{{student.user.id}}" id="mark_evaluate"  /> 
+            </div>
+            <div class="col-sm-1 col-md-1" id="mark_sign">  
+            </div>
+        </div>    
+        <hr>   
+    {% endif %}
+    
+    {% include 'qcm/correction_tools.html' %}
+
+
+
+    <table class="table table-bordered table-hover fontsize_14">
+        <tr style="background-color: #F0F0F0">
+            <td>Savoir faire</td><td>NE</td><td><i class="fa fa-circle text-danger"></i></td><td><i class="fa fa-circle text-warning"></i></td><td><i class="fa fa-circle text-success"></i></td><td><i class="fa fa-circle text-primary"></i></td>
+        </tr>
+            {% get_code_student_for_this relationship  student  as result_answer %} 
+            <tr>
+                <td>{{ relationship.exercise.knowledge.name }} </td>
+                <td>
+                    <input  type="radio" {% if result_answer == 0 %} checked {% endif %}  data-relationship_id="{{relationship.id}}" 
+                            name="knowledge" value="0" data-student_id="{{student.user.id}}" class="evaluate" />                               
+
+                </td>
+                <td>
+                    <input  type="radio" {% if result_answer == 1 %} checked {% endif %}   data-relationship_id="{{relationship.id}}" 
+                            name="knowledge" value="1" data-student_id="{{student.user.id}}" class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" {% if result_answer == 2 %} checked {% endif %}   data-relationship_id="{{relationship.id}}" 
+                            name="knowledge" value="2" data-student_id="{{student.user.id}}" class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" {% if result_answer == 3 %} checked {% endif %}   data-relationship_id="{{relationship.id}}" 
+                            name="knowledge" value="3"  data-student_id="{{student.user.id}}" class="evaluate" />
+                </td>
+                <td>
+                    <input  type="radio" {% if result_answer == 4 %} checked {% endif %}  data-relationship_id="{{relationship.id}}" 
+                            name="knowledge" value="4" data-student_id="{{student.user.id}}" class="evaluate" />                               
+
+                </td>
+            </tr>
+    </table>
+    <table class="table table-bordered table-hover fontsize_14">
+        <tr style="background-color: #F0F0F0">
+            <td>Compétences</td><td>NE</td><td><i class="fa fa-circle text-danger"></i></td><td><i class="fa fa-circle text-warning"></i></td><td><i class="fa fa-circle text-success"></i></td><td><i class="fa fa-circle text-primary"></i></td>
+        </tr>
+        {% for s in  relationship.skills.all %}
+            <tr>{% get_skill_result relationship s  student  as result_answer %}
+                <td>{{ s }}</td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="0"   {% if result_answer == 0 %} checked {% endif %}
+                    data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" data-skill_id="{{s.id}}"  class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="1"   {% if result_answer == 1 %} checked {% endif %}
+                    data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" data-skill_id="{{s.id}}"  class="evaluate" />
+                 </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="2"   {% if result_answer == 2 %} checked {% endif %}
+                    data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" data-skill_id="{{s.id}}"  class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="3"   {% if result_answer == 3 %} checked {% endif %}
+                    data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" data-skill_id="{{s.id}}"  class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="4"   {% if result_answer == 4 %} checked {% endif %}
+                    data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" data-skill_id="{{s.id}}"  class="evaluate" />
+                </td>
+            </tr>
+         {% endfor %}
+    </table> 
+    <hr>
+    <h5>Commentaire <span id="comment_result" style="color:#228b22 ; font-size:12px"></span></h5>
+
+    <div id="saver_comments"></div>
+
+
+    <textarea class="form-control" name="comment" id="comment">{% if w_a.comment %}{{ w_a.comment }}{% endif %}</textarea>
+
+            <div class="row" style="margin-top:10px">
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <a href="#" class="btn btn-primary save_comment" data-saver=0  data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" >Enregistrer</a>
+
+               <!--             <a href="#" class="btn btn-primary save_comment" data-saver=1  data-student_id="{{student.user.id}}"  data-relationship_id="{{relationship.id}}" >Enregistrer et conserver</a> -->
+
+
+                        {% if w_a and  sacado_asso %}  
+                        <a href="#" data-toggle='modal' data-target='#audio_comment' class="btn btn-primary" ><i class="fa fa-microphone"></i> Commentaire Audio </a>
+                        {% elif sacado_asso %}  
+                        <a href="#" data-toggle='modal' data-target='#audio_comment' class="btn btn-primary" ><i class="fa fa-microphone"></i> Commentaire Audio </a>
+                        {% else %}    
+                        <a href="#" class="btn btn-primary" ><i class="fa fa-microphone"></i> Commentaire Audio 
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >Version établissement requise.</div>
+                                </span>
+
+                        </a>
+                        {% endif %}
+
+
+                        <a href="javascript:history.back()"><input type="button" value="Annuler"
+                                                                   class="btn btn-default "/></a>
+                    </div>
+                </div> 
+            </div>
+
+            <div class="row" style="margin-top:10px" id="response_div">
+                <div class="col-sm-12 col-md-12" style="color:#cb2131"  id="response">
+                    {% if w_a.audio %}
+                    <audio controls>
+                      <source src="{{ w_a.audio.url }}" type="audio/mpeg">
+                      <span class="text-danger">Votre navigateur ne lit pas l'audio.</span>
+                    </audio>
+                    {% endif %}
+                </div> 
+            </div>
+</div>
+

@@ -1,0 +1,85 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+ 
+    <div class="row">
+        <div class="col-md-4 col-xs-12 col-lg-3">
+ 
+            {% if is_teacher %}
+            <a href="{%  url 'create_course' 0 parcours.id %}" class="btn btn-danger full_width"> Créer un nouveau cours </a>
+            <hr>
+            {% endif %}
+ 
+            <form action="" method="POST"> 
+            <ul class="nav nav-pills nav-stacked admin-menu"  {% if is_teacher %} id="course_sortable" {% endif %}>
+                <input type="hidden" value="{{ parcours.id }}" name="parcours_id" id="parcours_id"/>
+                {% for course in courses %}
+                    <li class="{% if forloop.first %}active{% endif %} menu_course">
+                        <a href="#" data-target-id="course{{forloop.counter0}}">  <i class="{% if course.is_publish %}fa fa-eye{% else %}fa fa-eye-slash{% endif %}" style="font-size: 12px"></i>  {{ course.title }}
+
+                            {% if course.relationships.count > 0 %} <sup title="Cours lié à une section"><i class="fa fa-paperclip" style="font-size:8px" ></i></sup> {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            </form>
+        </div>
+        <div class="col-md-8 col-xs-12 col-lg-9">
+        {% for course in courses %}
+
+                {% get_permit_access  request.user    course    as     get_access %}
+                {% if get_access %}
+                <div class="admin-content"  id="course{{forloop.counter0}}">
+                    <h1 class="thin">  {{ course.title }}  
+                        {% if is_teacher %}
+                            {% if course.author == teacher %}
+                                <a href="{% url 'update_course' course.id parcours.id %}" style="font-size: 12px" class="pull-right">Modifier ce cours</a>
+                            {% else  %}
+                                <a href="{% url 'delete_course' course.id  parcours.id %}" style="font-size: 12px" class="pull-right"  onclick="return TestDelete('ce cours')">Supprimer ce cours</a>
+                            {% endif  %}
+                        {% endif %}
+                    </h1>
+                    <hr>
+
+                {% get_permit_access  request.user    course    as     get_access %}
+                {% if get_access %} 
+                 
+  
+                    {{ course.annoncement|decode|safe }} 
+                {% else %} 
+                    <div class="alert alert-danger">
+                        Vous avez téléchargé ce cours mais vous n'avez pas la version établissement. Le cours n'est donc plus utilisable. <a href="{% url 'admin_tdb' %}">Abonnez votre établissement à Sacado.</a>
+                    </div>
+                {% endif %}                     
+                </div>
+
+
+
+        {% endfor %}
+        </div>  
+         
+    </div>
+
+<script type="text/javascript">
+
+        // Parcours menu vertical pour les cours
+        var navItems = $('.admin-menu li > a');
+        var navListItems = $('.admin-menu li');
+        var allWells = $('.admin-content');
+        var allWellsExceptFirst = $('.admin-content:not(:first)');
+        allWellsExceptFirst.hide();
+        navItems.click(function(e)
+        {
+            e.preventDefault();
+            navListItems.removeClass('active');
+            $(this).closest('li').addClass('active');
+            
+            allWells.hide();
+            var target = $(this).attr('data-target-id');
+            $('#' + target).show();
+        });
+
+    
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>

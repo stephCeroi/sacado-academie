@@ -1,0 +1,85 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+
+{% block require %}
+    {% if knowledge %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    {% endif %}
+{% endblock %}
+
+ 
+
+
+
+ 
+{% block page_title %}
+      Savoir faire 
+{% endblock %}
+
+{% block page_menu_right %}
+    <li><a href="{% url 'association_knowledge' %}" class="btn btn-new pull-right" ><i class="fa fa-tasks"></i>  Association</a></li> 
+    <li><a href="{% url 'create_knowledge' %}" class="btn btn-new pull-right" ><i class="fa fa-plus"></i> Nouveau savoir faire</a></li>
+    <li><a href="{% url 'create_multi_knowledge' %}" class="btn btn-new pull-right" ><i class="fa fa-plus"></i>  Création multiple</a></li>  
+
+{% endblock %}
+
+
+{% block body  %}   
+<section class="content_main"> 
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <table  class="table table-bordered table-hover standard_tab_sort300" style="width:100%">
+                  <thead>
+                      <tr>
+                        <th>Enseignement</th>
+                        <th style="width:35%">Nom</th>                      
+                        <th>Thème</th>
+                        <th>Niveau</th>
+                        <th  style="width:35%">Attendu</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                        {% for knowledge in knowledges %}
+                        <tr> 
+                          <td >
+                              {{ knowledge.theme.subject.shortname }} 
+                          </td> 
+                          <td>
+                              <a href="{% url 'update_knowledge' knowledge.id %}">{{ knowledge.name }}  {% if knowledge.used %}<i class="fa fa-check text-success"></i> [{{ knowledge.nb_exercise }}]   {% endif %}</a> 
+                              <small>
+                              <a href="{% url 'delete_knowledge' knowledge.id %}"  onclick="return TestDelete('ce savoir faire')"><i class='fa fa-trash pull-right'></i></a>
+                              </small>
+                          </td>
+                          <td >
+                              {{ knowledge.theme.name }} 
+                          </td> 
+                          <td >
+                              {{ knowledge.level.name }}
+                          </td>
+                          <td >
+                              {{ knowledge.waiting.name }}
+                          </td>
+                        </tr>
+                        {% endfor %}
+                  </tbody>
+            </table>
+        </div>
+      </div>
+ 
+
+</section>
+
+ 
+
+
+
+{% endblock  %}   
+
+
+ 

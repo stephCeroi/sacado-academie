@@ -1,0 +1,19 @@
+{% extends 'group/result_group.html' %}
+ 
+
+{% block legend %}
+
+Suivis des exercices publiés
+{% endblock %}
+
+ 
+{% block result %}
+    {% with student.resultexercises_dict as results %}
+        {% for r in student.resultexercises %}
+            {% with  r.exercise as exercise %}
+                {% include 'group/score.html' %}
+            {% endwith %}
+        {% endfor %}
+    {% endwith %}
+{% endblock %}
+ 

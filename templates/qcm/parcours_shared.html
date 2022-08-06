@@ -1,0 +1,66 @@
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+<div  class="box_shared box-widget widget-user-2" 
+    style="{% if parcours.vignette %}background-image: url('{{ parcours.vignette.url }}'); background-size: cover;{% endif %}; background-color:{{parcours.color }}">
+ 
+    <div class="handler widget-user-header">
+        {% if parcours.is_evaluation %}   
+            <div class="icon_evaluation">
+                <i class="fa fa-bullseye"></i> 
+            </div>
+        {% endif %}
+        {% if parcours.vignette %}                
+            <div class="box_title_underlay_vignette" style="background-color:{{ parcours.color }};">
+            </div> 
+        {% endif  %}
+        <div class="box_title_vignette"> 
+            <a href="{% url 'show_parcours_visual'  parcours.id  %}" style="color:{{ parcours.color|contrast_color }};">
+                {{ parcours.title|truncatechars:"28" }}
+            </a>
+        </div>
+    </div>
+    <div class="box_shared_footer">
+
+        <div class="row box_shared_label"> 
+            <div class="col-lg-12 col-xs-12">
+                {% for data in parcours.get_themes   %} 
+                <b>{{ data.theme.name }}</b> 
+                {% endfor %}
+            </div> 
+        </div>
+        <div class="row box_shared_label" align="center"> 
+            <div class="col-lg-4 col-xs-4">
+                    <a href="{% url 'show_parcours_visual'  parcours.id  %}" class="edit"  title="Voir le parcours"  ><i class="bi bi-eye" style="font-size: 22px"></i>  </a>
+            </div> 
+            <div class="col-lg-4 col-xs-4">
+                    <a href="{% url 'clone_parcours' parcours.id 0 %}" class="edit" title="Récupérer le parcours"  > <i class="bi bi-clouds" style="font-size: 22px"></i> </a>  
+            </div> 
+            <div class="col-lg-4 col-xs-4" >
+                    {% if parcours.course.all|length > 0 %}
+                    <a href="{% url 'clone_parcours' parcours.id 1 %}"  class="edit" title="Récupérer le parcours et ses cours associés" > <i class="bi bi-folder" style="font-size: 22px"></i> </a>
+                    {% endif %}
+            </div> 
+        </div>
+
+
+        <div class="row box_shared_label_last"> 
+            <div class="col-lg-4 col-xs-4">
+                {% if parcours.nb_exercises < 100 %}
+                {{ parcours.nb_exercises }} exercice{{ parcours.nb_exercises|pluralize }} 
+                {% else %}
+                {{ parcours.nb_exercises }} <i class="fa fa-desktop" title="exercices"></i> 
+                {% endif %}
+            </div> 
+            <div class="col-lg-3 col-xs-3">       
+                {{ parcours.course.count }} cours
+            </div>
+            <div class="col-lg-5 col-xs-5">      
+                 {{ parcours.teacher}} 
+            </div> 
+        </div>
+    </div>
+</div>     
+
+

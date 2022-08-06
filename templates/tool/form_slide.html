@@ -1,0 +1,108 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/ajax-diaporama']);
+    </script> 
+{% endblock %}
+ 
+
+{% block page_title %}
+   Outils pédagogiques 
+   <img width="25px" src="{% static 'img/angle-right.png' %}"/> <small>Créateur de présentation
+   </small>
+   {% if diaporama %}
+   <img width="25px" src="{% static 'img/angle-right.png' %}"/> <a href="{% url 'update_diaporama' diaporama.id %}"> <small>{{ diaporama.title }}</small></a>
+   {% endif  %}
+   <img width="25px" src="{% static 'img/angle-right.png' %}"/> <small><span id="type_of_question_in_title"></span></small>
+{% endblock %}
+
+
+{% block page_menu_right %}
+    <a href="{% url 'list_diaporama'  %}" target="_blank" class="btn btn-new">Mes présentations</a>
+    <a href="{% url 'show_diaporama' diaporama.id %}" target="_blank" class="btn btn-new">Voir la présentation</a>
+{% endblock %}
+
+
+
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/uploader.css' %}">
+<section class="content_list"> 
+
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                <form action="#" method="POST"  >
+                    <div class="quizz_list_question">
+                        <ul id="slides_sortable_list">
+                            {% for slide in slides %}
+                                {% include 'tool/list_of_slide.html' %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </form>  
+ 
+            </div>
+
+            <div class="col-sm-12 col-md-10" >  
+ 
+                <form action="{% url 'create_slide' diaporama.id %}"  method = "POST"  enctype='multipart/form-data' >
+                    {% csrf_token %}  
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                {{ form.title.label_tag }}  
+                                {{ form.title |add_class:"form-control" }}
+                                {{ form.title.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                {{ form.is_publish.label_tag }}<br/>
+                                {{ form.is_publish |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                {{ form.is_publish.errors }}
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="row">                
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                {{ form.content.label_tag }}<br/>
+                                {{ form.content }}
+                                {{ form.content.errors }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12"> 
+                            <div class="form-group">
+                                <input value="{{ diaporama.id }}" id="diaporama_id" name="diaporama_id" type="hidden"  />
+
+                                <input value="Enregistrer"  type="submit"  class="btn btn-primary btn-lg"/>
+
+                            </div>
+                        </div>    
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+
+</section>
+
+
+ 
+ 
+
+
+{% endblock %} 

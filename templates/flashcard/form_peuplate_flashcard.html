@@ -1,0 +1,152 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+ 
+
+    <script>
+        require(['script/ajax-flashpack']);
+    </script> 
+
+{% endblock %} 
+
+
+{% block page_title %}
+        {% include 'flashcard/logo.html' %}  
+    <a href="{% url 'show_flashpack' flashpack.id %}" >{{ flashpack }} </a>
+
+
+    <img src="{% static 'img/angle-right.png' %}" width="25px"/> 
+    <small>Ajouter des cartes <img src="{% static 'img/angle-right.png' %}" width="20px"/>  <small><span id="nb_flashcards">{{ flashpack.flashcards.count }}</span> cartes</small></small><span class="helper_tip"> 
+                        <i class="fa fa-question-circle"></i> 
+                        <div class="helper_tip_text"> 
+                            
+                                    {{ flashpack.subject.name }}, 
+                         
+                                    {% for l in flashpack.levels.all %}{{ l.name }}{% if not forloop.last%}, {% endif %}{% endfor %},
+                           
+                                    {% for t in flashpack.themes.all %}{{ t.name }}{% if not forloop.last%}, {% endif %}{% endfor %}
+                           
+                        </div> 
+                    </span>
+{% endblock %}
+
+
+
+{% block page_menu_right %}
+     
+    {% if request.user.is_extra or request.user.is_superuser %}
+    <a href="{% url 'set_flashcards_to_flashpack' flashpack.id %}"  class="btn btn-new-violet" > Nouvelle carte</a> 
+    {% endif %}
+
+    <a href="{% url 'my_flashpacks' %}"  class="btn btn-new-violet" > Mes flashpacks </a> 
+    <a href="{% url 'set_flashcards_to_flashpack' flashpack.id  %}"  class="btn btn-new-violet" > Configurer </a> 
+{% endblock %}
+
+
+{% block body %}
+ 
+  
+     
+<section class="content_main">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <form action="" method="POST" enctype='multipart/form-data'> 
+                {% csrf_token %}
+                <input id="flashpack_id" value="{{ flashpack.id }}" type="hidden"/>
+                <div class="row search_bar">
+                    <div class="col-sm-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <select id="id_subject" name="subject" class="form-control select2">
+                                {% for s in teacher.subjects.all %}
+                                    <option value="{{s.id}}">{{ s.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <select id="id_level" name="level" class="form-control select2" >
+                                <option value=" ">Choisir un niveau</option>
+                                {% for l in levels %}
+                                    <option value="{{l.id}}">{{ l.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-4">
+                        <div class="form-group">
+                            <select id="id_theme" name="theme" class="form-control select2" multiple>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-9 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <select id="id_waiting" name="waiting" class="form-control select2">
+                                <option value="">Choisir un attendu</option>
+                                {% for w in waitings %}
+                                    <option value="{{ w.id }}">{{ w.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-md-1 col-lg-1">
+                        <div class="form-group">
+                            <input name="keyword" id="keyword" class="form-control" placeholder="Mot clé" />
+                        </div>
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div id="loader">
+                        </div>
+                        <div id="content_cards" class="list_choice_bibliotex"> 
+                            {% for flashcard in flashcards %}   
+                                {% include_in_flashpack flashcard flashpack as is_selected %}
+                                {% include 'flashcard/search_flashcard_tag.html' %}
+                            {% endfor %}
+                            <div style="clear: both;"> 
+                        </div>
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <a href="javascript:history.back()"><input type="button" value="Retour" class="btn btn-default"/></a>
+                    </div>
+                </div> 
+            </form>
+        </div>
+    </div>
+</section>  
+
+
+<div class="modal fade" id="show_exotex_by_pop" tabindex="-1" role="dialog" aria-labelledby="show_exotex_by_pop">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+             
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+
+            </div>
+            <div class="modal-body">
+ 
+            </div>
+        </div>
+    </div> 
+</div>
+
+{% endblock %}
+
+ 
+ 
+ 
+       
+ 
+ 

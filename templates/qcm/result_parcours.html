@@ -1,0 +1,271 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load item_tags %}
+{% load widget_tweaks %}
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common3.js' %}"></script> 
+    <script>
+
+        {% if 'parcours_skill' in request.path  %}
+            require(['script/ajax-parcours_inside_data_tab']);
+        {% endif %}
+
+        require(['script/ajax-parcours']);
+    </script>
+{% endblock %}
+
+
+
+{% block page_title %}
+
+    {% if parcours %}
+    <span style="color:{{ parcours.color }}"><i class="fa fa-mortar-board"></i> </span> 
+    {% endif %}
+
+      {% include 'qcm/breadcrumb.html' %}
+
+       <small>     {% block sub_page_title %}Suivi par exercice{% endblock %}</small>
+
+
+
+{% endblock %}
+
+{% block page_menu_right %}  
+
+    {% include 'qcm/submenu_parcours.html' %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% block body %}
+
+<style>
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 5px;
+    line-height: 1.42857143;
+    border-top: 1px solid #ddd;
+}
+</style>
+
+ 
+  
+<section class="real_time_list"> 
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <table id="standard_tab" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Nom et prénom</th>
+                    {% block tab_title %}                                       
+                    <td> 
+                        {% for relationship in relationships %}
+                            <span class="img_bulle">
+                                <img src="{{ relationship.exercise.supportfile.imagefile.url }}" width="28px" style="margin:0px" />
+                                <div class="img_shower">
+                                    <img src="{{ relationship.exercise.supportfile.imagefile.url }}" width="400px"  />
+                                </div>
+                            </span>
+                        {% endfor %}  
+                        {% for customexercise in customexercises  %}
+                            <img src="{{ customexercise.imagefile.url }}" width="30px"/>
+                        {% endfor %} 
+
+
+
+                    </td>       
+                    {% endblock %}  
+                </tr>
+                </thead>
+                <tbody>
+                        {% for student in  students %}
+                            <tr class="no_padding">
+                                <td style="min-width:250px">
+ 
+                                        <form  action="" method="POST">{% csrf_token %} 
+                                            <a href="{% url 'detail_student_all_views' student.user.id %}" target="_blank"> {{ student |truncatechars:"30" }} </a>
+                                        <div class="pull-right"> 
+                                                <a href="#" data-toggle='modal'
+                                                    data-target='#writer' 
+                                                    class="send_message"   data-student_name="{{ student.user }}"
+                                                    data-student_email="{{ student.user.email }}">  
+
+                                                    {% if student.user.email  %}                                      
+                                                    <i class="fa fa-inbox" style="font-size:14px"></i> 
+                                                    {% else %}
+
+                                                    <span class="icon-stack">
+                                                      <i class="icon-inbox"></i>
+                                                      <i class="icon-ban-circle icon-stack-base text-error"></i>
+                                                    </span>
+
+                                                    {% endif %}
+                                                               
+                                        </div>  
+                                        </form>    
+                                </td>
+                                {% block result %}                                       
+                                <td> 
+                                    {% for relationship in relationships %}
+                                        {% include 'qcm/score.html' %}
+                                    {% endfor %}  
+                                    {% for customexercise in customexercises %}
+                                        {% include 'qcm/score_custom.html' %}
+                                    {% endfor %} 
+
+
+
+                                </td>       
+                                {% endblock %}                                       
+                            </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+ 
+
+    <div class="modal fade" id="writer" tabindex="-1" role="dialog" aria-labelledby="writer" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                
+                    <h5 class="modal-title" >Ecrire un message à  <span id="modal_student_name"></span></h5>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" > 
+                          {% csrf_token %}
+                        <div class="form-group"><input type="hidden" name="student_id" class="form-control" id="student_id"/>
+                          <input type="text" name="name" class="form-control" id="name" placeholder="Nom" />
+                        </div>
+                        <div class="form-group">
+                          <input type="email" class="form-control" name="email" id="email" placeholder="Email"  />
+                        </div>
+                        <div class="form-group">
+                            {{ form.subject|add_class:"form-control"|attr:"placeholder:Objet"|attr:"required" }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.texte  }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary" id="sender_message">Envoyer</button>   
+                            <a href="#"  class="btn btn-default" class="close" data-dismiss="modal" aria-label="Close">Retour</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>  
+
+    <div class="modal fade" id="export_skills" tabindex="-1" role="dialog" aria-labelledby="export_skills" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                
+                    <h5 class="modal-title" >Exporter les compétences</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'export_skills_after_evaluation' %}" method="post" > 
+                        {% csrf_token %}<input type="hidden" name="parcours_id" value="{{ parcours.id }}" id="parcours_id"/>
+                        <div class="row">
+                            <div class="col-sm-6">  
+                                <label>Pour une même compétence, prendre en compte </label>
+                            </div>
+                            <div class="col-sm-6">  
+                                <select name="nb_skill" class="form-control select2">
+                                    <option value="1">La dernière évaluée</option>
+                                    <option value="2">Les 2 dernières évaluées</option>
+                                    <option value="3">Les 3 dernières évaluées</option>
+                                    <option value="0">Toutes évaluées</option>
+                                </select> 
+                            </div>
+                        </div>  
+                        <hr/>
+
+
+                        <div class="row">
+                            <div class="col-sm-12">  
+                                <label> Rappel : <br/>
+                                4 niveaux de maitrise. Les codes correpondants sont 1, 2, 3, 4 et A.<br>  
+                                    <li class="sanspuce"><i class="fa fa-square text-primary"></i> Très bonne maitrise  : 4 </li>
+                                    <li class="sanspuce"><i class="fa fa-square text-success"></i> Bonne maitrise  : 3  </li>
+                                    <li class="sanspuce"><i class="fa fa-square text-warning"></i> Maitrise fragile  : 2 </li>
+                                    <li class="sanspuce"><i class="fa fa-square text-danger"></i> Maitrise insuffisante  : 1  </li>
+                                    <li class="sanspuce"><i class="fa fa-square text-default"></i> Absent :   A</li>
+                                    <br>  
+                                    Ces codes doivent être reportés dans Pronote. Les compétences transférées doivent être les mêmes que celles en attente dans Pronote. Voir l'aide éventuellement.
+                                </label>
+                            </div>
+                        </div> 
+                        <hr/>
+                        <div class="row">
+                            <div class="col-sm-12">  
+                                <button type="submit" class="btn btn-primary" > Exporter </button>   
+                                <a href="#"  class="btn btn-default" class="close" data-dismiss="modal" aria-label="Close">Fermer</a>
+                            </div>
+                        </div>     
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+
+
+    <div class="modal fade" id="export_help" tabindex="-1" role="dialog" aria-labelledby="export_help" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                
+                    <h5 class="modal-title" >Aide pour Pronote</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">     
+                            Transfert de notes de Sacado vers Pronote (1 min. 14 s.)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">     
+                            <video src="https://sacado.xyz/ressources/videos/stats.mp4" width=560  height=315 controls  >
+                              Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+                            </video>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">     
+                            Transfert de compétences de Sacado vers Pronote (1 min. 17 s.)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">     
+                            <video src="https://sacado.xyz/ressources/videos/stats_parcours.mp4" width=560  height=315 controls  >
+                              Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

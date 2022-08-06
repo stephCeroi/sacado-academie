@@ -1,0 +1,171 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+    {% if parcours %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    {% endif %}
+
+    <script>
+        require(['script/ajax-parcours']);
+    </script> 
+
+{% endblock %} 
+
+
+ 
+   
+{% block page_title %}
+    <i class="bi bi-gear" style="color:{{ group.color }}"></i> <span style="color:{{ group.color }}"> Publication des exercices pour {{ group }}</span> 
+{% endblock %}
+
+{% block page_menu_right %}
+ 
+    <li> <a href="{% url 'index' %}"    class="no_button" />Mes groupes</a></li>
+
+
+    <li>
+        <span class="btn btn-{% if not parcours.is_publish %}danger{% else  %}success{% endif  %}" style="cursor:none">  {% if parcours.is_publish %} Parcours publié  {% else %} Parcours dépublié {% endif  %}</span> 
+    </li>
+{% endblock %}
+ 
+{% block body %}         
+<div class="col-xs-12 col-md-12" >
+    <div class="content_main"> 
+        <form action="" method="POST" enctype='multipart/form-data'> 
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <table class="table  table-hover" style="width:100%">
+                        <thead>
+                            <tr><td></td><td></td><td></td></tr>
+                        </thead>
+                        <tbody>
+                            {% for theme in data  %} 
+                                <tr style="background:{{parcours.color}}; color:#eee">
+                                    <td></td><td> {{theme.name}} </td> <td></td>
+                                </tr>
+                                {% for knowledge in theme.knowledges  %}   
+                                    {% if knowledge.exercises %} 
+                                            <tr style="background:#F1F1F1"><td></td>
+                                                <td class="listingtd">
+                                                    {{ knowledge.name.name|capfirst }} 
+                                                    {% if request.user.is_superuser and '/admin' in request.path %}
+                                                        <a href="{% url 'create_exercise_knowledge' knowledge.name.id %}" class="pull-right edit"><i class='fa fa-plus' style="margin-left:10px;font-size: 10px"></i></a>
+                                                    {% endif %}
+                                                </td><td></td>
+                                            </tr>
+                                            {% for e in knowledge.exercises  %}
+                                                {%  get_is_selected  e  parcours  as  e_is_selected %} 
+                                                <tr>
+                                                    <td>
+                                                        <!-- Selection des exercices -->
+ 
+                                                        <label class="container_checkbox">
+                                                        <input type="checkbox"  data-exercise_id="{{ e.id }}" data-parcours_id="{{ parcours.id }}"
+                                                                name="exercises" id="selector_e{{ e.id }}"  data-statut="{{ e_is_selected }}"
+                                                                {% if e_is_selected %}checked{% endif  %} 
+                                                                class="selector_e" /><span class="checkmark"></span>
+                                                        </label>
+
+                                                        <!-- Selection des exercices -->
+                                                    </td>
+                                                    <td>
+                                                        <label for="selector_e{{ e.id }}" class="label_select_checkbox">  
+                                                        {% if user.is_superuser and '/admin' in request.path %}
+                                                            <a href="{% url 'show_this_exercise'  e.id   %}"   >  
+                                                                <img src="{{ e.supportfile.imagefile.url }}" class="imagefile">
+                                                            </a>
+
+
+                                                            <a href="{% url 'update_supportfile'  e.supportfile.id   %}" class="listing" style="font-size: 18px">
+                                                                {% if e.supportfile.title %}  
+                                                                    {{ e.supportfile.title|cleanhtml|capfirst }}  
+                                                                {% else %}  
+                                                                    {{ e.supportfile.annoncement|cleanhtml|capfirst }} 
+                                                                {% endif %}
+                                                            </a> 
+
+                                                        {%  else %}
+                                                            <a href="{% url 'show_this_exercise'  e.id   %}" >
+                                                            <img src="{{ e.supportfile.imagefile.url }}" class="imagefile">
+                                                            {% if e.supportfile.title %}  
+                                                                {{ e.supportfile.title|cleanhtml|capfirst }}  
+                                                            {% else %}  
+                                                                {{ e.supportfile.annoncement|cleanhtml|capfirst }} 
+                                                            {% endif %}
+                                                            </a>                                                            
+                                                        {% endif %}
+                                                         {% if e.calculator %}
+                                                          <img src="{% static 'img/calculator.png' %}" width="30px" />
+                                                        {% else %}
+                                                          <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                                                        {% endif  %}   
+                                                             <br>
+                                                                 <small>   
+                                                                    <i class="fa fa-fw fa-barcode"></i> {{ e.supportfile.code }}  {% if e.supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                                    <i class="fa fa-fw fa-clock-o"></i> {{ e.supportfile.duration }} minutes {% if e.supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                                    <i class="fa fa-fw fa-save"></i> {{ e.supportfile.situation}} situation{{ e.supportfile.situation|pluralize}} minimum
+                                                                </small>
+                                                        </label>
+                                                    
+                                                    </td>
+                                                    <td>
+                                                        {% for r in e.exercise_remediation.all %}
+                                                            <a href="../../{{ r.mediation }}" target="_blank">
+                                                                {% if r.mstyle %} 
+                                                                    <img src="{% static 'img/ggb.png' %}" width="20px" />
+                                                                {% else %}
+                                                                    <img src="{% static 'img/pdf.png' %}" width="20px" />
+                                                                {% endif %}
+                                                             </a>
+                                                        {% endfor %}
+                                                        {% if request.user.is_superuser  and '/admin' in request.path %}
+                                                            <a href="{% url 'create_remediation'  e.id   %}" class="pull-right edit" style="margin-left:5px; font-size: 10px"> 
+                                                                <i class="fa fa-plus thin"></i>   
+                                                            </a> 
+                                                        {% endif %}                                                          
+                                                    </td>
+                                                </tr>
+                                            {% endfor %} 
+                                    {% else %} 
+                                            <tr><td></td> 
+                                                <td>
+                                                    {{ knowledge.name }} 
+                                                    {% if request.user.is_superuser and '/admin' in request.path %}
+                                                    <a href="{% url 'create_exercise_knowledge' knowledge.name.id %}" class="edit"><i class='fa fa-plus pull-right' style="font-size: 10px"></i></a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                </td>
+                                            </tr>
+                                    {% endif %}                                            
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+     
+  
+        </form>
+     
+    </div>    
+</div> 
+
+ 
+
+ {% endblock %}
+
+ 
+ 
+ 
+       
+ 
+ 

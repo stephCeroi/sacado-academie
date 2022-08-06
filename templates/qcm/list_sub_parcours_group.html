@@ -1,0 +1,202 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4_withoutMathJax.js' %}"></script>
+ 
+    <script>
+        require(['script/ajax-parcours']);
+    </script> 
+
+
+{% endblock %}
+
+ 
+
+{% block page_title %}
+       <span style="color:{{ group.color  }}"><i class="bi bi-folder"></i></span>  
+
+        {% include 'qcm/breadcrumb.html' %}
+{% endblock %}
+
+{% block page_menu_right %}
+
+
+ 
+
+    {% if role %}
+        {% include 'qcm/submenu_creation.html' %}
+  
+    {% endif %}
+{% endblock %}
+
+{% block css_files %}
+{% endblock %}
+
+
+
+{% block body  %}
+
+{% include 'preloader.html' %}
+
+<section class="content_list" id="principal_section"> 
+
+ <form action="" methode="POST" > 
+ 
+    {% regroup parcours_tab by is_evaluation as list_parcours %} 
+
+
+        {% for parcours_sort in list_parcours %}  
+            <div class="row {% if accordion or list_parcours|length > 1 %}  documents_div documents_div_shadow {% endif %}">
+                <div class="col-sm-12 col-md-12">
+                    {% if  parcours_sort.grouper %}
+                        <h1 class="thin" id="evaluation" >Mes évaluations 
+                            <span class="un_collapsed"> <i class="fa fa-angle-down"></i></span> 
+                            <span class="fontLabel" >{{ parcours_sort.list|length }} évaluation{{ parcours_sort.list|length|pluralize }}</span>
+                        </h1>
+                    {% else %}
+                        <h1 class="thin" >Mes parcours 
+                            {% if accordion or list_parcours|length > 1 %}   
+                                <span class="un_collapsed"> <i class="fa fa-angle-down"></i></span>
+                                <span class="fontLabel" >{{ parcours_sort.list|length }} parcours</span>  
+                            {% endif %}
+                        </h1>
+                    {% endif %}  
+                    <div id="subparcours_sortable" >
+                    {% for parcours in parcours_sort.list %}  
+                          {% include 'qcm/parcours_evaluation_tag.html' %} 
+                    {% endfor %}
+                    </div>
+                </div>
+                {% if accordion or list_parcours|length > 1 %}<div class="shadow_bottom"></div>{% endif %}
+            </div>                
+            {% empty %}
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="alert alert-warning">
+                        Ce dossier ne contient encore aucun parcours.
+                    </div>
+                </div>
+            </div>   
+            {% endfor %}
+
+
+    {% if sequences %}
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin">Mes séquences    </h1>
+            <div class="row" > 
+                <div class="col-sm-12 col-md-12">
+                    {% for parcours in sequences %}   
+                          {% include 'qcm/parcours_evaluation_tag.html' %} 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+
+    {% if quizzes %}
+    <div class="row documents_div documents_div_shadow">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin">Mes quizz <span class="un_collapsed"><i class="fa fa-angle-down"></i></span> <span class="fontLabel" >{{ quizzes.count }} quizz </span>  </h1>
+            <div class="row" > 
+                <div class="col-sm-12 col-md-12">
+                    {% for quizz in quizzes %}   
+                          {% include 'tool/quizz_tag.html' %} 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="shadow_bottom"></div>
+    </div>
+    {% endif %}
+
+
+    {% if bibliotexs %}
+    <div class="row  documents_div documents_div_shadow">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin" id="biliotex" >Mes biblioTex <span class="un_collapsed"><i class="fa fa-angle-down"></i></span> <span class="fontLabel" >{{ bibliotexs.count }} biblioTex</span>    </h1>
+            <div class="row "> 
+                <div class="col-sm-12 col-md-12">
+                    {% for bibliotex in bibliotexs %}   
+                          {% include 'bibliotex/bibliotex_tag.html' %} 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="shadow_bottom"></div>
+    </div>
+    {% endif %}
+
+
+
+    {% if flashpacks %}
+    <div class="row  documents_div documents_div_shadow">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin" id="biliotex" >Mes flashpack <span class="un_collapsed"><i class="fa fa-angle-down"></i></span> <span class="fontLabel" >{{ flashpacks.count }} flashpack</span>    </h1>
+            <div class="row "> 
+                <div class="col-sm-12 col-md-12">
+                    {% for flashpack in flashpacks %}   
+                          {% include 'flashcard/get_flashpack_tag.html' %} 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="shadow_bottom"></div>
+    </div>
+    {% endif %}
+
+
+
+
+
+
+</form>
+  
+</section>
+
+<div class="modal fade" id="parcours_default_modal" tabindex="-1" role="dialog" aria-labelledby="parcours_default_modal">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2 class="thin sacado">Les parcours par défaut</h2>
+                Ces parcours contiennent tous les exercices proposés par <span class="sacado">sacado</span> dans le thème proposé.
+                <div id="remediation_shower"> 
+                    {% include 'qcm/parcours_default.html' %}
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="listing" tabindex="-1" role="dialog" aria-labelledby="listing_div" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>                
+                <h5 class="modal-title" id="exampleModalLabel">Liste des élèves - <span id="modal_group_name"></span></h5>
+            </div>
+            <div class="modal-body">
+                <div id="list_students"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+
+{% endblock  %}   

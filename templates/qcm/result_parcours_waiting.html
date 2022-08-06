@@ -1,0 +1,34 @@
+{% extends 'qcm/result_parcours.html' %}
+{% load item_tags %}
+
+{% block sub_page_title %}Bilan des attendus{% endblock %}
+
+
+
+
+{% block tab_title %}
+	{% for waiting in exercise_waitings %}
+        <td style="font-size:14px">
+        	{{ waiting.name }}
+		</td>
+	{% endfor %}
+{% endblock %} 
+
+
+
+
+{% block result %}
+ 
+ 
+	{% for waiting in exercise_waitings %}
+        <td>
+		{% get_scorek  waiting  student  as data %}
+
+
+		 {% include 'qcm/data_score.html' %}
+
+		</td>
+	{% endfor %}
+
+ 
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends 'qcm/result_parcours.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+ 
+
+    <script>
+        require(['script/ajax-parcours']);
+    </script> 
+
+{% endblock %} 
+
+
+{% block page_title %}
+       {% if parcours %}
+    <span style="color:{{ parcours.color }}"><i class="fa fa-th"></i> </span> 
+    {% endif %}
+
+      {% include 'qcm/breadcrumb.html' %}  <small> Suivi par exercices</small> 
+{% endblock %}
+ 
+
+
+{% block body %}
+ 
+  
+     
+<section class="content_main">
+    <div class="col-sm-12 col-md-12">
+        <form action="" method="POST" enctype='multipart/form-data'> 
+            {% csrf_token %} 
+            {% for relationship in relationships|dictsort:"ranking" %} 
+                <div class="row" style="margin-top:8px; padding-top: 8px; border-top: 1px solid #CCC;  border-top: 1px solid #CCC" id="relationship{{ relationship.id }}" >                        
+                    <div  class="col-sm-12 col-md-12">
+                        {% if not relationship.exercise.supportfile.is_title %}
+                        <div class="header_exercise"  style="clear:both" >
+                            <a href="{% url 'show_this_exercise' relationship.exercise.id   %}" class="listing" >  {{ relationship.exercise.knowledge.name|capfirst }}</a>
+                        </div> 
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:8px; padding-bottom: 8px; ">
+                    <div class="col-sm-12 col-md-5">        
+                        <a href="{% url 'show_this_exercise' relationship.exercise.id   %}" >  
+                        <img src="{{ relationship.exercise.supportfile.imagefile.url }}" {% if parcours.zoom %} class="imagefile" {% else %} width="200px" {% endif %} ></a>
+                                                            
+                                    {% if  relationship.exercise.supportfile.title %}  
+                                                    {{  relationship.exercise.supportfile.title|cleanhtml|capfirst }}  
+                                                {% else %}
+                                                    {{ relation.exercise.supportfile.annoncement|cleanhtml }}
+                                                {% endif %}   
+
+   
+
+                        {% if relationship.exercise.supportfile.calculator %}
+                          <img src="{% static 'img/calculator.png' %}" width="30px" />
+                        {% else %}
+                          <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                        {% endif  %}  <br>                        
+
+                        {% get_details relationship.exercise   relationship.parcours  as   details     %} 
+                        <div class="circle pull-right" style="padding:15px">    
+                            {{ details.avg }} %<br><span style="font-size:12px"> {{ details.min }} - {{ details.max }}</span>
+                        </div>   
+
+                        <span style="font-size:16px;">    
+                            <i class="fa fa-fw fa-barcode"></i> {{ relationship.exercise.supportfile.code }} {% if relationship.exercise.knowledge.name|make_list|length < 140 %}<br>{% endif %}
+                            <i class="fa fa-fw fa-clock-o"></i> {{ relationship.exercise.supportfile.duration }} minutes {% if relationship.exercise.knowledge.name|make_list|length < 140 %}<br>{% endif %}
+                            <i class="fa fa-fw fa-save"></i> {{ relationship.exercise.supportfile.situation}} situation{{ relationship.exercise.supportfile.situation|pluralize}}  minimum
+                        </span>
+
+ 
+                        {% for remediation in relationship.relationship_remediation.all %}
+                            <a href="#" data-target="#remediation_viewer" data-remediation_id="{{ remediation.id }}"  data-toggle='modal' class="white remediation_viewer pull-right">
+                                {% if remediation.audio %}
+                                    <i class="fa fa-play"></i>
+                                {% else %}
+                                    {% if remediation.video != "" %}
+                                        <img src="{%  static 'img/video.png' %}" width="30px" />
+                                    {% else %}
+                                        <img src="{%  static 'img/pdf.png' %}" width="20px" />
+                                    {% endif  %}
+                                {% endif  %}
+                            </a>
+                        {% endfor  %}   
+
+                    </div> 
+                    <div  class="col-sm-12 col-md-7">
+                        {%  for s in  parcours.students.all|dictsort:"user.last_name" %}
+                            {% get_score  relationship.exercise   s   as   score %}
+                            <a href="{%  url 'detail_student_parcours' s.user.id  relationship.parcours.id %}" class="btn btn-{% if score > 90  %}darkgreen{% elif score > 70  %}success{% elif score > 40  %}warning{% elif score > 0  %}danger{% else  %}default{% endif  %}" style="min-width:175px; margin:1px" target="_blank" />{{ s.user.last_name }} {{ s.user.first_name|truncatechars:5 }} <font style="font-size:10px">{{ score }}{% if score %}%{% endif  %}</font></a>
+                        {%  endfor %}
+                    </div>   
+                </div>                
+                {% else %}
+                <div class="row">                        
+                    <div  class="col-sm-12 col-md-12">
+                    {% if relationship.exercise.supportfile.is_subtitle %}
+                        <h3>                    {% if  relationship.exercise.supportfile.title %}  
+                                                    {{  relationship.exercise.supportfile.title|cleanhtml|capfirst }}  
+                                                {% else %}
+                                                    {{ relation.exercise.supportfile.annoncement|cleanhtml }}
+                                                {% endif %}  </h3>
+                    {% else %}
+                        <h2>        {% if  relationship.exercise.supportfile.title %}  
+                                                    {{  relationship.exercise.supportfile.title|cleanhtml|capfirst }}  
+                                                {% else %}
+                                                    {{ relation.exercise.supportfile.annoncement|cleanhtml }}
+                                                {% endif %}  </h2>
+                    {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            
+            {% empty %}
+
+                <div  class="col-sm-12 col-md-12">
+                    <div class="alert alert-danger">  
+                        Ce parcours ne contient aucun exercice. 
+         
+
+                                <a href="{% url 'peuplate_parcours'  parcours.id %}"   class="no_button"> Sélectionner les exercices</a> 
+ 
+                    </div>
+                </div>
+
+            {% endfor %}
+
+  
+
+            {% for customexercise in customexercises  %} <hr>
+                <div class="row" style="margin-bottom:8px; padding-bottom: 8px; clear:both">
+                    <div class="col-sm-12 col-md-5">        
+                        <a href="{% url 'show_custom_exercise' customexercise.id  parcours.id %}" target="_blank" >  
+                          <img {% if customexercise.imagefile %} src="{{ customexercise.imagefile.url }}" {% else %}  src="{% static 'img/custom_exercise.jpg' %}" {% endif %} class="imagefile"  >
+                                                            
+                         {{ customexercise.instruction|safe }}
+
+   
+
+                        {% if customexercise.calculator %}
+                          <img src="{% static 'img/calculator.png' %}" width="30px" />
+                        {% else %}
+                          <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                        {% endif  %}  <br>                        
+
+   
+
+                        <span style="font-size:16px;">    
+                            <i class="fa fa-fw fa-barcode"></i> {{ customexercise.code }} <br> 
+                            <i class="fa fa-fw fa-clock-o"></i> {{ customexercise.duration }} minutes  
+ 
+                        </span>
+                        <ul><label>Compétences ciblées</label>
+                        {% for s in customexercise.skills.all %}
+                            <li class="sanspuce">{{ forloop.counter }}. {{ s.name }}</li>
+                        {% endfor %}
+                        </ul>
+                        <ul><label>Savoir faire ciblés</label>
+                        {% for k in customexercise.knowledges.all %}
+                            <li class="sanspuce">{{ forloop.counter }}. {{ k.name }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div> 
+                    <div  class="col-sm-12 col-md-7">
+                        {%  for student in  customexercise.students.all|dictsort:"user.last_name" %}
+                            {% get_all_results_custom  customexercise  student parcours as data %}
+ 
+ 
+                                          <div class="helper_tip  btn btn-{% if data.is_corrected %}primary{% else %}default{% endif %}" style="min-width:175px; margin:1px;{% if data.is_corrected %}color:#FFF{% endif %}" >
+                                              {{  student.user.last_name }} {{ student.user.first_name|truncatechars:5 }}  
+                                              <div class="helper_tip_text" style="width:250px;z-index: 99999">
+                                                {{ customexercise.instruction|safe}}<hr> 
+                                                    {% if data.point %}
+                                                    Note : {{  data.point }}/{{ customexercise.mark}} 
+                                                    {% endif %}  <br>                                              
+                                                  <label>Compétences ciblées</label>
+                                                  {% for s in data.skills.all %} 
+                                                      <li class="sanspuce">{{s.skill.name}} <i class="fa fa-square
+                                                                                                        {% if s.point < stage.low %}
+                                                                                                         text-danger 
+                                                                                                        {% elif s.point < stage.medium  %}
+                                                                                                         text-warning 
+                                                                                                        {% elif s.point < stage.up  %}
+                                                                                                         text-success 
+                                                                                                        {% else %}
+                                                                                                         text-primary 
+                                                                                                        {% endif %}"></i>
+                                                                                    </li>
+                                                  {% endfor %}           <br>
+                                                  <label>Savoir faire ciblés</label>
+                                                  {% for k in data.knowledges.all %} 
+                                                      <li class="sanspuce">Savoir faire {{ forloop.counter }} <i class="fa fa-square
+                                                                                                        {% if k.point < stage.low %}
+                                                                                                         text-danger 
+                                                                                                        {% elif k.point < stage.medium  %}
+                                                                                                         text-warning 
+                                                                                                        {% elif k.point < stage.up  %}
+                                                                                                         text-success 
+                                                                                                        {% else %}
+                                                                                                         text-primary 
+                                                                                                        {% endif %}"></i>
+                                                                                    </li>
+                                                {% endfor %}
+                                              </div>
+                                          </div>
+                                      
+                        {%  endfor %}
+                    </div>   
+                </div>                
+ 
+            
+ 
+
+            {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </form>
+     
+    </div>   
+</section>   
+{% endblock %}
+
+ 
+ 
+ 
+       
+ 
+ 

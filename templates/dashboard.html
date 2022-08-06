@@ -1,0 +1,973 @@
+<html>
+<head>
+    <title>{% block titlepage %}SacAdo - Interface de {{ request.user.first_name }} {{ request.user.last_name }} {% endblock %}</title>
+    {% load bootstrap3 %}
+    {% load widget_tweaks %}
+    {% load item_tags %} 
+    {% load static %}
+ 
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+    <!-- Bootstrap Toggle -->
+    <link rel="stylesheet" href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
+
+    <link rel="stylesheet" href="{% static 'plugins/colorpicker/bootstrap-colorpicker.min.css' %}">
+
+    <!-- jQuery UI -->
+    <link href="{% static 'plugins/jqueryCustom/jquery-ui.min.css' %}">
+    <!-- Tabs -->
+    <link rel="stylesheet" href="{% static 'plugins/datatables/dataTables.bootstrap.css' %}">
+
+    <link rel="stylesheet" href="{% static 'plugins/datepicker/datepicker3.css' %}">
+ 
+    <link rel="stylesheet" href="{% static 'plugins/datepicker/datetimepicker.css' %}">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'plugins/select2/select2.min.css' %}">
+
+    <!-- fichier personel -->
+
+    {% block python %}
+ 
+    {% endblock %}
+
+    <link rel="stylesheet" href="{% static 'css/AdminLTEperso.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/navbar-fixed-left.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slide_menu.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+          integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,900">
+ 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC:400,900">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+ 
+
+    {% block styleMk4ht %}
+    {% endblock %} 
+
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />   
+    
+    <style type="text/css">
+    .modal-content {
+        border-radius: 4px;
+        border: none;
+        padding: 0px;
+        z-index: 100;
+    }
+    </style>
+</head>
+
+<body {% if request.user.background %} class="bg_image" style="background-image: url('{{request.user.background}}'); background-size: cover;" {% endif %} >
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<nav class="navbarLeft navbarLeft_none  navbarLeft-fixed-left" id="navbarLeft" >
+    <ul class="nav navbarLeft-nav">
+        {% if request.user.is_authenticated %}
+            {% if user.is_teacher %}
+                {% include 'sideBarMenu/nav_T.html' %}
+            {% elif user.is_parent %}
+                {% include 'sideBarMenu/nav_P.html' %}
+            {% else %}
+                {% include 'sideBarMenu/nav_S.html' %}
+            {% endif %}
+        {% endif %}
+    </ul>
+    <ul class="nav navbarRight-nav">
+    </ul>
+</nav>
+
+{% if request.session.get_the_profile %} 
+<div style="height:100%; width:50%; position: absolute; top:0px; left:90px;background-color:#FFBABA; color:#6A0E0E;z-index:-1; text-align: right">
+    <i class="fa fa-help fa-3x"></i> 
+    <b>Aide en ligne - Prise en main à distance</b><br/>Cliquer sur <img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="15px"/> dans le menu pour terminer
+</div>
+{% endif %}
+
+<div class="content-wrapper">
+    <div class="content_title" id="content_title_page">
+        <h1 class="thin">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="navbar-header"> 
+                        {% block page_title %}
+                                {% if request.user.is_authenticated %}
+                                    {% if user.is_teacher %}
+                                        <span style="color:#5d4391"><i class="bi bi-people icon_size" ></i> Groupes  </span> 
+                                        {% if webinaire %}
+                                        <div class="webinaire_index">
+                                            <i class="fa fa-bullhorn text-warning"></i> Invitation Webinaire</b> le {{ webinaire.date_time|date:"d-m-y à H:i"}} <i class="fa fa-hand-o-right"></i><a href="{% url 'webinaire_register'  %}" > Voir le menu</a>
+                                        </div>
+                                        {% endif %}
+                                    {% elif user.is_student %}                                        
+                                        <span style="color:#5d4391"><i class="bi bi-markdown icon_size" ></i> Matières  </span>  
+                                        <a href="#" data-toggle='modal' data-target='#video_sacado' class="btn btn-violet" style="color:#FF0000; font-size:14px; margin-left: 100px"> 
+                                            <i class="fa fa-play"></i> Sacado en vidéo
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                        {% endblock %}
+                            <a href="#" id="mobile_version_button" class="mobile_version pull-right"><i class="fa fa-bars"></i></a>
+                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+                        {% block page_menu_right %}
+                            {% if request.user.is_authenticated %}
+                                {% if user.is_teacher %} 
+                                    <li>
+                                        <a href="https://sacado.xyz/ressources/prise_en_main.pdf" target ="_blank" class="btn btn-outline-danger" >
+                                            Prise en main  <img src="{% static 'img/pdf.png' %}" width="15px"/>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'tutos_video_sacado' %}" class="btn btn-outline-danger" >
+                                            Les tutos en vidéo
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}  
+                            <form method="post"  enctype='multipart/form-data' class="pull-right search_div" >{% csrf_token %}
+                                <input type="hidden"  name="from" id="from" value="{% if '/dashboard'  in request.path %}1{% else %}0{% endif %}"  /> 
+                                <input type="text"  name="search" id="search" class="form-control" placeholder="Recherche par code" /> 
+                            </form>
+
+                            {% if teacher_to_student %}
+                            <li class="sans_puce"><a href="#" id="teacher_to_student_view" class="btn btn-sacado">Revenir au profil enseignant</a> </li>
+
+                            <div id="teacher_to_student_div" class="">
+                                <form method="post" action="{% url 'switch_student_teacher' %}" enctype='multipart/form-data'>
+                                  {% csrf_token %}
+
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <label> <small>Mot de passe :</small></label>
+                                                    <input type="password" name="password" placeholder="Mot de passe du compte enseignant" class="form-control" required />
+                                                </div>
+                                            </div> 
+                                        </div>   
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <button type="submit" class="btn btn-primary">Valider</button>   
+                                            </div>
+                                        </div>
+                                </form>
+                            </div>
+                            {% endif %}  
+
+
+                        {% endblock %}
+                        </ul>
+                    </div>
+                </div>
+            </nav> 
+        </h1>
+    </div>
+        
+    {%  block body %}
+        <div class="content_list" id="search_result">
+        {% if request.user.is_authenticated %}
+            {% if user.is_teacher %}
+                {% get_com_is_reading user as boolean_reader %}
+                {% if not boolean_reader %}        
+                    <div id="advises" class="advises">
+                        <div class="row"> 
+                            <div class="col-xs-11 col-md-11 col-lg-11" id ="principal_section">
+                                <form action="#" method="POST" > 
+                                    <h1 class="sacado" >Notre actu.</h1>
+
+                                        {% for c in communications %}
+                                            <h3> {{ c.today|date:"d N Y" }} : {{ c.subject }} </h3>
+                                            {{ c.texte|safe }}
+                                            <hr>
+                                        {% endfor %}
+
+                                    <a href="#" id="reader_new"   class="btn btn-danger" >
+                                        J'ai lu l'actu. proposée
+                                    </a>
+                                </form>
+
+
+                            </div>
+                        </div>
+                    </div> 
+                {% endif %}
+
+
+                {% include 'dashboard_teacher.html' %}
+            {% elif user.is_parent %}
+                {% include 'dashboard_parent.html' %}
+            {% else %}
+                {% include 'dashboard_student.html' %}
+            {% endif %}
+        {% endif %}
+        </div>
+    {% endblock %}
+</div>
+
+
+
+
+<div class="modal fade" id="individualisation_exercice" tabindex="-1" role="dialog" aria-labelledby="individualisation_exercice">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2 >Individualiser le document <span id="indiv_this_exercise_nb"></span></h2>
+            </div>
+            <div class="modal-body" id="indiv_this_exercise">
+ 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="helper_div" tabindex="-1" role="dialog" aria-labelledby="helper_div">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h1 class="sacado"  id="helper_div_title"></span></h1>
+            </div>
+            <div class="modal-body" id="helper_div_in">
+ 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="reset_exercice" tabindex="-1" role="dialog" aria-labelledby="reset_exercice">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2 >Effacer les résultats de l'exercice <span id="reset_this_exercise_nb"></span></h2><span class="text-danger">Action irréversible</span>
+            </div>
+            <div class="modal-body" id="reset_this_exercise">
+ 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{%  if index_tdb %}
+<div class="modal fade" id="video_sacado" tabindex="-1" role="dialog" aria-labelledby="video_sacado">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2  class='sacado'  >Sacado en vidéo</h2>
+            </div>
+            <div class="modal-body">
+                    <video src="https://sacado.xyz/ressources/videos/tutoStudent.mp4" width=560  height=315 controls  >
+                      Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+                    </video>
+            </div>
+        </div>
+    </div>
+</div>
+{%  endif  %}
+
+
+
+
+
+
+<div class="modal fade" id="remediation_viewer" tabindex="-1" role="dialog" aria-labelledby="remediation_viewer">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-body" style="min-height: 350px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <div id="remediation_shower"> 
+                    <div id="loader_shower"></div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="notification-container dismiss" id="notification-account">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="text-align:center;">
+            <a href="#" id="closeAccount" class="pull-right"> <i class="fa fa-times"></i></a>
+            <h1 class='sacado'>Mon compte</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="text-align:center;">
+            <p style="font-size:20px; padding-bottom: 20px;">{{ request.user.get_full_name|title }}</p>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="text-align:center;">
+            {% if user.user_type == 2 %}         
+                
+                {% if sacado_asso %}
+                    Etablissement <br/>{{ user.school.name }}
+                {% else %}
+                    Enseignant
+                {% endif  %}
+            {% elif user.user_type == 1 %}
+                Parent
+            {% else %}
+                Elève
+            {% endif  %}
+        </div>
+    </div> 
+    <hr>
+
+    {% if not user.country and user.user_type == 2  %} 
+   
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+            <a href="{% url 'profile' %}" class="btn btn-warning">Renseignez votre profil </a> 
+        </div>
+    </div>
+
+    {% else %}
+
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+            <a href="{% url 'profile' %}">Mon profil 
+            {% if not request.user.is_parent %}& Notifications{% endif %} 
+            </a> 
+        </div>
+    </div>
+
+    {% endif %}
+    {% if request.user.school %}
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+            <a href="{% url 'avatar' %}">Changer mon avatar</a>
+        </div>
+    </div>
+
+    {% if request.user.is_superuser %}
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+            <a href="{% url 'background' %}">Personnaliser mon thème</a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+    {% if not is_gar_check %}
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+            <a href="{% url 'updatepassword' %}">Changer mon mot de passe</a>
+        </div>
+    </div>
+    {% endif %}
+
+    {%  if request.user.is_teacher %}
+        {%  if not request.user.is_manager and not is_gar_check %}<!-- manager dans un établissement -->
+        <hr/>
+        <div class="row">
+            <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+                <a href="{% url 'get_school' %}">Rejoindre un établissement</a>
+            </div>
+        </div>
+        {% endif%}
+        {% if not is_gar_check %}
+        <hr/>         
+        <div class="row">
+            <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+                <a href="{% url 'close_my_account' %}">Clôturer mon compte</a>
+            </div>
+        </div>   
+        {% endif %}
+    {% elif request.user.is_student %}
+        {% if not is_gar_check %}    
+        <div class="row">
+            <div class="col-lg-12 col-xs-12" style=" padding-top: 5px;">
+                <a href="#" id="aggregate_groupe">
+                     Rejoindre un groupe 
+                </a>
+            </div>
+        </div>
+        <div id="aggregate_form">
+            <form action="{%  url 'aggregate_group' %}" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12" style=" padding-top: 10px;">
+                        <input type="text" class="form-control" placeholder="Code du groupe" name="groupe" id="id_groupe"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 col-xs-5" style=" padding-top: 10px;">
+                        <input type="submit" class="btn btn-primary" value="Associer"/>
+                    </div>
+                    <div class="col-lg-7 col-xs-7" style=" padding-top: 10px;">
+                        <span class="verif_course"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+                <a href="{% url 'close_my_account' %}">Clôturer mon compte</a>
+            </div>
+        </div>
+        <hr/>
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-12 col-xs-12" style="padding-top: 10px;">
+                {% for g in groups %}
+                    <li class="sanspuce">
+                        <a href="{% url 'dashboard_group' g.id %}"><i class="fa fa-square" style="color:{{ g.subject.color }}"></i> {{ g.subject.shortname }}  <small class="pull-right">({{ g.level.name }})</small></a>
+                    </li>
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+        {% if student.suiviparent %}
+            <div class="btn btn-default full_width" style="font-size:15px; margin-bottom: 5px">
+                <span data-toggle="collapse" data-parent="#accordion" href="#collapsered" >
+                    Paire avec le parent 
+                </span>
+                <div id="collapsered" class="collapse">
+                    <div class="panel-body"  style="padding:0px">
+                        <table class="table" style="margin-bottom: 0px;font-size:14px;">
+                            <tr>
+                                <td>
+                                    Code d'appariement à renseigner à l'inscription du parent : 
+                                    <b>{{ student.code }}</b> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% elif request.user.is_parent and not request.user.is_in_academy %}
+        <hr>      
+        <div class="row">
+            <div class="col-lg-12 col-xs-12" style=" padding-top: 5px;">
+                <a href="#" id="get_child">
+                    Paire avec un enfant
+                </a>
+            </div>
+        </div>
+        <div id="get_child_form">
+            <form action="{%  url 'aggregate_child' %}" method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12" style=" padding-top: 10px;">
+                        <input type="text" class="form-control" placeholder="Code de l'enfant" name="child" id="id_child"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 col-xs-5" style=" padding-top: 10px;">
+                        <input type="submit" class="btn btn-primary" value="Associer"/>
+                    </div>
+                    <div class="col-lg-7 col-xs-7">
+                        <span id="verif_child"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+ 
+
+    <hr> 
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" >
+            {% if request.user.is_in_academy %}
+            <a href="{% url 'logout_academy' %}"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
+                Se déconnecter
+            </a>
+            {% else %}
+            <a href="{% url 'logout' %}"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
+                Se déconnecter
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    {% if request.session.is_gar_check %}
+    <div class="row">
+        <div class="col-lg-4 col-xs-4" > 
+            <a href="{% url 'rgpd' %}"  style="color:#535074" >RGPD</a>
+        </div>
+        <div class="col-lg-4 col-xs-4" >
+            <a href="{% url 'cgv' %}"  style="color:#535074" >CGV</a> 
+        </div>
+        <div class="col-lg-4 col-xs-4" >
+            <a href="{% url 'mentions' %}"  style="color:#535074" >Mentions Légales</a> 
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+{%  if request.user.is_teacher %} 
+<div class="notification-container dismiss" id="notification-documents">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="text-align:center;">
+            <a href="#" id="closeDocuments" class="pull-right"> <i class="fa fa-times"></i></a>
+            <h1 class='sacado'>Mes documents</h1>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'folders' %}"><i class="fa fa-folder-open" ></i> Dossiers </a>
+        </div>
+    </div>
+    <hr/>
+    {% if request.user.is_sacado_member %}
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'sequences' %}"><i class="bi bi-ladder" ></i> Séquences </a>
+        </div>
+    </div>
+    <hr/>
+    {% endif %}
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'parcours' %}"><i class="fa fa-th" ></i> Parcours </a>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            {% if sacado_asso %}
+            <a href="{% url 'evaluations' %}"> <i class="fa fa-trophy" ></i> Evaluations</a>
+            {% else %}
+            <a href="#" style="cursor:not-allowed" title="Version établissement requise."> <i class="fa fa-trophy" ></i> Evaluations</a>
+            {% endif %}
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'courses' %}"><i class="fa fa-desktop" ></i> Cours </a>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'list_quizzes' %}"><img src="{% static 'img/quizz_menu.jpg' %}" width="30px"> Quizz & rituels  </a>
+            <a href="#" data-toggle='modal' data-helper_text='quizz' data-target='#helper_div' class="pull-right edit helper_div_text"><i class="fa fa-question-circle"></i></a>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'my_bibliotexs' %}"><img src="{% static 'img/bibliotex.png' %}" width="25px">  BiblioTex </a> 
+            <a href="#" data-toggle='modal' data-helper_text='bibliotex'  data-target='#helper_div' class="pull-right edit helper_div_text"><i class="fa fa-question-circle"></i></a> 
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'my_flashpacks' %}"><img src="{% static 'img/flash_accueil.png' %}" width="25px"> Flashpack   </a> 
+            <a href="#" data-toggle='modal' data-helper_text='flashpack'  data-target='#helper_div' class="pull-right edit helper_div_text"><i class="fa fa-question-circle"></i></a> 
+        </div>
+    </div>
+    {% comment %}
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'courses' %}"><i class="fa fa-copyright" ></i> Exercices personnalisés </a> <a href="#" data-toggle='modal' data-target='#helper_div' class="pull-right edit"><i class="fa fa-question-circle"></i></a> 
+        </div>
+    </div>
+    {% endcomment %}
+</div>
+{% endif %}
+
+
+<div class="notification-container dismiss" id="notification-tools">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" style="text-align:center;">
+            <a href="#" id="closeTools" class="pull-right"> <i class="fa fa-times"></i></a>
+            <h1 class='sacado'>Mes outils péda.</h1>
+        </div>
+    </div>    
+    <hr/>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a {% if sacado_asso %} href="{%  url 'list_diaporama' %}" {% else %} href="#" class="no_sacado_asso"  title="Version Etablissement requise" {% endif %}  >Présentations </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a {% if sacado_asso %} href="{%  url 'list_visiocopie' %}" {% else %} href="#" class="no_sacado_asso"  title="Version Etablissement requise" {% endif %} >VisioCopies  </a><span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                    <div class="helper_tip_text_right" >Projeter une copie <br/>au tableau </div>
+                                </span>
+        </div>
+    </div>
+    <hr/>
+    <a href="{% url 'list_tools' %}" class="thin"  ><small> Outils projetables </small> </a>
+        <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                    <div class="helper_tip_text_right" >Choisir vos outils <br/>vidéoprojetables <br/>interactifs </div>
+        </span>
+    <hr/>
+    <form method="post" action="#">
+        <div id="list_of_tools">
+        {% for tool in mytools %}
+            <div class="row" id="delete_my_tool{{ tool.id }}">
+                <div class="col-lg-12 col-xs-12">
+                    <a href="{% url 'show_tool' tool.id %}">{{ tool.title }}</a>
+                    <a href="#" data-tool_id="{{ tool.id }}" class="delete_my_tool pull-right"><small><i class="fa fa-trash"></i></small></a>
+                </div>            
+            </div>
+        {% endfor %}
+        </div>
+    </form>
+</div>
+
+
+
+
+{% if not 'create' in request.path %}
+<div class="notification-container-right dismissR" id="notification-perso">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12" id="detail_of_student">
+        </div>
+    </div>
+</div>
+{% endif %}
+{%  if request.user.is_superuser %}
+<div class="notification-container dismiss"  id="notification-admin">
+    {%  if user.is_manager  %}
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">            
+                <a href="#" id="closeAdmin" class="pull-right"> <i class="fa fa-times"></i></a> 
+                <a href="{% url 'admin_tdb' %}">{{ request.user.school.name }}</a>
+            </div>  
+        </div> 
+        <hr class="divider">
+    {% endif %}
+    <p class="thin">Création <a href="{% url 'admin_testeur' %}" class="pull-right">Reporting et tests</a> </p>
+ 
+    {% for level in levels|dictsort:"ranking" %}
+        <div class="row" style="font-size: 12px">
+            <div class="col-lg-3 col-xs-3">
+                <small>{{ level.shortname }} </small> 
+            </div>           
+            <div class="col-lg-1 col-xs-1">
+                <a href="{% url 'admin_supportfiles' level.id  %}" class="surline"><img src="{% static 'img/ggb.png' %}" width="15px"></a>  
+            </div>  
+            <div class="col-lg-1 col-xs-1">
+                <a href="{% url 'admin_exotexs' level.id  %}" class="surline"><img src="{% static 'img/tex.png' %}" width="15px"></a>  
+            </div>  
+            <div class="col-lg-3 col-xs-3"> 
+                <a href="{% url 'admin_associations'  level.id  %}">Exercices   </a> 
+            </div> 
+            <div class="col-lg-1 col-xs-1"> 
+                 <a href="{% url 'admin_qrandom'  level.id  %}">QA   </a> 
+            </div> 
+        </div>
+    {% endfor %} 
+    <hr class="divider">
+    <p class="thin">Gestion SACADO </p> 
+    <div class="row">
+        <div class="col-lg-6 col-xs-6">
+            <a href="{% url 'levels' %}">Niveaux</a>
+        </div>
+        <div class="col-lg-6 col-xs-6">
+            <a href="{% url 'subjects' %}">Matières</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'themes' %}">Thèmes</a> ,  <a href="{% url 'waitings' %}">Attendus</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'knowledges' %}">Savoir faire</a> - 
+            <a href="{% url 'fill_the_skills' %}">Fill skills</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'skills' %}">Compétences</a> - 
+            <a href="{% url 'find_no_skill' %}">Find No skills</a>
+        </div>
+    </div>
+    <hr class="divider">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'schools' %}">Etablissements </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'list_teacher' %}">Enseignants </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'communications' %}">Communications </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'send_to_teachers' %}">Contacts </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'webinaires' %}">Webinaires </a> - <a href="{% url 'tweeters' %}">Tweets </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'gestion_files' %}">Gestions des fichiers </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'list_avatars' %}">Gestions des avatars</a> - <a href="{% url 'list_backgrounds' %}">fonds </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'demands' %}">Demandes d'exercices {% if nb_demand > 0 %} <i class="fa fa-circle text-danger" style="font-size:10px"></i> {% endif %} </a>
+        </div>
+    </div>
+    <hr class="divider">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'advises' %}">Modèles et aides </a>
+        </div>
+    </div>
+ 
+    {%  if request.user.is_board %}
+    <hr class="divider">
+    <p class="thin">SACADO </p>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'association_index' %}">L'association </a>
+        </div>
+    </div>
+    <hr class="divider">    
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <a href="{% url 'academy_index' %}">L'académie </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{%  elif request.user.is_extra %}
+<div class="notification-container dismiss"  id="notification-admin">
+    {%  if request.user.is_manager  %}
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">            
+                <a href="#" id="closeAdmin" class="pull-right"> <i class="fa fa-times"></i></a>
+                <a href="{% url 'admin_tdb' %}">{{ request.user.school.name }}</a>
+            </div>  
+        </div> 
+        <hr>
+    {% endif %}
+
+
+        <h2 class="thin">Création    
+ 
+            <small><a href="{% url 'admin_testeur' %}" class="pull-right">Reporting et tests</a></small>
+        </h2>
+ 
+ 
+    <hr class="divider"></h2>
+ 
+        <hr class="divider">
+
+ 
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <a href="{% url 'create_qrandom' %}">Questions aléatoires</a>
+            </div>
+        </div>
+        <hr class="divider">
+
+
+
+        {% for level in levels|dictsort:"ranking" %}
+            <div class="row" style="font-size: 12px">
+                <div class="col-lg-7 col-xs-7">
+                    <small>{{ level.shortname }} </small> 
+                </div>           
+                <div class="col-lg-2 col-xs-2">
+                    <a href="{% url 'admin_exotexs' level.id  %}" class="surline"><img src="{% static 'img/tex.png' %}" width="15px"></a>  
+                </div>  
+            </div>
+        {% endfor %} 
+</div>
+{% endif %}
+
+
+
+{% block require %}
+        <script src="{% static 'js/require.js' %}" data-main="{% static 'js/dashboard.js' %}"></script>  
+{% endblock %}
+ 
+<script>
+   require(['script/ajax-dashboard']);
+</script>  
+ 
+{%  if request.user.is_student and student_index %}
+<script>
+   require(['script/ajax-dashboard_student']);
+</script>  
+{% endif %}
+
+{% block python_js %}
+{% endblock %}
+
+
+{%  if user.is_teacher %}
+    {%  if communications|length > 0  %}
+    <div class="modal fade" id="nouveaute" tabindex="-1" role="dialog" aria-labelledby="nouveaute" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 class="sacado" >Notre actu.</h2>
+                </div>
+                <div class="modal-body">
+                    {% for c in communications %}
+                        <h5> {{ c.subject }} <span class="pull-right">{{ c.today|date:"d N Y" }}</span></h5>
+                        {{ c.texte|safe }}
+                        <hr>
+                    {% endfor %}
+                    <div class="text-center">
+                        <a href="#"  class="btn btn-default" class="close" data-dismiss="modal" aria-label="Close">Fermer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%  endif  %}
+    {% if 'qcm/' in request.path and not 'qcm/show' in request.path and not 'create' in request.path and not 'update' in request.path %}
+        {% include 'qcm/order_list.html' %}
+    {%  endif  %}
+{%  endif  %}
+
+
+<div class="no_visu_on_load" id="helper_quizz_text">
+    
+    <div class="alert">
+        <img src="{% static 'img/quizz_help.png' %}" width="200px" class="pull-right"/>
+        <p>Les quizz supportent 4 types de questions : 
+             <ol>
+                <li>réponse rédigée </li>
+                <li>Vrai/Faux </li>
+                <li>question à choix simple </li>
+                <li>question à choix multiples </li>
+            </ol>   
+        </p>
+        <p>Ils se déclinent en 2 types - papier ou numérique :
+         <ol>
+            <li><b>Quizz papier </b>   : L'élève répond sur sa feuille aux questions proposées. Ce type de quizz peut être utilisé en rituel en début de chaque séance pour réactiver les notions, les procédures par vidéo projection en classe.</li>
+            <li><b>Quizz numérique</b> :
+                 <ol>
+                    <li><b>Vidéo projeté </b>: Les élèves répondent sur leur SmartPhone. Les réponses sont enregistrées en temps réel. Le quizz devient un jeu. (En développement) </li>
+                    <li><b>Individuel</b>    : Les élèves répondent sur un ordinateur. L'ordre des questions et des réponses peut être définie comme aléatoire. Les réponses sont enregistrées pour récupérations des résultats.  (En développement)</li>
+                </ol>   
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+<div class="no_visu_on_load" id="helper_flashpack_text">
+ 
+    <div class="alert">
+
+        <p>Un flashpack est un ensemble de flashcards (ou cartes mémoire). </p>
+        <p>Depuis plusieurs décennies, les neuroscientifiques, pédagogues, psychologues, informaticiens cherchent à déterminer une méthode efficace pour apprendre. Stanislas Dehaene bâtit une thèse sur ses <a href="http://parisinnovationreview.com/article/les-quatre-piliers-de-lapprentissage-stanislas-dehaene" target="_blank">4 piliers de l'apprentissage</a> :
+        <ol>
+          <li>L'attention</li>
+          <li>L'engagement actif</li>
+          <li>Le retour d’information</li>
+          <li>La consolidation</li>
+        </ol> 
+        </p>
+        <p>De son coté, <a href="https://supermemo.guru/wiki/Piotr_Wozniak" target="_blank">Piotr Wozniak</a> code dès 1985 un algorithme d'apprentissage par répétitions espacées, le <a href="https://www.supermemo.com/en/articles/history" target="_blank">SUPERMEMO</a>. Aujourd'hui cette base algorithmique est largement utilisée, amendée, recalculée et de nombreuses applications utilisent ce procédé.</p>
+        <p>SACADO se lance dans les répétitions espacées selon un algorithme simplifié de SUPERMEMO. Chaque enseignant peut alors choisir l'algorithme sur une période donnée. Il crée ses flashpacks à partir de flashcards existantes ou crée ses propres flashcards ou demandent à ses élèves de construire leurs cartes mémoires.  
+
+        <ol>Deux modes d'utilisation des flashpacks : 
+            <li>Répétitions espacées : SACADO prévient l'élève des dates de répétitions dès que l'élève se connecte à son espace.</li>
+            <li>Autonomie :  L'élève s'entraine à souhait sur son flashpack et à date échéance, son score est enregistré.</li>
+        </ol> 
+        </p>
+        <p>Convaincue de l'étude des neurosciences, l'équipe SACADO place les flashpacks dans son application pour permettre à chaque élève de s'engager dans son apprentissage encore un peu plus efficacement.</p>
+    </div> 
+</div>
+
+<div class="no_visu_on_load" id="helper_bibliotex_text">
+    <div class="alert">
+
+        <p>Une biblioTex est un ensemble d'exercices en $\LaTeX$.</p></div>
+    <div class="alert alert-warning"><p>Avant de commencer, vous devez bien connaitre le langage $\LaTeX$ et tester vos exercices <b>en local</b>. </p>
+        <p>Pour cela, télécharger le préamble .tex et l'installer sur votre ordinateur en local. <a href="https://sacado.xyz/ressources/tex/preambule_tex/preambule.tex" target="_blank"><i class="fa fa-save"></i></a></p>
+        <p>
+            <ol>
+                <li>Pour créer un exercice en $\LaTeX$, vous devez préalablement créer une biblioTex vide.</li>
+                <li>Lui ajouter des exercices.</li>
+                <li>Ecrire alors votre fichier source</li>
+                <li>Le compiler sur votre ordinateur.</li>
+                <li>Lorsque la compilation avec notre préambule SACADO fonctionne, vous pouvez le placer sur le serveur de SACADO.</li>
+            </ol>
+        </p>
+        <p><b>Pour les graphiques, seul le package TikZ fonctionne.</b></p>
+    </div> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

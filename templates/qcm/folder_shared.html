@@ -1,0 +1,48 @@
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+<div  class="box_shared box-widget widget-user-2" 
+    style="{% if folder.vignette %}background-image: url('{{ folder.vignette.url }}'); background-size: cover;{% endif %}; background-color:{{folder.color }}">
+ 
+    <div class="handler widget-user-header">
+ 
+        {% if folder.vignette %}                
+            <div class="box_title_underlay_vignette" style="background-color:{{ folder.color }};">
+            </div> 
+        {% endif  %}
+        <div class="box_title_vignette"> 
+            <span class='thin' style="color:{{ folder.color|contrast_color }};">
+                {{ folder.title|truncatechars:"28" }}
+            </span>
+        </div>
+    </div>
+    <div class="box_shared_footer">
+        <div class="row box_shared_label"> 
+            <div class="col-lg-12 col-xs-12" style="font-variant:small-caps; font-size: 16px">
+                <b>{{ folder.subject.name }}</b>
+
+
+                    <a href="{% url 'clone_folder' folder.id  %}" style="font-variant:small-caps; font-size: 12px;margin-left: 5px"  class="pull-right edit" title="Cloner le dossier"  > <i class="fa fa-clone"></i> </a>                      
+
+
+
+
+
+
+
+            </div> 
+        </div>
+        <div class="row box_shared_label_last"> 
+            <div class="col-lg-6 col-xs-6">
+ 
+                {{ folder.parcours.count }} parcours 
+ 
+            </div> 
+ 
+            <div class="col-lg-6 col-xs-6">      
+                 {{ folder.author}} 
+            </div> 
+        </div>
+    </div>
+</div>     

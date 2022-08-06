@@ -1,0 +1,179 @@
+{% extends 'qcm/form_parcours.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+    {% if evaluation %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% endif %}
+     <script>
+        require(['script/ajax-parcours']);
+    </script> 
+    
+    {% block require_complement %}
+            {% if not parcours %}
+       
+
+                <script>
+                    require(['script/ajax-evaluation']);
+                    require(['script/ajax-parcours-complement']);
+                </script> 
+            {% endif %}
+    {% endblock %} 
+
+{% endblock %} 
+
+
+
+{% block page_title %}
+
+    <span style="color:{{ group.color }}"><i class="bi bi-trophy"></i>
+
+    {% include 'qcm/breadcrumb.html' %}
+
+    <small>   
+        {% if parcours %}
+            Configuration 
+        {% else %}
+            Nouvelle évaluation 
+        {% endif %}
+    </small> 
+
+{% endblock %}
+
+
+{% block info %} 
+<div class="row" style="font-size: 20px">
+    <div class="col-sm-12 col-md-12">
+        <div class="alert alert-info">
+            <i class="fa fa-warning"></i> Pour associer une évaluation à un groupe, tout ou partie, il faut cocher <strong>au moins</strong> un élève de ce groupe. Une fois l'évaluation créée, vous pourrez choisir ses exercices via l'interface de l'évaluation depuis l'un des groupes associés. 
+            <br>Si l'évaluation ne contient aucun élève, elle est accessible depuis la rubrique <i class="fa fa-th"></i> Parcours ou via le taleau de bord : Mes parcours et évaluations non affectés.
+        </div>
+    </div>
+</div> 
+{% endblock %}
+ 
+
+
+{% block evaluation %} 
+    <tr>
+        <td>{{ form.is_publish.label_tag }} <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >Visible par les élèves.</div>
+            </span></td>
+        <td>{{ form.is_publish |attr:"data-toggle:toggle" |attr:"data-onstyle:success"|attr:"data-offstyle:danger"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.is_publish.errors }}</td>
+    </tr>
+    <tr class="publication_div">
+        <td><label>Date de passation :</label>  
+            <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                <div class="helper_tip_text" >Date à partir de laquelle le parcours est publié.<br/>
+                <span class="text-danger">Pour modifier la date, vider le champ.</span>
+                </div>
+            </span>
+        </td>
+        <td>{{ form.start|add_class:"form-control datetimepicker"}}</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>{{ form.is_favorite.label_tag }} <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >Accessible depuis son tableau de bord.</div>
+            </span></td>
+        <td>{{ form.is_favorite |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.is_favorite.errors }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.is_share.label_tag }}
+            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >Mutualisation à l'ensemble des collègues de son établissement (si version établissement)</div>
+            </span>
+        </td>
+        <td>{{ form.is_share |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.is_share.errors }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.duration.label_tag }}
+                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                    <div class="helper_tip_text" >Prendre en compte le temps de chargement des exercices.</div>
+                </span>
+        </td>
+        <td>{{ form.duration  |attr:"placeHolder:15:00"|attr:"required"}}</td>
+        <td>{{ form.duration.errors}}</td>
+    </tr>
+    <tr>
+        <td>{{ form.zoom.label_tag }}
+            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >Loupe au survol des exercices.</div>
+            </span>
+        </td>
+        <td>{{ form.zoom |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.zoom.errors }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.stop.label_tag }} 
+            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >Le rendu des exercices impossible après la date renseignée. 
+                    <br/> 
+                    <span class="text-danger">Pour modifier la date, vider le champ.</span>
+                </div>
+            </span>
+        </td>
+        <td>{{ form.stop|add_class:"form-control datetimepicker"}}</td>
+        <td>{{ form.stop.errors}}{% for error in form.non_field_errors %}
+                <p class="alert alert-danger">{{error}}</p>
+            {% endfor %}</td>
+    </tr>
+    <tr>
+        <td><label>Tentatives max</label>  <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text red" >Nombre maximum de fois que chaque exercice peut être fait. Ce maximum peut être précisé exercice par exercice à l'intérieur de l'évaluation : dans ce cas, laissez -1 ici.</div>
+                            </span></td>
+        <td>{{ form.maxexo|attr:"min:-1"|attr:"max:10"|attr:"step:1"}}</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>{{ form.is_next.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >Après avoir effectué l'exercice, l'exercice suivant est proposé à l'élève.</div></td>
+        <td>{{ form.is_next |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.is_next.errors }}</td>
+    </tr>
+    <tr >
+        <td>{{ form.is_exit.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >L'élève accède à l'ensemble des exercices à tout moment.</div></td>
+        <td>{{ form.is_exit |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.is_exit.errors }}</td>
+    </tr>
+    <tr>
+        <td>{{ form.is_stop.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                <div class="helper_tip_text" >L'exercice disparait lorsque l'élève a répondu aux situations attendues de l'exercice.</div></td>
+        <td>{{ form.is_stop |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+        <td>{{ form.is_stop.errors }}</td>
+    </tr>
+{% endblock %}
+
+
+
+
+
+
+{% block save_evaluation %}    
+    <div class="col-sm-12 col-md-4">
+            {% if parcours %}
+                <a href="{% url 'clone_parcours' evaluation.id  1 %}" class="btn btn-info"  onclick="return TestDuplicate('cette évaluation')"> 
+                    <i class="fa fa-clone"> </i>   Dupliquer
+                </a>
+                
+                         <a href="{% url 'archive_parcours' evaluation.id  idg  %}" class="btn btn-warning"  onclick="return TestArchive('cette évaluation')"> 
+                            <i class="fa fa-archive"> </i>   Archiver
+                        </a>
+
+    
+            <a href="{% url 'delete_parcours' evaluation.id  idg  %}" class="btn btn-danger"  onclick="return TestDelete('cette évaluation')"> 
+                <i class="fa fa-trash"> </i>   Supprimer
+            </a>
+            {% endif %}  
+    </div>
+ 
+{% endblock %}

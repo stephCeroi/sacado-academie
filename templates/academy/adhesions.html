@@ -1,0 +1,78 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-dashboard']);
+        require(['script/ajax-group']);
+    </script>
+{% endblock %}
+
+
+
+{% block page_title %}
+    {% if historic %}
+         Historique des adhésions
+    {% else %}
+         Adhésions en cours > {{ level.name }}
+    {% endif  %}
+{% endblock %}
+
+{% block page_menu_right %}
+        <a href="{% url 'academy_index'  %}" class="btn btn-sacado pull-right">Tableau de bord</a> 
+{% endblock %}
+
+
+
+
+{% block body %}
+    <section class="content_main"> 
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <table id="standard_tab" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <td>Elèves </td>
+                        <td>Dates </td>
+                        <td>Montant</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for adhesion in adhesions %}
+                            <tr>
+                                <td>
+                                    {{ adhesion.student }}
+                                </td>
+                                <td>
+                                    {{ adhesion.start|date:"d N Y" }} - {{ adhesion.stop|date:"d N Y" }}
+                                </td>
+                                <td>
+                                    {{ adhesion.amount }}€
+                                </td>
+                                <td>
+                                    <a href="{% url 'delete_adhesion' %}">Supprimer cette adhésion</a> | <a href="{% url 'delete_student_academy' adhesion.student.user_id adhesion.level.id %}">Supprimer cet élève</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">     
+                    <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+    </section>
+ 
+
+ 
+
+
+{% endblock %}

@@ -1,0 +1,234 @@
+{% load item_tags %}
+{% load static %}
+
+ 
+
+<div class="col-sm-12 col-md-8">
+{% if c_e %}
+ 
+    {% block annotate %} 
+    <!-- Caractéristique pour les AJAX pour la correction en ligne -->
+    <input type="hidden" id="answer_id" value="{{ c_e.id}}" />
+    <input type="hidden" id="custom" value="1" />
+
+    <input type="hidden" id="customexercise_id" value="{{ customexercise.id}}" />
+    <input type="hidden" id="parcours_id" value="{{ parcours.id}}" />
+    <input type="hidden" id="student_id" value="{{ student.user.id}}" />
+
+    <!-- Caractéristique pour les AJAX pour la correction en ligne -->
+    {% endblock %}
+
+
+    {% if customexercise.is_autocorrection %}
+        <div id="show_result_criterions">
+            <a href="#" style="font-size:12px;" id="label_result_criterions">Cacher ces critères</a>
+        </div>
+        <div id="div_result_criterions">
+            <table class='table' style="font-size:12px; text-align: center">
+                    <tr>
+                        <td style="text-align: left">Critères de réussite</td><td style="background-color: #F7F7F7;">NE</td><td style="background-color: #ffeceb;">Insuf </td><td style="background-color: #fff6eb;">Fragile</td><td style="background-color: #f0ffeb;">B M </td><td style="background-color: #e0feff;">TBM</td>
+                    </tr>
+                    {% for c in customexercise.criterions.all %}
+                    {% get_criterion_results c customexercise parcours student as result %}
+                    <tr>
+                        <td style="text-align: left">{{ c.label }}</td>
+                        <td style="background-color: #F7F7F7;">{% if result == 0 %}<i class="bi bi-circle-fill"></i>{% endif %}</td>
+                        <td style="background-color: #ffeceb;">{% if result == 1 %}<i class="bi bi-circle-fill"></i>{% endif %}</td>
+                        <td style="background-color: #fff6eb;">{% if result == 2 %}<i class="bi bi-circle-fill"></i>{% endif %}</td>
+                        <td style="background-color: #f0ffeb;">{% if result == 3 %}<i class="bi bi-circle-fill"></i>{% endif %}</td>
+                        <td style="background-color: #e0feff;">{% if result == 4 %}<i class="bi bi-circle-fill"></i>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    <div id="corrector">                 
+        <canvas id="myCanvas" style="border:1px solid #f8f8f8;position: absolute;width:100%;height:100%;z-index: -1"></canvas> 
+        {% if customexercise.is_collaborative %}
+            <iframe src=" " height="700" width="100%"></iframe>
+        {% elif customexercise.is_file and c_e.file %}
+            <iframe src="{{  c_e.file.url }}" height="700" width="100%"></iframe>
+        {%  elif customexercise.is_python   %}
+            <pre>{{ c_e.answer|safe }}</pre>
+        {%  elif customexercise.is_scratch %}
+            <iframe src="https://scratch.mit.edu/projects/{{ c_e.answer }}/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+            <hr/>
+            <label>Scripts</label><br/>
+                {% for img in images_pdf %}
+                <img src="{{ img.image.url }}" width="100%"/>
+                {% if not forloop.last %}<hr/>{% endif %}
+            {% endfor %}    
+        {%  elif customexercise.is_text %} 
+            {% if "CanvasStyle" in c_e.answer|truncatechars:12   %}
+                {{  c_e.answer|json_script:"this_answer" }}   
+            {% else %} 
+                {{ c_e.answer|safe }}
+            {% endif %}
+        {%  elif customexercise.is_image    %} 
+            {% for img in images_pdf %}
+                <img src="{{ img.image.url }}" width="100%"/>
+                {% if not forloop.last %}<hr/>{% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% for c in customannotations %} 
+             <div id="{{ c.attr_id }}" class="{{ c.classe }}" style="{{ c.style }}">{{ c.content|safe }}</div>
+        {% endfor %}
+ 
+        {% if customexercise.is_python %}
+            {% include 'basthon/python_correction_editor.html' %}
+        {% endif %}
+        
+    </div>
+
+                    
+{% else %}
+    <div class="alert alert-danger">  
+        Document non rendu
+    </div>
+{% endif %}
+</div>
+ 
+ 
+
+
+
+
+<div class="col-sm-12 col-md-4" style="padding-right:0px">   
+    {% if customexercise.is_mark %}
+
+        {% get_mark_to_this customexercise student parcours_id as this_mark %}  
+    <div class="row">
+        <div class="col-sm-6 col-md-4" style="padding-top: 5px">  
+        Note sur {{customexercise.mark}}
+        </div>
+        <div class="col-sm-5 col-md-3">  
+        <input  type="number" {% if this_mark.is_marked %} value = "{{ this_mark.marked }}" {% endif %} max="{{customexercise.mark}}" min="0"  
+                data-customexercise_id="{{customexercise.id}}"  
+                step="0.25" data-parcours_id="{{ parcours_id }}" name="mark" class="form-control" data-student_id="{{student.user.id}}" id="mark_evaluate" /> 
+        </div>
+        <div class="col-sm-1 col-md-1" id="mark_sign">  
+        </div>
+    </div>    
+    <hr>   
+    {% endif %}
+ 
+    {% if not customexercise.is_collaborative %}
+        {% include 'qcm/correction_tools.html' %}
+    {% endif %}
+
+    {% if customexercise.knowledges.all|length > 0 %}
+    <table class="table table-bordered table-hover fontsize_14">
+        <tr style="background-color: #F0F0F0">
+            <td>Savoir faire</td><td>NE</td><td><i class="fa fa-circle text-danger"></i></td><td><i class="fa fa-circle text-warning"></i></td><td><i class="fa fa-circle text-success"></i></td><td><i class="fa fa-circle text-primary"></i></td>
+        </tr>
+        {% for knowledge in  customexercise.knowledges.all %}
+            {% get_result_k_s customexercise knowledge student parcours_id 0 as result_answer %} 
+            <tr>
+                <td>{{ knowledge }}</td>
+                <td>
+                    <input  type="radio" {% if result_answer == 0 %} checked {% endif %}  data-customexercise_id="{{customexercise.id}}" data-knowledge_id="{{knowledge.id}}" data-skill_id="" 
+                            data-parcours_id="{{ parcours_id }}" name="knowledge{{ knowledge.id }}" value="0" data-student_id="{{student.user.id}}" class="evaluate" />                               
+
+                </td>
+                <td>
+                    <input  type="radio" {% if result_answer == 1 %} checked {% endif %}  data-customexercise_id="{{customexercise.id}}"  data-knowledge_id="{{knowledge.id}}" data-skill_id="" 
+                            data-parcours_id="{{ parcours_id }}" name="knowledge{{ knowledge.id }}" value="1" data-student_id="{{student.user.id}}" class="evaluate" />                               
+
+                </td>
+                <td>
+                    <input  type="radio" {% if result_answer == 2 %} checked {% endif %}   data-customexercise_id="{{customexercise.id}}"  data-knowledge_id="{{knowledge.id}}" data-skill_id=""  
+                            data-parcours_id="{{ parcours_id }}" name="knowledge{{ knowledge.id }}" value="2" data-student_id="{{student.user.id}}" class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" {% if result_answer == 3 %} checked {% endif %}   data-customexercise_id="{{customexercise.id}}"  data-knowledge_id="{{knowledge.id}}" data-skill_id=""  
+                           data-parcours_id="{{ parcours_id }}"  name="knowledge{{ knowledge.id }}" value="3" data-student_id="{{student.user.id}}" class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" {% if result_answer == 4 %} checked {% endif %}   data-customexercise_id="{{customexercise.id}}"  data-knowledge_id="{{knowledge.id}}" data-skill_id="" 
+                           data-parcours_id="{{ parcours_id }}" name="knowledge{{ knowledge.id }}" value="4"  data-student_id="{{student.user.id}}" class="evaluate" />
+                </td>
+            </tr>
+        {% endfor %}            
+    </table>  
+    {% endif %} 
+    {% if customexercise.skills.all|length > 0 %} 
+    <table class="table table-bordered table-hover fontsize_14">
+        <tr style="background-color: #F0F0F0">
+            <td>Compétences</td><td>NE</td><td><i class="fa fa-square text-danger"></i></td><td><i class="fa fa-square text-warning"></i></td><td><i class="fa fa-square text-success"></i></td><td><i class="fa fa-square text-primary"></i></td>
+        </tr>
+        {% for s in  customexercise.skills.all %} 
+            {% get_result_k_s customexercise s student parcours_id 1 as result_answer %}
+            <tr>
+                <td>{{ s }}</td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="0"   {% if result_answer == 0 %} checked {% endif %}  data-skill_id="{{s.id}}" data-knowledge_id="" data-parcours_id="{{ parcours_id }}"
+                    data-student_id="{{student.user.id}}"  data-customexercise_id="{{customexercise.id}}"  class="evaluate" />
+                </td>
+
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="1"   {% if result_answer == 1 %} checked {% endif %}  data-skill_id="{{s.id}}" data-knowledge_id="" data-parcours_id="{{ parcours_id }}"
+                    data-student_id="{{student.user.id}}"  data-customexercise_id="{{customexercise.id}}"  class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="2"   {% if result_answer == 2 %} checked {% endif %}  data-skill_id="{{s.id}}" data-knowledge_id="" data-parcours_id="{{ parcours_id }}"
+                    data-student_id="{{student.user.id}}"  data-customexercise_id="{{customexercise.id}}"  class="evaluate" />
+                 </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="3"   {% if result_answer == 3 %} checked {% endif %}  data-skill_id="{{s.id}}" data-knowledge_id="" data-parcours_id="{{ parcours_id }}"
+                    data-student_id="{{student.user.id}}"  data-customexercise_id="{{customexercise.id}}"  class="evaluate" />
+                </td>
+                <td>
+                    <input type="radio" name="skill{{s.id}}" value="4"   {% if result_answer == 4 %} checked {% endif %}  data-skill_id="{{s.id}}" data-knowledge_id="" data-parcours_id="{{ parcours_id }}"
+                    data-student_id="{{student.user.id}}"  data-customexercise_id="{{customexercise.id}}"  class="evaluate" />
+                </td>
+            </tr>
+         {% endfor %}
+    </table>     
+    <hr>
+    {% endif %} 
+
+    <h5>Commentaire <span id="comment_result" style="color:#228b22 ; font-size:12px"></span></h5>
+    <textarea class="form-control" name="comment" id="comment">{% if c_e.comment %}{{ c_e.comment }}{% endif %}</textarea>
+
+            <div class="row" style="margin-top:10px">
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <a href="#" class="btn btn-primary save_comment margin_space5" data-saver=0 data-parcours_id="{{ parcours_id}}"   data-student_id="{{student.user.id}}"  data-customexercise_id="{{customexercise.id}}" >Enregistrer </a>
+                        
+ 
+
+                        {% if c_e and  sacado_asso %}  
+                        <a href="#" data-toggle='modal' data-target='#audio_comment' class="btn btn-primary margin_space5" ><i class="fa fa-microphone"></i> Commentaire Audio </a>
+                        {% elif sacado_asso %}  
+                        <a href="#" data-toggle='modal' data-target='#audio_comment' class="btn btn-primary margin_space5" ><i class="fa fa-microphone"></i> Commentaire Audio </a>
+                        {% else %}   
+                        <a href="#" class="btn btn-primary margin_space5" ><i class="fa fa-microphone"></i> Commentaire Audio 
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >Version établissement.</div>
+                                </span>
+                        </a>
+                        {% endif %}
+ 
+
+                        <a href="javascript:history.back()"><input type="button" value="Annuler"
+                                                                   class="btn btn-default "/></a>
+                    </div>
+                </div> 
+            </div>
+
+            <div class="row" style="margin-top:10px" id="response_div">
+                <div class="col-sm-12 col-md-12" style="color:#cb2131"  id="response">
+                    {% if c_e.audio %}
+                    <audio controls>
+                      <source src="{{ c_e.audio.url }}" type="audio/mpeg">
+                      <span class="text-danger">Votre navigateur ne lit pas l'audio.</span>
+                    </audio>
+                    {% endif %}
+                </div> 
+            </div>
+</div>
+ 
+
+ 

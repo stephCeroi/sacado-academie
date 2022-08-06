@@ -1,0 +1,15 @@
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+{% for exotex in exotexs %}
+    {% include 'bibliotex/exotex_tag.html' %}
+{% endfor %}
+                        <div style="clear: both;"> 
+<script>
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
+ 
+

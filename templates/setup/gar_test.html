@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>SacAdo</title>
+</head>
+
+<body>
+
+ {{ data_xml }}
+ ===================================================================
+  <br/> <br/>
+
+{% for gar in gars %}
+
+{{ gar }} <br/>
+
+{% endfor   %}
+   <br/> <br/>
+ ===================================================================
+  <br/> <br/>
+
+{{ dico_received.DIV_APP }}<br/>
+{{ dico_received.PRO }}<br/>
+{{ dico_received.UAI }}<br/>
+{{ dico_received.GRO }}<br/>
+{{ dico_received.IDO }}<br/>
+ 
+
+   <br/> <br/>
+ ===================================================================
+ {% if  user_authenticated.is_authenticated %}
+
+ gagné {% else  %} perdu
+
+ {% endif  %}
+
+   <br/> <br/>
+ ===================================================================
+ user_authenticated ---> {{ user_authenticated }} < -----
+
+   <br/> <br/>
+ ===================================================================
+ request.session.user_id  ---> {{ request.session.user_id  }} < -----
+    <br/> <br/>
+ ===================================================================
+user_after  ---> {{ user_after  }} < -----
+ 
+</body>
+</html>
+
+ 

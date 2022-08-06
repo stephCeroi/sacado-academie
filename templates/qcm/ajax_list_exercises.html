@@ -1,0 +1,305 @@
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+ 
+ 
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <table class="table  table-hover display1000" style="width:100%">
+                        <thead>
+                            <tr><td></td><td></td><td></td></tr>
+                        </thead>
+                        <tbody> 
+                            {% regroup exercises by theme as theme_list %} 
+                            {% for theme in theme_list  %} 
+                                <tr style="background:#5d4391; color:white">
+                                    <td></td><td><strong> {{theme.grouper.name}}</td> <td></td>
+                                </tr>
+                                {% regroup theme.list by knowledge.waiting as waiting_list %} 
+                                {% for waiting in waiting_list  %}
+                                    <tr style="background:#aa98cd; cursor: pointer" class="opener out"  id="{{ waiting.grouper.id }}">
+                                        <td><i class="fa fa-caret-right"></i></td><td>  {{waiting.grouper.name}} 
+                                            <b><small> {{waiting.grouper.exercises_counter}} exercice{{waiting.grouper.exercises_counter|pluralize}} disponible{{waiting.grouper.exercises_counter|pluralize}} </small></b> 
+                                        </td> 
+                                        <td></td>
+                                    </tr>
+                                    {% regroup waiting.list by knowledge as knowledge_list %} 
+                                    {% for knowledge in knowledge_list  %}
+                                         {% if knowledge_list|length > 0 %}
+                                                <tr style="background:#d4cbe6; cursor: pointer; color: black" class="opener_k opened{{ waiting.grouper.id }} out"  id="{{ knowledge.grouper.id}}"><td><i class="fa fa-caret-right"></i></td>
+                                                    <td class="listingtd">
+                                                        {{ knowledge.grouper.name|capfirst }}  <b><small> {{  knowledge.grouper.exercises.count }} exercice{{  knowledge.grouper.exercises.count|pluralize }}</small></b>
+                                                        {% if request.user.is_superuser and '/admin' in request.path %}
+                                                            <a href="{% url 'create_exercise_knowledge' knowledge.grouper.id %}" class="pull-right edit"><i class='fa fa-plus' style="margin-left:10px;font-size: 10px"></i></a>
+                                                        {% endif %}
+                                                    </td><td></td>
+                                                </tr>
+                                                {% for e in knowledge.list  %}
+                                                    {%  get_is_selected  e  parcours  as  e_is_selected %} 
+                                                    <tr  class="opener_e openedk{{ knowledge.grouper.id }}"  >
+                                                        <td>
+                                                            <label class="container_checkbox">
+                                                            <input type="checkbox"  data-exercise_id="{{ e.id }}"  {% if parcours %}  data-parcours_id="{{ parcours.id }}" class="selector_e" {% else %}
+                                                                    class="selector_m"  {% endif %} {% if parcours_id %}  data-parcours_id="{{ parcours.id }}" {%endif %} value="{{ e.id }}"
+                                                                    name="exercises" id="selector_e{{ e.id }}"  data-statut="{{ e_is_selected }}"
+                                                                    {% if e_is_selected %}checked{% endif  %} 
+                                                                     /><span class="checkmark"></span>
+                                                            </label>
+                                                        </td>
+                                                        <td> 
+                                                            <label for="selector_e{{ e.id }}"  class="label_select_checkbox">
+                                                            {% if request.user.is_superuser and '/admin' in request.path %}
+                                                                <a href="{% url 'show_this_exercise'  e.id   %}"  target="_blank" >  
+                                                                   {% if e.supportfile.imagefile %}
+                                                                    <img src="{{ e.supportfile.imagefile.url }}" class="imagefile">
+ 
+                                                                    {% endif %}
+                                                                </a>
+
+
+                                                                <a href="{% url 'update_exercise'  e.id   %}"  target="_blank" class="listing" style="font-size: 18px">
+                                                                    {% if e.supportfile.title %} {{ e.supportfile.title|cleanhtml|capfirst }}{% else %} {{ e.supportfile.annoncement|cleanhtml|capfirst }} {% endif %} 
+                                                                </a> 
+
+                                                            {%  else %}
+                                                                <a href="{% url 'show_this_exercise'  e.id   %}"  target="_blank" >
+                                                                   {% if e.supportfile.imagefile %}
+                                                                    <img src="{{ e.supportfile.imagefile.url }}" class="imagefile">
+
+                                                                    {% endif %}
+                                                                </a> 
+                                                                    {% if e.supportfile.title %} {{ e.supportfile.title|cleanhtml|capfirst }}{% else %} {{ e.supportfile.annoncement|cleanhtml|capfirst }} {% endif %} 
+                                                               
+                                                            {% endif %}
+                                                             {% if e.supportfile.calculator %}
+                                                              <img src="{% static 'img/calculator.png' %}" width="30px" />
+                                                            {% else %}
+                                                              <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                                                            {% endif  %}   
+                                                                 <br>
+                                                                    <small>   
+                                                                        <i class="fa fa-fw fa-barcode"></i> {{ e.supportfile.code }}  {% if e.supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                                        <i class="fa fa-fw fa-clock-o"></i> {{ e.supportfile.duration }} minutes {% if e.supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                                        <i class="fa fa-fw fa-save"></i> {{ e.supportfile.situation}} situation{{ e.supportfile.situation|pluralize}} minimum<br></small>
+                                                                        
+                                                                        <i class="fa fa-fw fa-copyright"></i>
+                                                                        {% if e.supportfile.skills.count > 0 %}
+                                                                            {% for skill in e.supportfile.skills.all %}
+                                                                            {{ skill.name}}{% if not forloop.last %}, {% endif %}
+                                                                            {% endfor %}
+                                                                        {% else %}
+                                                                            <small>compétence non renseignée</small>
+                                                                        {% endif  %}
+
+                                                            </label>
+                                                        </td>
+                                                        <td style="width:150px">
+                                                            {% get_parcours_from_this_exercise e teacher as  my_parcours_container   %}
+                                                            {% for p in my_parcours_container %}
+                                                                <div class="btn btn-info"  style="font-size: 10px;cursor:default">{{ p.title }} </div>
+                                                            {% endfor %}
+
+                                                            {% if request.user.is_superuser  and '/admin' in request.path %}
+                                                                <a href="{% url 'create_remediation'  e.id   %}" class="pull-right edit" style="margin-left:5px; font-size: 10px"> 
+                                                                    <i class="fa fa-plus thin"></i>   
+                                                                </a> 
+                                                            {% endif %}  
+
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %} 
+                                        
+                                        {% else %} 
+                                                <tr class="opener_e"  ><td></td> 
+                                                    <td>
+                                                        {{ knowledge.name }} 
+                                                        {% if request.user.is_superuser and '/admin' in request.path %}
+                                                        <a href="{% url 'create_exercise_knowledge' knowledge.name.id %}" class="edit"><i class='fa fa-plus pull-right' style="font-size: 10px"></i></a>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+ 
+            <script>
+                
+$('table.display1000').DataTable({
+                "pageLength": 1000,
+                "ordering": false,
+                "retrieve": true,
+                "paging": false,
+                "info":  false
+                });
+
+
+        $('.input-sm').on('keyup', function (event) {  
+
+            if ($('.input-sm').val() != "")
+                { $("tr.opener_e").css("display","table-row")  ; } 
+            else 
+                { $("tr.opener_e").css("display","none")  ; } 
+
+        });
+
+
+        // Affiche dans la modal la liste des élèves du groupe sélectionné
+        $('.selector_e').on('click' ,function () {
+
+            let parcours_id = $(this).attr("data-parcours_id"); 
+            let exercise_id = $(this).attr("data-exercise_id"); 
+            let statut = $(this).attr("data-statut"); 
+            let csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+ 
+            $.ajax(
+                {
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        'parcours_id': parcours_id,
+                        'exercise_id': exercise_id,
+                        'statut': statut,
+                        csrfmiddlewaretoken: csrf_token
+                    },
+                    url: "../../ajax_populate",
+                    success: function (data) {
+                        if (data.no_store) { alert("Vous ne pouvez pas enregistrer cet exercice. Un exercice similaire est déjà dans ce parcours.")}
+                            else
+                            {
+                                $('#is_selected'+exercise_id).html(data.html);   
+                                $('#selector_e'+exercise_id).attr("data-statut",data.statut);                  
+                                $('#selector_e'+exercise_id).removeClass(data.noclass);
+                                $('#selector_e'+exercise_id).addClass(data.class);
+                                $('#selector_e'+exercise_id).focus();
+                            }
+                    }
+                }
+            )
+        });
+
+        $('.selector_m').on('click' ,function () {
+
+            let relationship_id = $("#relationship").val(); 
+            let exercise_id = $(this).attr("data-exercise_id"); 
+            let statut = $(this).attr("data-statut"); 
+            let scale = $("#id_scale").val(); 
+            let csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+
+                $.ajax(
+                    {
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            'relationship_id': relationship_id,
+                            'exercise_id': exercise_id,
+                            'scale': scale,     
+                            'statut': statut,
+                        },
+                        url: "../../ajax_populate_mastering",
+                        success: function (data) {
+
+                            if (data.no_store) { alert("Vous ne pouvez pas enregistrer cet exercice. Un exercice similaire est déjà dans ce parcours.")}
+                                else
+                                { 
+                                    $('#is_selected'+exercise_id).html(data.html);   
+                                    $('#selector_e'+exercise_id).attr("data-statut",data.statut);                  
+                                    $('#selector_e'+exercise_id).removeClass(data.noclass);
+                                    $('#selector_e'+exercise_id).addClass(data.class);
+                                    if(data.statut == "True") 
+                                        { $("#selector_e"+exercise_id).attr('checked', true);  } 
+                                    else { $("#selector_e"+exercise_id).attr('checked', false);  }
+                                }
+
+                            
+
+                        }
+                    }
+                )
+        });
+ 
+
+        $('.opener_k').hide() ;
+        $('.opener_e').hide() ;
+ 
+
+        $('.opener').on('click' ,function () { 
+            $('.opener_k').hide() ;
+
+            if( $(this).hasClass("out") )
+            {
+                $(".opener ~ .opened"+this.id).show();
+                $(this).removeClass("out").addClass("in");
+                $(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
+            }
+            else 
+            {
+                $(".opener ~ .opened"+this.id).hide();  
+                $(this).removeClass("in").addClass("out"); 
+                $(this).find('.fa').removeClass('fa-caret-down').addClass('fa-caret-right'); 
+            }
+ 
+        });
+
+
+
+        $('.opener_k').on('click' ,function () { 
+            $('.opener_e').hide() ;
+
+            if( $(this).hasClass("out") )
+                {
+                $(".opener_k ~ .openedk"+this.id).show();
+                $(this).removeClass("out").addClass("in");
+                $(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
+                }
+            else 
+            {
+                $(".opener_k ~ .openedk"+this.id).hide();  
+                $(this).removeClass("in").addClass("out"); 
+                $(this).find('.fa').removeClass('fa-caret-down').addClass('fa-caret-right');         
+            }
+ 
+        });
+
+        /*
+                
+            function opening_div (toggle,target,collapser) {
+
+            $(toggle).on('click' ,function () { 
+                $(collapser).hide() ;
+                id = $(toggle).attr("id")
+                if( $(target+id).hasClass("out") )
+                    {
+                    $(target+id).show();
+                    $(target+id).removeClass("out").addClass("in");
+                    }
+                else 
+                {
+                    $(target+id).hide();  
+                    $(target+id).show();
+                    $(target+id).removeClass("in").addClass("out");          
+                }
+     
+            });
+
+        }
+    */
+ 
+ 
+
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+
+
+                </script>
+ 
+

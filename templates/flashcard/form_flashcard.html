@@ -1,0 +1,45 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/ajax-flashcard']);
+    </script> 
+{% endblock %}
+ 
+
+{% block page_title %}
+  {% include 'flashcard/logo.html' %} Flashcard 
+   {% if flashcard %}
+   <img width="25px" src="{% static 'img/angle-right.png' %}"/> <a href="{% url 'update_flashcard' flashcard.id %}"> <small>{{ flashcard.title }} </small></a>
+   <img width="25px" src="{% static 'img/angle-right.png' %}"/> 
+   <small> 
+        <a href="{% url 'show_flashcard' flashcard.id %}">Voir la flashcard</a> 
+   </small>
+   {% endif  %}
+{% endblock %}
+
+
+{% block page_menu_right %}
+  {% if requezst.user.is_teacher %}
+    {% include 'flashcard/submenu_flashpack.html'  %}
+  {% endif %}
+
+{% endblock %}
+
+
+
+{% block body %}
+<section class="content_list"> 
+    <div class="row">
+        <div class="col-sm-12 col-md-12" >  
+            {% include 'flashcard/form_flashcard_tag.html' %}
+        </div>
+    </div>
+</section>
+{% endblock %} 
+
+ 

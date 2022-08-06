@@ -1,0 +1,118 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+    {% if group %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    {% endif %}
+
+     <script>
+        require(['script/ajax-adhesion']);
+    </script>
+ 
+ 
+{% endblock %}
+
+
+{% block page_title %}  
+    
+    <i class='fa fa-audio-description'></i> Renouvellement d'adhésion
+
+{% endblock %}
+
+
+ 
+{% block page_menu_right %}
+    <a href="{% url 'add_adhesion' %}" class="btn btn-new pull-right"> Nouvelle adhésion</a>    
+
+{% endblock %}
+
+
+ 
+     
+{% block body %}     
+<section class="content_main"> 
+
+    <div class="row">
+        <form action="{% url 'save_renewal_adhesion' %}" method="POST">{% csrf_token %}
+            <div class="col-sm-12 col-md-6">
+
+                je suis 
+
+                <div class="renewal_user selector" ><label>{{ user }} </label></div>
+                <div>
+                    et sollicite cette/ces adhésion.s à compter d'aujourd'hui pour  
+                </div>
+                {% for s in user.parent.students.all %}
+                    <div class="renewal_user renewal_student" > 
+                        <h5>{{ s }} </h5>
+                        <input type="hidden" value="{{ s.user.id }}" name="student_ids"   />
+                        <div class="renewal_user_level"> 
+                            <label>Niveau favori :</label>
+                            <select id="level{{ s.user.id }}" name="level" class="form-control select2">
+                                {% for l in levels %}
+                                    <option value="{{ l.id }}" {% if l.id == s.level.id %} selected {% endif %}>{{ l.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <h5>Durée d'engagement</h5>
+                        <div class="renewal_student"> 
+                            {% for formule in formules %} 
+                            <div>
+                                <label>
+                                    <input  type="radio"  name="engagement{{ s.user.id }}"  
+                                            value="{{ s.user.id }}-{{ formule.nb_month }}-{{ formule.total }}" /> 
+                                            {% cycle  12 3 1   %} mois : {{  formule.price }}  € x {{ formule.nb_month }} = {{  formule.total }} €
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                         <a href="#"  
+                            class="cancel_user_class btn btn-defaut" 
+                            data_id="cancel{{ s.user.id }}"   
+                            data_user_id="{{ s.user.id }}"  > Annuler </a>
+
+
+
+                        <a href="#" 
+                            data_name="{{ s.user }}" 
+                            class="renewal_user_class btn btn-sacado pull-right" 
+                            data_id="renewal{{ s.user.id }}"   
+                            data_user_id="{{ s.user.id }}"  > Choisir </a>
+              
+                    </div>
+                {% endfor %}
+
+
+
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <p class="thin"><b>Adhésion pour</b></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12" id="show_confirm_renewal">
+                        Sélectionnez vos enfants et leur niveau associé
+                    </div>
+                </div>
+
+                <div class="renewal_bottom">
+                    <button class="btn btn-primary validate_renewal" >Valider et payer</button>
+                </div>   
+            </div>
+        </form>    
+    </div>
+
+ 
+
+ 
+</section>            
+{% endblock %}

@@ -1,0 +1,38 @@
+{% load static %}
+{% load item_tags %}
+
+
+ 
+
+{% get_score exercise student as score %}
+
+ 
+
+{% if score != "" %}
+    <a class="markdown
+            {% if score < stage.low %}
+             red 
+            {% elif score < stage.medium %}
+            orange
+            {% elif score < stage.up %}
+            green
+            {% else %}
+            darkgreen
+            {% endif %}"
+          href="{% url 'show_this_exercise'  exercise.id   %}" data-container="body" target="_blank"
+          data-toggle="popover" style="border : 2px solid {{exercises.parcours.color }}"
+          data-trigger="hover" data-placement="top"
+          title="{{ exercises.parcours.title }}"
+          data-content="{{ exercise.knowledge.name }}">
+        {{ score }}
+    </a>
+{% else %}
+    <a class="markdown"                                                   
+          href="{% url 'show_this_exercise' exercise.id %}" data-container="body"  target="_blank"
+          data-toggle="popover" style="border : 2px solid {{ exercises.parcours.color }}"
+          data-trigger="hover"
+          title="{{ exercises.parcours.title }}" data-placement="top"
+          data-content="{{ exercise.knowledge.name }}"> 
+          {{ score }}
+    </a>
+{% endif %}

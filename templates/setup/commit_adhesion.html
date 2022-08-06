@@ -1,0 +1,122 @@
+{% extends 'academy.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+
+{% block body %}
+
+
+
+<section id="get_detail">
+    <div class="container"> 
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                {% comment %}
+                <div class="card_recapitulatif" >  
+                    Menu  <b>{{ formule.name }}</b> <br/>
+                    Adhésion <b>{{ formule.adhesion }}</b> <br/>
+                    Nombre d'enfant : <b>{{ data_post.nb_child }}</b> <br/>
+                    Fin de l'adhésion : <b>{{ data_post.date_end }}</b>  <br/>
+                    Montant total de l'adhésion : <b class="line_through">{{ data_post.total_price }}€</b> = {{ data_post.nb_month }} mois x <span  class="line_through">{{ data_post.month_price }}€/mois </span><br/><br/>
+                    <small>Pour toute résiliation de l'adhésion avant la fin mentionnée ci-dessus, les frais de gestion s'élèvent à 5,99€.</small>
+                </div>
+                {% endcomment %}
+                <div class="card_recapitulatif" >  
+                     Période d'essai gratuite jusqu'au 15 août
+               </div>
+
+            </div>
+
+        </div> 
+        <hr/>
+ 
+        <form action="{% url 'save_adhesion' %}"  >
+                {% csrf_token %}
+                <input type="hidden" name="total_price" value="{{ data_post.total_price }}" />
+                <input type="hidden" name="month_price" i value="{{ data_post.month_price  }}"  />                
+                <input type="hidden" name="nb_month" value="{{ data_post.nb_month }}"  />
+                <input type="hidden" name="date_end"   value='{{ data_post.date_end  }}'  />
+                <input type="hidden" name="menu_id" value="{{ formule.id}}" />
+                <input type="hidden" name="nb_child"  value="{{ data_post.nb_child }}" />
+            <div class="row">
+                {% for parent in parents %}
+                <div class="col-sm-12 col-md-6" style="margin-top:30px" >
+                    <div class="card_recapitulatif">
+                        <h4  class="title_page violet"><b> Parent  </b></h4>
+                        <div class="form-group">
+                             Nom : <b>{{ parent.last_name  }}</b>
+                        </div>     
+                        <div class="form-group">
+                             Prénom :  <b>{{ parent.first_name }}</b>
+                        </div>
+                        <div class="form-group">
+                           Courriel : <b>{{ parent.email }}</b> 
+                        </div>
+                        <div class="row"> 
+                            <div class="col-sm-12 col-md-11">
+                                <div class="form-group">
+                                    Identifiant : <b>{{ parent.username  }}</b> 
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    Ce récapitulatif vous sera envoyé à l'adresse courriel renseignée ci-dessus.
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="row">
+                {% for student in students %}
+                <div class="col-sm-12 col-md-6"  style="margin-top:30px"  >
+                    <div class="card_recapitulatif">
+                        <h4  class="title_page violet"><b> Enfant </b></h4>
+                        <div class="form-group">
+                             Nom : <b>{{ student.last_name  }}</b>
+                        </div>     
+                        <div class="form-group">
+                             Prénom :  <b>{{ student.first_name }}</b>
+                        </div>
+                        <div class="form-group">
+                           Courriel <em>(facultatif)</em> : <b>{{ student.email }}</b> 
+                        </div>
+                        <div class="form-group">
+                            Niveau favori :<b> {{ student.level }} </b>
+                        </div>
+                        <div class="row"> 
+                            <div class="col-sm-12 col-md-11">
+                                <div class="form-group">
+                                    Identifiant : <b>{{ student.username  }}</b> 
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+ 
+
+            <div class="row" style="margin-top:30px">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+
+
+                    <a href="{% url 'save_adhesion' %}" class="btn-asso" onclick="alert('... Merci de patienter pendant la création des exercices et les cours du niveau de votre/vos enfant.s ... Environ 5 minutes ...')">Confirmer l'inscription gratuite</a>
+
+                    <a href="javascript:history.back()" class="btn btn-default" />Annuler</a>
+                </div>
+            </div>
+ 
+    </div>
+</section> 
+
+<section id="footer_asso">    
+</section>
+{% endblock %}

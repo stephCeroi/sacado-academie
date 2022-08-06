@@ -1,0 +1,172 @@
+{% load item_tags %} 
+{% load static %} 
+{% if teacher.levels.all.count > 0 %} 
+
+
+<div  class="events_title">
+    <h3 class="thin">
+        {% if sacado_asso %}
+            Version établissement
+        {% else %}
+            Version enseignant
+        {% endif  %}
+    </h3>
+</div> 
+<div class="events_title">
+     A venir <small><span class="pull-right parcours_displayer pull-right_top"><i class="fa fa-calendar"></i> <a href="{% url 'calendar_initialize' %}" class="a_venir" >Afficher le calendrier</a> <a href="{% url 'calendar_initialize' %}" style="font-size:10px" target="_blank" title="Lien externe"><img src="{% static 'img/external-link_blue.png' %}" width="9px" ></a></span> </small>
+</div>
+<div class="events {% if relationships|length > 6  %}  div_events{% endif %}" >
+
+    {% if relationships|length < 6 %} 
+            {% for relationship in relationships %}
+            <li class="sans_puce"><i class="fa fa-square" style="color: {{ relationship.parcours.color }}"></i> 
+              {{ relationship.date_limit|date:"d.m.y" }} :
+                  <a href="{% url 'detail_task_parcours' relationship.parcours.id relationship.exercise.id 0  %}" class="parcours_displayer"> 
+                       {% if  relationship.exercise.supportfile.title %}  
+                            {{  relationship.exercise.supportfile.title|cleanhtml|capfirst }}  
+                        {% else %}
+                            {{ relationship.exercise.supportfile.annoncement|cleanhtml }}
+                        {% endif %} 
+                  </a>        
+            </li>
+            {% empty %}
+                <li class="sans_puce">Aucune tâche proposée</li>
+            {% endfor %}
+    {% else %}
+        {% regroup relationships by parcours as parcours_list %}
+            {% for pcs in parcours_list %}
+            <li class="sans_puce"><span class="label" style="background-color: {{ pcs.grouper.color }};border-radius: 50%">{{ pcs.grouper.nb_task }}</span> 
+                <a href="{% url 'detail_task_parcours' pcs.grouper.id 0 0 %}" class="parcours_displayer"> 
+                    {{ pcs.grouper.title }}
+                </a>        
+            </li>
+            {% endfor %}
+    {% endif %} 
+</div>
+
+
+
+
+
+<li class="sans_puce"><a href="{% url 'create_group' %}" class="btn btn-primary full_width">Créer un groupe</a> </li>
+
+<li class="sans_puce"> 
+<div class="btn btn-primary full_width">
+
+        <span id="show_collapser" >
+            Parcours 
+        </span>
+
+    <div id="collapser" class="collapse">
+        <div class="panel-body" style="padding:0px">
+            <table class="table" style="margin-bottom: 0px;font-size:14px;text-align: left">
+                <tr>
+                    <td>
+                         <a href="{% url 'create_parcours' 0 %}" title="Parcours vide à remplir par des exercices de votre choix"><i class="fa fa-caret-right"></i> Créer un parcours <span style="font-size: 10px">(Recommandé)</span></a>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>{% if sacado_asso %}
+                        <a href="{% url 'all_parcourses' 0 %}" title="Parcours déjà existants dans la base de données, créés par des collègues de votre établissement."><i class="fa fa-caret-right"></i> Récupérer un parcours mutualisé</a>
+                        {% else  %}
+                        <a href="#" class="no_sacado_asso" title="Version établissement requise."><i class="fa fa-caret-right"></i> Récupérer un parcours mutualisés</a>
+                        {% endif  %}
+                    </td>
+                </tr>
+ 
+            </table>
+        </div>
+    </div>
+</div>
+</li>
+
+<li class="sans_puce">
+{% if sacado_asso %}
+<a href="{% url 'create_evaluation' 0 %}" class="btn btn-primary full_width">Créer une évaluation</a>
+{% else %}
+<a href="#" class="btn btn-default full_width"  style="cursor:not-allowed" title="Version établissement requise." >Créer une évaluation</a> 
+{% endif  %}
+</li> 
+
+
+<hr>
+{% if sacado_asso %}
+<li class="sans_puce"><a href="{% url 'create_demand' %}" class="btn btn-default full_width">Demander un exercice</a> </li> 
+{% else %}
+<li class="sans_puce"><a href="#" data-toggle='modal' data-target='#sacado_etablissement'  class="btn btn-warning full_width">Version établissement</a> </li> 
+{% endif %}
+
+
+
+<hr>
+<p style="margin-top:-15px"><strong>Mes parcours favoris</strong></p>
+<div {% if parcourses|length > 8  %} class="div_accordion" {% endif %}>
+    <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+    {% for parcours in parcourses  %}
+    <div class="btn btn-default full_width" style="text-align: left; font-size:15px; margin-bottom: 5px">
+
+            <span data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}" class="parcours_displayer" style="color : {{  parcours.color }}" >
+               {% if parcours.is_publish %} <i class="fa fa-check-circle text-success pull-right pull-right_top"></i>  {% else %} <i class="fa fa-check-circle  pull-right pull-right_top" style="color : #E0E0E0"></i>{% endif  %}  {{ parcours.title|truncatechars:"22" }} 
+            </span>
+        <div id="collapse{{ forloop.counter }}" class="collapse">
+            <div class="panel-body"  style="padding:0px">
+                <table class="table" style="margin-bottom: 0px;font-size:14px;color : {{  parcours.color }}">
+                    <tr>
+                        <td>
+                        {% with  parcours.students.count as ct %}
+                            {{ ct }} élève{{ ct|pluralize }}
+                        {% endwith %}
+                        </td>
+                    </tr>  
+                    <tr>
+                        <td style="color : {{  parcours.color }}">
+                            {% for g in  parcours.group_list %}
+                                <div> <i class="fa fa-fw fa-users"  ></i>  {{ g.name }}</div>
+                            {% empty %}
+                                <div> <i class="fa fa-fw fa-ban"  ></i> Non attribué</div>
+                            {% endfor %}
+                        </td>
+                    </tr>                                  
+                    <tr>
+                        <td>
+                            <a href="{% url 'show_parcours' 0 parcours.id   %}"  style="color : {{  parcours.color }}">
+                                    {% with  parcours.exercises.count as cot %}
+                                        {{ cot }} exercice{{ cot|pluralize }}
+                                    {% endwith %}
+                            </a> 
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                             <a href="{% url 'update_parcours' parcours.id 99999999999 %}"  style="color : {{  parcours.color }}"> <i class="fa fa-fw fa-cogs"  ></i> Configurer</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                          <a href="{% url 'stat_evaluation' parcours.id  %}"   style="color : {{  parcours.color }}"><i class="fa fa-fw fa-trophy"></i> Suivis </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="{% url 'show_parcours' 0 parcours.id  %}"  style="color : {{  parcours.color }}"><i class="fa fa-fw fa-arrow-circle-right"></i> En détails </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+      <!-- Accordion card -->
+    {% empty %}
+Aucun parcours
+    {% endfor %}
+    </div>
+</div>
+<hr>
+ 
+ 
+ 
+ 
+
+{% endif %}

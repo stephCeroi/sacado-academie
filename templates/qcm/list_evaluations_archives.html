@@ -1,0 +1,41 @@
+{% extends 'qcm/list_evaluations.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+
+
+ 
+
+{% block page_title %}
+    <i class="bi bi-trophy sacado_color_text"></i> Mes évaluations archivées
+{% endblock %}
+
+
+{% block page_menu_right %}
+
+    <li><a href="{% url 'evaluations' %}"  class="no_button">Mes évaluations</a></li>
+
+{% endblock %}
+
+
+{% block evaluations  %} 
+    {% if parcours.is_evaluation and parcours.is_archive %}
+        <tr>
+            {% include 'qcm/list_parcours_folder_data.html' %}
+        </tr>
+    {% endif %}  
+{% endblock  %}
+
+
+{% block archive %}
+ 
+            <button class="btn btn-default" name="action" value="desarchiver" onclick="return TestArchive('ces dossiers/fichiers')"> 
+                <i class="bi bi-archive"> </i>   Desarchiver la sélection
+            </button>
+ 
+{% endblock  %}   
+
+
+ 

@@ -1,0 +1,175 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+           
+ 
+<div  class="box box-widget widget-user-2"  
+      style="cursor: move;{% if bibliotex.vignette %}background-image: url('{{ bibliotex.vignette.url }}'); background-size: cover; {% endif %}background-color:{{bibliotex.color }};">
+    <div class="handler widget-user-header">
+        <!-- Add signet to folder -->
+ 
+
+
+        <div class="group_show  no_visu_on_load" id="group_show{{bibliotex.id }}"> 
+            <label>Cette bibliotex est attribuée à</label>
+            {% for g in bibliotex.groups.all %}
+                <li class="sanspuce">{{ g.name }} [{{ g.just_students_count }} élèves]</li>
+            {% endfor %}
+            <br/>
+            <label>et aux dossiers</label>
+            {% for f in bibliotex.folders.all %}
+                <li class="sanspuce">{{ f.title }} [{{ f.folder_only_students_count.nb }} élèves]</li>
+            {% endfor %}
+            <div style="clear:both"></div>
+        </div>
+
+
+
+        <div class="group_show  no_visu_on_load" id="bibliotex_show{{bibliotex.id }}"> 
+             <div class="row"> 
+                <div class="col-xs-12 col-md-12 col-lg-12 skill_knowledge_bibliotex_title">
+                    <b>Savoir faire ciblés</b>
+                </div> 
+            </div>
+
+     
+            {% for k in bibliotex.knowledges %}
+            <div class="row"> 
+                <div class="col-xs-12 col-md-12 col-lg-12 skill_knowledge_body">
+                    {{ k.name }}
+                </div> 
+            </div>
+            {% endfor %}
+            <div class="row"> 
+                <div class="col-xs-12 col-md-12 col-lg-12 skill_knowledge_bibliotex_title">
+                    <b>compétences ciblées</b>
+                </div> 
+            </div>
+            
+            <div class="row"> 
+                <div class="col-xs-12 col-md-12 col-lg-12 skill_knowledge_body">
+                    {% for s in bibliotex.skills %}
+                        {{ s }}. 
+                    {% endfor %}
+                </div> 
+            </div>
+            <div style="clear:both"></div>
+        </div>
+
+
+
+        <span style="cursor:pointer" data-bibliotex_id="{{bibliotex.id }}" class="overlay_show white" >
+            <div id="disc{{bibliotex.id }}" class="{% if not bibliotex.is_publish %}
+                            disc_persistant
+                        {% else %}
+                            disc 
+                        {% endif %}" style="background-color:{% if bibliotex.is_publish %}#00a65a{% else  %}#dd4b39{% endif  %} "> 
+                 <i class="fa fa-circle-o-notch"></i>
+            </div>
+        </span> 
+
+        <div class="overlay   no_visu_on_load" id="overlay_show{{bibliotex.id }}"> 
+            <div class="overlay_expand">
+                <a href="#" data-bibliotex_id="{{bibliotex.id }}" class="overlay_show pull-right">
+                    <i class="fa fa-times"></i>
+                </a>
+                <div class="btn-group"  style="padding:0px;margin:0px;">
+                    <span style="cursor:pointer" class="btn btn-default btn-publisher publisher" id="publisher{{bibliotex.id}}" 
+                            data-bibliotex_id="{{bibliotex.id}}" data-statut="{{bibliotex.is_publish }}">  
+                        <i class="fa fa-circle-o-notch"></i>
+                    </span><span class="legend-btn legend-btn-{% if not bibliotex.is_publish %}danger{% else  %}success{% endif  %} size15" id="bibliotex_publisher{{bibliotex.id}}" style="cursor:auto" >  
+                      {% if bibliotex.is_publish %} Publié  {% else %} Non publié {% endif  %} 
+                    </span>
+                </div>
+                <br>
+                {% if bibliotex.is_publish %}
+                <span class="text-success" id="accueil_text_color{{ bibliotex.id }}">{% if bibliotex.is_evaluation %}Cette évaluation{% else %}Cette Bibliotex{% endif %} <span id="accueil_visible{{bibliotex.id }}">est</span> visible par vos élèves.</span>
+                {% else %}
+                <span class="text-danger" id="accueil_text_color{{ bibliotex.id }}">{% if bibliotex.is_evaluation %}Cette évaluation{% else %}Cette Bibliotex{% endif %} <span id="accueil_visible{{bibliotex.id }}">n'est pas</span> visible par vos élèves.</span>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="box_title_vignette"  style="padding:4px; opacity:0.95;background-color:{{bibliotex.color }};font-weight: 100">
+
+            <a href="{% url 'show_bibliotex' bibliotex.id  %}"  style="color:{{ bibliotex.color|contrast_color }};" >             
+                {% if bibliotex.title|length > 26 %}
+                <span class="helper_tip" style=" font-size:16px;">{{ bibliotex.title|truncatechars:"26" }}
+                    <div class="helper_tip_text_right" style="font-size:14px;">{{ bibliotex.title }}</div>
+                </span>
+                {% elif bibliotex.title|length > 22 %}
+                    {{ bibliotex.title|truncatechars:"22"}}
+                {% else %}
+                    {{ bibliotex.title}}
+                {% endif %}
+            </a>    
+        </div>
+    </div>
+
+    <!-- box-footer DES FONCTIONNALITES  -->
+
+
+
+    <div class="box-footer" style="position: relative; padding-top: 0px;">
+ 
+        <div class="row dossier"  style="padding-top: 5px;padding-bottom: 5px;margin-bottom: 5px;"> 
+            <div class="col-xs-12 col-md-12 col-lg-12"> 
+                {{  bibliotex.relationtex.nb_exotexs }} exercices dont {{ bibliotex.relationtex.nb_exotexs_published }} publié{{ bibliotex.relationtex.nb_exotexs_published|pluralize }} {% if    bibliotex.relationtex.care %} 
+                <i class="fa fa-circle text-danger" style="font-size:8px"></i>{% endif %}  
+            </div>
+        </div>
+
+        <div class="row extend"> 
+           <div class="col-lg-4 col-xs-4">
+                <a href="{% url 'update_bibliotex' bibliotex.id  %}" class="edit" ><i class="bi bi-gear"></i> <span class="label_icon">Config.</span>  </a> 
+            </div>
+
+           <div class="col-lg-4 col-xs-4">
+                <a href="#" data-toggle='modal' data-target='#print_bibliotex'  data-action="print_bibliotex_out" data-relationtex_id="{{ bibliotex.id }}" class="action_exotex edit"><i class="bi bi-printer"></i> 
+                    <span class="label_icon">Imprimer</span>
+                </a>
+            </div>
+            <div class="col-lg-4 col-xs-4">
+                <span href="#" class="edit group_shower" data-group_id="{{bibliotex.id }}"><i class="bi bi-folder"></i>  <span class="label_icon">Attribut</span>
+                </span>
+            </div> 
+        </div>
+
+        <div class="row extend"> 
+           <div class="col-lg-4 col-xs-4">
+
+                <a href="{% url 'exercise_bibliotex_peuplate' bibliotex.id  %}" class="edit"  ><i class="bi bi-cloud"></i> <span class="label_icon">Select.</span></a> 
+            </div>
+           <div class="col-lg-4 col-xs-4">
+                <a href="{% url 'update_bibliotex' bibliotex.id  %}" class="edit" ><i class="bi bi-clouds"></i> <span class="label_icon">Dupliquer</span></a> 
+            </div>
+           <div class="col-lg-4 col-xs-4">
+
+                <a href="{% url 'exercise_bibliotex_individualise' bibliotex.id  %}" class="edit"  ><i class="bi bi-people"></i> <span class="label_icon">Individ.</span></a> 
+            </div>
+        </div>
+
+
+         <div class="row">  
+            <div class="col-lg-4 col-xs-4">
+
+                <a href="{% url 'real_time' bibliotex.id %}" class="edit {% if not sacado_asso %}no_sacado_asso{% endif %}" >
+                    <i class=" bi bi-clock-history"></i> <span class="label_icon">Temps réel.</span>
+                </a>
+
+            </div>
+            <div class="col-lg-4 col-xs-4">
+             
+                <a  href="{% url 'exercise_bibliotex_results' bibliotex.id %}" class="edit"><i class="bi bi-trophy"></i>  <span class="label_icon"> Résultats   </span></a> 
+            
+            </div>
+             
+            <div class="col-lg-4 col-xs-4">
+                <span href="#" class="edit bibliotex_shower" data-bibliotex_id="{{bibliotex.id }}"><i class="bi bi-mortarboard"></i>  <span class="label_icon">Compéten.</span>
+                </span>
+            </div> 
+        </div>
+
+    </div>
+</div>    

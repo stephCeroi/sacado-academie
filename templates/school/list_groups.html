@@ -1,0 +1,130 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load item_tags %}
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-dashboard']);
+        require(['script/ajax-group']);
+    </script>
+{% endblock %}
+
+
+
+{% block page_title %}
+     <a href="{% url 'admin_tdb' %}"> <i class="fa fa-cloud"></i></a> {{ school.name}} <img src="{% static 'img/angle-right.png' %}"/> Groupes 
+
+
+     <a href="{% url 'print_school_ids' %}" class="btn btn-default"><i class="fa fa-list"></i>  Télécharger les identifiants par groupe</a>
+{% endblock %}
+
+{% block page_menu_right %}
+
+    <a href="{% url 'new_group_many' %}" class="btn btn-new">+ Plusieurs groupes</a>  
+    <a href="{% url 'new_group' %}" class="btn btn-new">+ Nouveau groupe </a> 
+{% endblock %}
+
+
+
+
+{% block body %}
+    <section class="content_list"> 
+        <form action="{% url 'delete_all_groups' %}"  method="POST">     
+        {% csrf_token %}  
+        {% if groups %}   
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-bordered table-hover standard_tab_sort">
+                    <thead>
+                        <tr>
+                            <td>Groupes</td>
+                            <td>Élèves </td>
+                            <td style="width:40px"> </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in groups %}
+                            <tr>
+                                <td style="width:150px ; border-left:5px solid {{group.color}}">
+                                    <input type="checkbox" name="group_ids" value="{{ group.id }}" />
+                                    <a href="{% url 'update_group_school'  group.id %}" style="color:{{group.color}}">{{ group.name }} </a>
+                                    <span style="color:#CCC; font-size: 10px" class="pull-right tool_tip" >
+                                    {% if group.lock %}
+                                        <i class="fa fa-lock"></i>
+                                        <div class="tool_tip_text" > permet l'admission dans un groupe via le lien </div>
+                                    {% else %}
+                                        <i class="fa fa-unlock"></i>
+                                        <div class="tool_tip_text" > refuse l'admission dans un groupe via le lien</div>
+                                    {% endif %}</span>
+                                    <br>{% if group.subject %}<span style="color:{{group.color}}">{{ group.subject.name }} </span>{% else %}<small class="alert-danger">RENSEIGNER LA MATIERE</small>{% endif %}
+                                    <br><span style="color:{{group.color}}; font-size: 14px">{{ group.code }}</span> 
+                                    <br>
+                                    <div style="font-size: 12px"> <a href="{% url 'update_teacher' group.teacher.user.id %}">{{ group.teacher.user.civilite }} {{ group.teacher.user.first_name }} {{ group.teacher.user.last_name }}</a></div>
+                                    <div style="font-size: 12px">
+                                     {% for sg in group.group_sharingteacher.all %}
+                                      <a href="{% url 'update_teacher' sg.teacher.user.id %}">
+                                        {{ sg.teacher.user.civilite }} {{ sg.teacher.user.first_name }} {{ sg.teacher.user.last_name }} 
+                                        ({% if sg.role %} 
+                                            <span class="tool_tip">E 
+                                                <div class="tool_tip_text" >Editeur. L'enseignant peut créer, modifier les parcours.</div>
+                                            </span>
+                                        {% else %}
+                                            <span class="tool_tip">L 
+                                                <div class="tool_tip_text" >Lecteur. L'enseignant accède aux parcours et résultats sans pouvoir modifier. </div>
+                                            </span>
+                                        {% endif %})
+                                      </a>
+                                      {% if not forloop.last %}<br/>{% endif %}
+                                     {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="label label-default"> {{ group.just_students.count }}<i class="fa fa-users"></i></span>
+                                        {% for s in group.students|exclude_teacher  %} 
+                                           <font style="font-size:14px">    <a  href="{% url 'update_student'  s.user.id group.id  %}"> {{s}} </a>{% if not forloop.last %}, {% endif %} </font>
+                                        {% empty %}
+                                        {% if group %}<br>
+                                            <div class="alert alert-danger">
+                                            Les élèves peuvent rejoindre ce groupe en utilisant cette URL : <strong>https://sacado.xyz/group/{{ group.code }}</strong>. 
+                                            </div>
+                                        {% endif %}
+                                        {% endfor %} 
+                                </td> 
+                                <td>
+                                    <a href="{% url 'new_student' group.code %}" class="btn btn-xs btn-default" style="margin: 1px;width : 46%" title="Ajouter un élève à ce groupe" >  +  <i class="fa fa-user"></i></a> 
+                                    <a href="{% url 'new_student_list' group.code %}" class="btn btn-xs btn-default" style="margin: 1px;width : 46%" title="Ajouter des élèves déjà enregistrés" > + <i class="fa fa-list"></i></a>
+                                    <a href="{% url 'register_by_csv' 0 group.id %}" class="btn btn-xs btn-default full_width" style="margin: 2px" title="Ajouter plusieurs élèves à ce groupe avec du CSV" > + <i class="fa fa-users text-success"></i> csv</a>
+                                    <a href="{% url 'print_ids' group.id %}" class="btn btn-xs btn-default full_width" style="margin: 2px" title="Télécharger les identifiants"><img src="{% static 'img/pdf.png' %}" width="15px"/> Identifiants  </a>                                    
+                                </td> 
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}                        
+            <div class="round" style="background-color: #5d4391; padding-top: 60px;color:#FFF"> 
+                <a href="{% url 'get_school_students' %}"  onclick="return getAllStudents()">Récupérer <br/> les comptes <br/>élèves déjà <br/> existants</a>
+            </div> 
+        {% endif %}
+
+
+
+
+
+        <div class="row">
+
+            <div class="col-sm-12 col-md-12">     
+                <button class="btn btn-warning" name="only_group" value="1" onclick="return delete_all_these_groups('ce.s groupe.s')" >Supprimer la sélection des groupes</button>  
+                <button class="btn btn-danger"  name="all_contents" value="1" onclick="return delete_all_these_groups('ce.s groupe.s et les élèves associés')" >Supprimer la sélection des groupes avec leurs élèves </button>
+  
+                <a href="{% url 'admin_tdb' %}"  class="btn btn-default" >Tableau de bord Admin </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

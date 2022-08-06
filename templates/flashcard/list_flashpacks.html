@@ -1,0 +1,119 @@
+{% extends 'list_modules.html' %}
+{% load static %}
+{% load item_tags %}
+{% load widget_tweaks %}
+ 
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2_withoutMathJax.js' %}"></script>
+
+    <script>
+        require(['script/ajax-flashpack']);
+    </script> 
+{% endblock %}
+
+
+
+{% block page_title %}
+    {% include 'flashcard/logo.html' %}  Mes flashpacks {% if is_archive %}archivés{% endif %}
+{% endblock %}
+
+{% block page_menu_right %}
+    <li>
+        {% if sacado_asso %} 
+            {% if not is_archive %}
+                <a href="{% url 'my_flashpack_archives' %}"  class="no_button"><i class="fa fa-archive"></i> Mes flashpacks archivés ({{ nba }})</a> 
+            {% else %}
+                <a href="{% url 'my_flashpacks' %}"  class="no_button" >Mes flashpacks  </a> 
+            {% endif %}
+
+        {% else %}
+            <a href="#"  class="no_sacado_asso" >{% if not is_archive %}<i class="fa fa-archive"></i>{% endif %} Mes flashpacks {% if not is_archive %}archivés{% endif %}</a> 
+        {% endif %} 
+    </li>
+    {% include 'flashcard/submenu_creation_flashpack.html' %}
+{% endblock %}
+
+
+
+
+{% block inside_folder %}          
+    <table class="table table-hovered standard_tab_10"  style="width:100%" >
+        <thead> 
+            <tr> 
+                <th style="width:10px;text-align: center"></th>
+                <th style="width:10px;text-align: center"></th>
+                <th style="width:200px">Titre</th>
+                <th></th>
+                <th>Parcours</th>
+                <th style="width:200px">Groupes</th>
+                <th>  </th>
+                <th></th>
+            </tr> 
+        </thead>
+        <tbody>
+            {% for flashpack  in list_folder.flashpacks  %} 
+                <tr class="tr_edit">  
+                    {% include 'flashcard/flashpack_data.html' %}
+                </tr>
+            {% endfor %}              
+         </tbody>
+    </table>
+{% endblock %}
+
+
+
+{% block inside_folder_actions %}
+    <div class="row" style="margin-top:10px">
+        <div class="col-sm-12 col-md-12">
+
+            <button class="btn btn-default" name="action" value="archiver" onclick="return TestArchive('ces flashpacks')"> 
+                <i class="fa fa-archive"> </i>  {% if 'archive' in request.path %} Désarchiver {% else %} Archiver {% endif %}  la sélection
+            </button>
+
+
+            <button class="btn btn-default" name="action" value="deleter" onclick="return TestDelete('ces flashpacks')"> 
+                <i class="fa fa-trash"> </i>   Supprimer la sélection
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+ 
+
+{% block outside_folder %}   
+    <table class="table table_list table-hover display_no_details100">
+        <thead>
+        <tr>
+            <th style="width:30px;text-align: center"></th>
+            <th style="width:30px;text-align: center"></th>
+            <th>Titre</th>
+            <th></th>
+            <th>Parcours</th>
+            <th style="width:200px">Groupes</th>
+            <th>  </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for flashpack in flashpacks %}            
+                <tr>
+                    {% include 'flashcard/flashpack_data.html' %}
+                </tr>
+            {% endfor %} 
+        </tbody>
+    </table>
+{% endblock %}
+     
+     
+{% block outside_folder_actions %}
+    <button class="btn btn-default" name="action" value="archiver" onclick="return TestArchive('ces flashpacks')"> 
+        <i class="fa fa-archive"> </i>   Archiver la sélection
+    </button>
+    <button class="btn btn-default" name="action" value="deleter" onclick="return TestDelete('ces flashpacks')"> 
+        <i class="fa fa-trash"> </i>   Supprimer la sélection
+    </button>
+
+    <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+{% endblock %}
+
+ 

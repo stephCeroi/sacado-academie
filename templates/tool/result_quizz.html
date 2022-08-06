@@ -1,0 +1,82 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load item_tags %}
+{% load widget_tweaks %}
+ 
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    <script>
+        require(['script/ajax-quizz-complement']);
+    </script> 
+{% endblock %}
+
+
+{% block page_title %}
+    <a href="{% url 'list_quizzes' %}" ><i class="bi bi-aspect-ratio"></i> Résultats</a>  <img width="25px" src="{% static 'img/angle-right.png' %}"/> {{ quizz.title}} <img width="25px" src="{% static 'img/angle-right.png' %}"/> 
+    <small>{{ quizz.code}}</small>
+{% endblock %}
+
+
+
+{% block page_menu_right %}
+    <a href="{% url 'list_quizzes' %}" class="btn btn-new pull-right">Mes quizz</a>  
+{% endblock %}
+
+
+{% block body %} 
+<section class="content_main">
+
+
+    <form method="POST">{% csrf_token %}
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+
+            <div class="row">
+                <div class="col-sm-12 col-md-12"> 
+                    {% for g in quizz.groups.all %}
+                        <span class="btn btn-default" style="background-color: {{ g.color}} ; color: {{ g.color|contrast_color }}">
+                            <label>
+                                <input type="checkbox" id="groups" name="groups" value="{{ g.id }}" /> 
+                                {{ g.name }} 
+                            </label>
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% for question in questions %}
+            <div class="row">    
+                <div class="card" style="margin-left:15px;padding:10px; width:90%">
+
+ 
+                <h4 >Question {{ forloop.counter }}.  
+                    <a href="javascript:void(0);" data-question_id="{{ question.id }}" data-quizz_id="{{ quizz.id }}" class="this_detail fontsize12 btn btn-new-violet"> 
+                        détails 
+                        <i class="fa fa-angle-down" id="collapser_angle{{ question.id }}" ></i>
+                    </a>
+                    <span class="pull-right" id="percent_done{{ question.id }}"></span> 
+                </h4>
+                {{ question.title|safe }} 
+                </div> 
+                <div class="col-sm-12 col-md-12 no_visu_on_load" id="detail_div{{question.id}}">
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-12 col-md-6">
+          
+            <a href="javascript:void(0);"  data-quizz_id="{{ quizz.id }}" data-question_id="0" class="btn btn-new-violet this_detail" id="display_init"> Afficher les résultats par élève
+                <i class="fa fa-angle-down" id="collapser_angle0" style="transform: rotate(0deg);"></i>
+            </a>
+
+            <div id="display_global_detail" style="margin-top: 15px;">
+ 
+            </div>
+        </div>
+    </div>
+    </form>
+</section>
+{% endblock %}  
+
+ 

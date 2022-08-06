@@ -1,0 +1,49 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+ 
+
+{% block require %}
+ 
+    {% if group %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    {% endif %}
+
+    <script>
+        require(['script/ajax-tool']);
+    </script>
+ 
+ 
+{% endblock %}
+
+
+
+{% block page_title %}
+        {% if tool.imagefile %}<img src="{{ tool.imagefile.url }}" height="40px">{% endif %}   {{ tool.title }}
+{% endblock %}
+
+
+{% block page_menu_right %}
+        <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default "/></a>
+
+
+{% endblock %}
+ 
+
+{% block body %}
+<div class="content_main"> 
+
+        <button id="stop_quizz" class="btn btn-default" ><i class="fa fa-compress"></i></button>
+        <button id="starter_quizz" class="btn btn-default" ><i class="fa fa-expand"></i></button>
+
+    <div class="row">        
+        <div class="col-sm-12 col-md-12">
+           {{ tool.remark|safe }}
+        </div>
+    </div>   
+</div>
+
+  
+{% endblock %}

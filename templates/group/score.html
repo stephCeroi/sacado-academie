@@ -1,0 +1,24 @@
+{% load static %}
+{% load item_tags %}
+
+{% get_score2 results exercise.pk  as score %}
+
+{% if score %}
+    <a class="helper_tip markdown square
+            {% if score < stage.low %}
+             red 
+            {% elif score < stage.medium %}
+            orange
+            {% elif score < stage.up %}
+            green
+            {% else %}
+            darkgreen
+            {% endif %}" style="cursor:help">
+        
+         <span class="helper_tip_text_center"><b>Score = {{ score }}%</b><img src="{{ exercise.supportfile.imagefile.url }}" width="400px" /></span>
+    </a>
+{% else %}
+    <a class="markdown square"  > 
+ 
+    </a>
+{% endif %}

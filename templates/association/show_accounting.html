@@ -1,0 +1,144 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+ 
+{% block require %}
+ 
+    {% if accounting %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    {% endif %}
+
+    <script>
+        require(['script/ajax-group']);
+    </script>
+ 
+ 
+{% endblock %}
+
+
+
+{% block page_title %}
+        <a href="{% url 'association_index' %}" ><i class="fa fa-cloud"></i> </a> Transaction n° : {{ accounting.code }} 
+
+
+ 
+
+{% endblock %}
+
+
+{% block page_menu_right %}
+ 
+
+<li class="dropdown">
+    <a href="#" data-toggle="dropdown" class="dropdown-toggle no_button" >  Les opérations  <b class="caret"></b> </a>
+    <ul id="products-menu" class="dropdown-menu clearfix pull-right" role="menu">
+       
+        <li >          <a href="{% url 'list_accountings' 0 %}"  > Clients </a>   </li>
+         <li >          <a href="{% url 'list_accountings' 1 %}" >Fournisseurs </a>   </li>
+        <li >          <a href="{% url 'list_accountings' 2 %}" > Banque </a>   </li>
+    </ul>
+</li>
+
+
+
+{% endblock %}
+ 
+
+{% block body %}
+<div class="content_main">  
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <div class="{% if accounting.acting %}credit_asso{% else %}debit_asso{% endif %}"> 
+                    <div class="col-sm-3 col-md-3">
+                         <label>Montant : </label> <b>{{ accounting.amount }} €</b>
+                    </div>                       
+                    <div class="col-sm-3 col-md-3">
+                         {% if accounting.is_credit %}CREDIT{% else %}DEBIT{% endif %}
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                         <label>Date d'enregistrement : </label> {{ accounting.date }}
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                         <label>Date d'effet : </label> 
+                        {% if accounting.acting %}
+                            {{ accounting.acting }} : {{ accounting.mode }}
+                        {% else %}
+                            En attente
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">        
+            <div class="col-sm-12 col-md-8">
+                <div class="observation_asso">
+                    <label> Objet : </label> {{ accounting.objet }}
+                </div>
+            </div>       
+            <div class="col-sm-12 col-md-4">
+                <div class="observation_asso">
+                    <label> Etabli par : </label> {{ accounting.user }}
+                </div>
+            </div>
+        </div>  
+        <div class="row">        
+            <div class="col-sm-12 col-md-12">
+                <div class="observation_asso">
+                    {% if accounting.beneficiaire %}
+                        <label> Bénéficiaire : </label> {{ accounting.beneficiaire }}<br/>
+                        <label> Adresse : </label> {{ accounting.address }}<br/>
+                        {% if accounting.complement %}<label> Complément : </label> {{ accounting.complement }}<br/>{% endif %}
+                        <label> Ville : </label> {{ accounting.town }}, <label> Pays : </label> {{ accounting.country }}<br/>
+                        <label> Contact : </label> {{ accounting.contact }}
+                    {% else %}
+                        <label> Bénéficiaire : </label> {{ accounting.school.name }}, <label> Code académique : </label> {{ accounting.school.code_acad }}<br/>
+                        <label> Adresse : </label> {{ accounting.school.address }}<br/>
+                        {% if accounting.complement %}<label> Complément : </label> {{ accounting.school.complement }}<br/>{% endif %}
+                        <label> Ville : </label> {{ accounting.school.town }}, <label> Pays : </label> {{ accounting.school.country }}<br/>
+                        <label> Contact : </label> 
+
+                        {% for u in accounting.school_contact %}
+                            {{ u }} <em>{{ u.email}}</em> {% if not forloop.last %}, {% endif %}
+                        {% endfor  %}
+                    {% endif  %}
+                </div>
+            </div>
+        </div> 
+        <div class="row">        
+            <div class="col-sm-12 col-md-12">
+                <div class="observation_asso">
+                    <table class="table table-bordered">
+                        <tr><th>Descriptions</th><th>Montant</th></tr>
+                        {% for d in details %}
+                            <tr><td>{{ d.description }}</td><td>{{ d.amount }} €/TTC</td></tr>
+                        {% endfor %}
+                    </table>
+                </div>        
+            </div>
+        </div> 
+        <div class="row">        
+            <div class="col-sm-12 col-md-12">
+                <div class="observation_asso">
+                    <label> Observations :</label>
+                        {% if accounting.observation %}{{ accounting.observation|safe }}{% else %}Néant{% endif %}
+                </div>
+            </div>
+        </div> 
+
+        <div class="row" style="margin-top:20px">        
+            <div class="col-sm-6 col-md-3">
+                <a href="{% url 'print_accounting'  accounting.id %}" class="btn btn-primary" ><i class="fa fa-print"></i> Imprimer cette facture </a>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                                    <a href="javascript:history.back()"><input type="button" value="Retour"
+                                                               class="btn btn-default "/></a>
+            </div>
+        </div> 
+ 
+
+
+</div> 
+{% endblock %}

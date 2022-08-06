@@ -1,0 +1,24 @@
+ 
+{% load static %}
+{% load item_tags %}
+{% load widget_tweaks %}
+ 
+  
+
+<div class="row">
+    <div  class="col-sm-12 col-md-12"  align="center">
+        <table class="table table-bordered table-hover">
+            {% for answer in answers  %}
+            <tr>
+                <th>{{ answer.student.user.first_name }}</th>
+                <th>{{ answer.score }}</th>
+                <th>{{ answer.timer }}sec.</th>
+            </tr>
+            {% empty %}
+            <tr>
+                <th colspan="3">Aucune bonne réponse</th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>   

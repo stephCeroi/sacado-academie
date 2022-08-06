@@ -1,0 +1,114 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"  data-main="{% static 'js/calendar.js' %}"></script>
+ 
+ 
+  <script>
+      require(['script/ajax-schedule']);
+  </script>
+
+
+{% endblock %} 
+
+ 
+
+
+{% block styleMk4ht %}
+    <link href="{% static 'plugins/schedule/fullcalendar/fullcalendar.min.css' %}" rel='stylesheet' />
+    <link href="{% static 'plugins/schedule/fullcalendar/fullcalendar.print.min.css' %}" rel='stylesheet' media='print' />
+    <style type='text/css'>
+        body {
+                font-size: 14px;
+                font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+                }
+        #calendar {
+                width: 900px;
+                margin: 0 auto;
+                }
+    </style>
+{% endblock  %}
+
+
+
+
+
+{% block page_title %} 
+    <i class="bi bi-camera-video sacado_color_text"></i> 
+    Ajouter des élèves à mes leçons  - <small>{{ teacher.students.count }} actuellement</small>
+{% endblock  %}
+
+
+
+
+
+{% block page_menu_right %} 
+ <small>{{ teacher.user.last_name}} {{ teacher.user.first_name}}</small> 
+ 
+{% endblock  %}
+
+
+
+
+
+
+
+
+{% block body  %} 
+ 
+
+
+
+<section class="content_container">
+
+    <div class="row">
+        <div class="col-xs-12">
+ 
+         
+   
+            <form  action="{% url 'add_students_to_my_lesson_group' %}" method="POST">
+                {% csrf_token %}              
+                {% regroup students by level as level_list %}
+
+                {% for l in level_list %}
+                    <h3 style="background-color: #f1eef7"> {{ l.grouper }}</h3> 
+                        <ul style="padding: 10px!important;">
+                        {% for s in l.list %} 
+                        {% is_inside_my_lesson teacher s as ins %}
+                        <li class="sanspuce"><input id="student_id" value="{{ s.user.id }}" name="students" type="checkbox" {% if ins %} checked {% endif %} />{% if ins %}<b> {{ s }}</b>{% else %} {{ s }} {% endif %}</li>
+                        {% endfor  %}
+                        </ul>
+                    
+                {% endfor %}
+
+
+                  <div class="row"> 
+                      <div class="col-sm-12 col-md-12">
+                          <div class="form-group"><br>
+                                <input value="Enregistrer" type="submit" class="btn btn-primary"  /> 
+                                <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default "/></a>
+                          </div>
+                      </div> 
+                  </div> 
+
+            </form>
+  
+
+        </div>
+
+    </div>
+
+ 
+</section>
+
+ 
+ 
+
+
+
+
+{% endblock %}

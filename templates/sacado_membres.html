@@ -1,0 +1,35 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+
+        <h5 style="margin-top:20px">MEMBRES ACTIFS</h5>
+        <ul>
+            <li>Audrey Ledoux</li>  
+            <li>Sandrine Rébéna</li>  
+            <li>Bruno Serres</li>
+            <li>Medhi Boulifa</li>    
+            <li>Nicolas villemain</li>
+            <li>Nicolas Renaud</li>         
+            <li>Olivier Evain</li>
+            <li>Philippe Demaria</li>                       
+            <li>Sébastien Rivillon</li>
+        </ul>
+        <h5 style="margin-top:20px">MEMBRES D'HONNEUR</h5>
+        <ul>
+            <li>Pascale Louvrier</li>
+            <li>Raphael Chay</li>
+        </ul>
+        <p>L'association <b>sacado</b> est déposée et enregistrée à la Préfecture du Var sous le numéro : W832020065</p>
+
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h5 style="margin-top:20px">MEMBRES BENEFICIAIRES</h5>
+
+        {% for a in abonnements %}
+                <li> <b>{{ a.school.name }}</b>,  {{ a.school.town }},  {{ a.school.country.name }}   </li>
+        {% endfor %}
+
+    </div>
+</div>    

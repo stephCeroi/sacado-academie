@@ -1,0 +1,76 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-dashboard']);
+        require(['script/ajax-group']);
+    </script>
+{% endblock %}
+
+
+
+{% block page_title %}
+    {% if historic %}
+         Historique des adhésions
+    {% else %}
+         Adhésions en cours > {{ level.name }}
+    {% endif  %}
+{% endblock %}
+
+{% block page_menu_right %}
+        <a href="{% url 'academy_index'  %}" class="btn btn-sacado pull-right">Tableau de bord</a> 
+{% endblock %}
+
+
+
+
+{% block body %}
+    <section class="content_main"> 
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <table id="standard_tab" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <td>Parents </td>
+                        <td>Elèves </td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for parent in parents %}
+                            <tr>
+                                <td>
+                                    {{ parent.user.last_name }} {{ parent.user.first_name }}
+                                </td>
+                                <td>
+                                    {% for s in parent.students.all %}  
+                                        <li>{{ s }} - {{ s.level }}</li>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'academy_delete_parent' parent.user.id %}">Supprimer ce parent</a> 
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">     
+                    <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+    </section>
+ 
+
+ 
+
+
+{% endblock %}

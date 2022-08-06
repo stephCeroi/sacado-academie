@@ -1,0 +1,85 @@
+{% load static %}    
+{% load widget_tweaks %}
+ 
+
+<div class="row">
+    <div class="col-sm-12 col-md-12" >  
+        <button id="text_writer"  data-nbclone=0  class="btn btn-default bcPicker-tools" style="font-family: 'Times New Roman';font-size: 16px; font-weight:bold;" >T</button>
+        <button id="line"  data-nb={% if c_e or w_a %}{{ nb }}{% else %}1{% endif %} class="btn btn-default line bcPicker-tools"><i class="fa fa-window-minimize"></i></button> 
+
+        <span class="color-container">
+            <div id="bcPicker1" class="color-picker display-inline"></div>
+        </span>
+
+        <button id="right"  data-nb={% if c_e or w_a %}{{ nb }}{% else %}1{% endif %} class="btn btn-default bcPicker-tools" ><i class="fa fa-check text-success"></i></button>
+        <button id="wrong"  data-nb={% if c_e or w_a %}{{ nb }}{% else %}1{% endif %} class="btn btn-default bcPicker-tools"  ><i class="fa fa-times text-danger"></i></button> 
+
+        <button id="trash"  class="btn btn-default bcPicker-tools"><i class="fa fa-trash"></i></button>   
+        <button id="comments" class="btn btn-default toggle_tools bcPicker-tools"   style="margin-left:10px"  ><i class="fa fa-comment"></i></button>  
+
+ 
+    </div> 
+</div> 
+
+<hr/>  
+
+<div id="paint_tools"  class="row tools">   
+    <div class="col-sm-12 col-md-12">
+        <label>Taille</label> <br/>
+            <button id="decrease" class="btn btn-default" >-</button>
+            <span id="size" class="btn btn-default" >2</span>
+            <button id="increase" class="btn btn-default" >+</button>
+
+            <button id="clear" class="btn btn-default" style="margin-left: 20px"><i class="fa fa-eraser"></i></button>
+    </div>
+</div> 
+
+    <div class="row">  
+        <div class="col-sm-12 col-md-12" id="my_appreciations"><label>Annotations</label><br>
+            {% for comment in comments %}
+                <button id="comment{{ comment.id }}" data-nb={% if c_e or w_a %}{{ nb }}{% else %}1{% endif %} data-text="{{ comment.comment }}" class="btn btn-default comment">{{ comment.comment }}</button> 
+            {% empty %}
+                <small class="helper_label_gray" id="empty_annotation">Pour ajouter un annotation personnalisée, cliquer sur <button class="btn btn-default"><i class="fa fa-comment"></i></button> ci-dessus.</small>
+            {% endfor %}
+        </div>
+    </div>
+     
+  <hr>
+<div id="comments_div"  class="tools"> 
+ 
+    <div id="more_text"  class="row">   
+        <div class="col-sm-12 col-md-12">
+            <label>Ajouter une annotation personnalisée</label> <br/>
+            {{ formComment.comment|add_class:"form-control"|attr:"rows:2"|attr:"cols:4" }} <br/>
+            <a href="#" id="add_my_appreciation" class="btn btn-primary" >Sauvegarder</a>
+
+
+            <a href="#" id="delete_appreciation" class="btn btn-default pull-right" ><i class="fa fa-trash"></i></a> 
+            <a href="#" id="modifier_appreciation" class="btn btn-default pull-right" ><i class="fa fa-pencil-square-o"></i></a> 
+            <input type="hidden" name="modif_appreciation" id="modif_appreciation">
+
+
+
+        </div>
+        <div class="col-sm-12 col-md-12">
+            <hr>  
+        </div>
+    </div> 
+
+
+ 
+</div> 
+
+<div id="templateDiv" class="annotation" data-nbclone={% if c_e or w_a %}{{ nb }}{% else %}1{% endif %} >
+    <a href="#" class="pull-right gray remove" ><i class="fa fa-trash fa-xs"></i></a>
+    <div class="annotationheader" >
+         <i class="fa fa-arrows-alt fa_white"></i>   
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <textarea rows="2" cols="30" class="textarea_div" ></textarea>
+        </div>
+    </div> 
+</div>
+
+ 

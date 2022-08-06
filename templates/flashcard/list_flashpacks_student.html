@@ -1,0 +1,111 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/ajax-flashpack']);
+    </script> 
+{% endblock %} 
+
+
+{% block page_title %}
+    {% include 'flashcard/logo.html' %}  
+    Mes flashpacks
+{% endblock %}
+
+
+
+{% block page_menu_right %}
+
+    {% if request.user.is_in_academy %}
+        <a href="{% url 'create_flashpack_academy' 0 %}" class="btn btn-new-violet">Créer un flashpack</a>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+{% block body %}
+<section class="content_main"> 
+
+
+
+
+    {% if flashpacks %}
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-xs-12"> 
+           <h2 class="thin">Flashpack sur l'année</h2>
+        </div>        
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-xs-12"> 
+                {% for flashpack in flashpacks %}
+                    {%  include 'flashcard/flashpack_student_data_index.html'  %}
+                {% endfor %}   
+            <!-- ******************************************************************************************** -->
+        </div>        
+    </div>
+    {% endif %}
+    {% if fpacks %}
+
+        {% if not request.user.is_in_academy %}
+        <div class="row">
+            <div class="col-md-12 col-lg-12 col-xs-12"> 
+               <h2 class="thin">Flashpack par parcours</h2>
+            </div>        
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12 col-lg-12 col-xs-12"> 
+                    {% for flashpack in fpacks %}
+                        {%  include 'flashcard/flashpack_student_data_index.html'  %}
+                    {% endfor %}   
+                <!-- ******************************************************************************************** -->
+            </div>        
+        </div>
+    {% endif %}
+
+
+    {% if request.user.is_in_academy   %}
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-xs-12"> 
+            <div class="alert alert-warning">
+                <p>Un flashpack est un ensemble de flashcards (ou cartes mémoires). </p>
+                <p>Une carte mémoire est une carte sur laquelle vous pouvez écrire une définition, une formule, une méthode à connaitre. </p>
+                <p>Une fois que votre flashpack est créé, vous pouvez revoir toutes les notions d'un même thème ou chapitre qui vous parait important. Ainsi, vous réactivez votre mémoire pour fixer les notions.</p>
+
+                <p>Cette réactivation, ritualisée, est portée par les sciences cognitives et Stanislas Dehaene dont voici son approche par les <a href="http://parisinnovationreview.com/article/les-quatre-piliers-de-lapprentissage-stanislas-dehaene" target="_blank">4 piliers de l'apprentissage</a> :
+                <ol>
+                  <li>L'attention</li>
+                  <li>L'engagement actif</li>
+                  <li>Le retour d’information</li>
+                  <li>La consolidation</li>
+                </ol> 
+                </p>
+
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 col-xs-12" align="center"> 
+                        <a href="{% url 'create_flashpack_academy' 0 %}" class="btn btn-new-violet">Créer un flashpack</a>
+                    </div>        
+                </div>
+            </div>
+
+        </div>        
+    </div>
+
+
+
+
+    {% endif %}
+
+
+
+
+
+</section>
+{% endblock %}

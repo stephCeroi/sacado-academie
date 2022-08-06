@@ -1,0 +1,104 @@
+{% load static %}
+<li  class='dropdown'>
+    <a href="#" class="righter" id="mobile_version_button_closer">
+        <i class="fa fa-times closer_tab"></i>
+    </a>
+    {% if is_gar_check %}
+    <a href="#"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
+        <div class="captionmenu sacado_menu">
+         SACADO
+        </div>
+    </a>
+    {% elif request.user.is_in_academy %}
+    <a href="{% url 'logout_academy' %}"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
+        <div class="captionmenu sacado_menu">
+         SACADO
+        </div>
+    </a>
+    {% else %}
+    <a href="{% url 'logout' %}"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
+        <div class="captionmenu sacado_menu">
+         SACADO
+        </div>
+    </a>
+    {% endif %}
+</li>
+
+{% if not is_gar_check %}
+<li class="dropdown {% if '/myaccount' in request.path %}active{% endif %}">
+    <a href="#" class="main" id="account">
+    {% if request.user.avatar and sacado_asso  %}
+        <img src="{{ request.user.avatar  }}" class="avatar" />
+        <div class="captionmenu">{{ request.user.first_name }}</div>
+    {% else %} 
+        <i class="bi bi-person-circle icon_size"></i> 
+        <div class="captionmenu">Compte</div>
+    {% endif %} 
+    </a>    
+</li>
+{% endif %}
+
+<li class='dropdown'>
+    <a href="{% url 'index' %}" class="main" >
+
+        <i class="bi bi-markdown icon_size"></i> 
+        <div class="captionmenu">Matières</div>
+
+    </a>
+</li>
+<li  class="dropdown {% if 'exercise' in request.path %}
+active
+{% endif %} 
+">
+    <a href="{% url 'detail_student_all_views' user.id %}" class="main" >
+        <i class="bi bi-trophy icon_size"></i>
+        <div class="captionmenu">Suivis</div>
+    </a>
+</li>
+<!-- 
+<li  class='dropdown {% if 'exercise' in request.path %}
+active
+{% endif %} 
+'>
+    <a href="{% url 'exercises' %}" >
+        <i class="fa fa-laptop fa-2x"></i>
+        <div class="captionmenu">Exercices</div>
+    </a>
+</li> 
+
+
+<li  class="dropdown  {% if '/sendmail' in request.path %} active{% endif %}">
+    <a href="{% url 'emails' %}" class="main" >
+        <i class="fa fa-inbox fa-2x"></i> 
+        <div class="captionmenu">Messages</div>
+    </a>
+</li>
+--> 
+
+{% if not request.user.is_in_academy %}
+<li  class="dropdown  {% if '/tool' in request.path %} active{% endif %}">
+    <a href="{% url 'list_quizz_student' %}" class="main" >
+        <i class="bi bi-aspect-ratio icon_size"></i> 
+        <div class="captionmenu">Quizz</div>
+    </a>
+</li>
+{% endif %}
+
+
+<li  class="dropdown  {% if '/flashpack' in request.path %} active{% endif %}">
+    <a href="{% url 'flashpacks' %}" class="main" >
+        <i class="bi bi-layers icon_size"></i> 
+        <div class="captionmenu">Flashpack</div>
+    </a>
+</li> 
+
+{% comment %} 
+{% if request.user.is_in_academy %}   
+<li  class="dropdown  {% if '/academy' in request.path %} active{% endif %}">
+    <a href="{% url 'autotests' %}" class="main" >
+        <i class="bi bi-question-circle icon_size"></i> 
+        <div class="captionmenu">Auto-test</div>
+    </a>
+</li> 
+{% endif %}  
+{% endcomment %}  

@@ -1,0 +1,394 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load item_tags %}
+ 
+{% block require %}
+ 
+    {% if group %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    {% endif %}
+
+    <script>
+        require(['script/ajax-group']);
+    </script>
+    {% if not teacher.user.school %} 
+     <script>
+        require(['script/ajax-group_show_inside_data_tab']);
+    </script>
+    {% endif %}
+{% endblock %}
+
+
+
+{% block page_title %}
+        <span style="color:{{ group.color }}"><i class="fa fa-arrow-circle-right"></i> {{ group.name }}   </span>
+            <img src="{% static 'img/angle-right.png' %}"/> <small>Détails</small> <img src="{% static 'img/angle-right.png' %}"/>
+
+            <a href="{% url 'print_list_ids' group.id  %}" class="btn btn-default"><i class="fa fa-list"></i>  Télécharger la liste des identifiants</a>
+            <a href="{% url 'print_ids' group.id  %}" class="btn btn-default"><i class="fa fa-th"></i>  Télécharger les identifiants en étiquette</a>
+
+{% endblock %}
+
+
+{% block page_menu_right %}
+ 
+   {% include 'group/submenu_group.html'  %}  
+
+
+{% endblock %}
+ 
+
+{% block body %}
+<div class="content_main"> 
+    <div class="row">        
+        <div class="col-sm-12 col-md-4">
+            <p style="color:{{ group.color }}">Niveau : <strong>{{ group.level.name }}</strong> - Code : <strong>{{ group.code }}</strong> 
+                <a href="#" data-toggle='modal' data-target='#mdp_code' title="Afficher le code et le mot de passe en plein écran"><i class="fa fa-expand"></i></a>
+
+                <a href="#" data-toggle='modal' data-target='#qr_code' title="Afficher le code et le mot de passe en plein écran">Rejoindre <i class="fa fa-qrcode"></i></a> 
+            </p>
+        </div>
+        {% if sacado_asso %}
+        <div class="col-sm-12 col-md-7"> 
+            <form action="" method="POST"> 
+                {% csrf_token %}
+                <p style="color:{{ group.color }}"> 
+                    {% for sp in  studentprofiles   %}
+                    <span class="profile_student_incognito" id="profile_incognito{{ sp.user.id }}" >Ident. élève : {{ sp.user.username }} 
+                        {% comment %}
+                        <a href="#" class="delete_student_profile edit" data-student_id="{{ sp.user.id }}" onclick="return TestDelete('votre profil élève')">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                        {% endcomment %}
+                    </span>
+                    {% endfor %}
+                </p>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <form action="" method="POST">{% csrf_token %}           
+        <div class="row">        
+            <div class="col-sm-11 col-md-12">
+                <table class="table table-hover display_no_details50">
+                    <thead>
+                    <tr>
+                        {% if not  sacado_asso %}
+                        <td style=" width:40px">
+                             
+                        </td>
+                        {% endif %} 
+                        <td>Nom </td>
+                        <td>Prénom </td>
+                        <td>Courriel </td>
+                        <td>Identifiant <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >Pour changer un identifiant, le modifier directement. Si l'identifiant choisi n'est pas disponible, la validation ne se fera pas.</div>
+                                </span>
+
+
+                        </td>
+                        <td>Dernière connexion</td>
+                        <td><span style=" color:#cb2131">Mot de passe par défaut : <strong>sacado2020</strong> 
+                            <span class="helper_tip" style="color:#cb2131"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >Lors de la création d'un élève ou d'une ré-initialisation de mot de passe, <b>sacado2020</b> est le mot de passe attribué.</div>
+                                </span></span>
+                        </td> 
+                    </tr>
+                    </thead>
+                    <tbody> 
+                        {% for student in  students   %}
+                            {% if not  sacado_asso %}          
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="select_these_students" id="select_this_student" value="{{ student.user.id }}"/> 
+                                        </td>
+                                        <td>
+                                            <input  type="text" 
+                                                    id="studentLastName{{ student.user.id }}" 
+                                                    data-student_id="{{ student.user.id }}" 
+                                                    class="updateStudent" 
+                                                    data-is_name="1" 
+                                                    value="{{ student.user.last_name|lower|title }}" 
+                                                    style="background: #f2f0f0; border: none;width:140px" />     
+                                        </td>
+                                        <td><input  type="text" 
+                                                    id="studentFirstName{{ student.user.id }}" 
+                                                    data-student_id="{{ student.user.id }}" 
+                                                    data-is_name="0" 
+                                                    class="updateStudent"  
+                                                    value="{{ student.user.first_name|lower|title }}" 
+                                                    style="background: #f2f0f0; border: none;width:120px" /> 
+                                        </td>
+                                        <td><input  type="text" 
+                                                    id="studentEmail{{ student.user.id }}" 
+                                                    data-student_id="{{ student.user.id }}" 
+                                                    data-is_name="2" 
+                                                    class="updateStudent"  
+                                                    value="{{ student.user.email }}" 
+                                                    style="background: #f2f0f0; border: none;width:310px" /> </td>
+                                        <td><input  type="text" 
+                                                    id="studentUsername{{ student.user.id }}" 
+                                                    data-student_id="{{ student.user.id }}" 
+                                                    data-is_name="3" 
+                                                    class="updateStudent"  
+                                                    value="{{ student.user.username }}" 
+                                                    style="background: #f2f0f0; border: none;width:180px" />
+                                            <a href="#" data-toggle='modal' class="div_username" data-target='#div_username' 
+                                                        data-username_div="{{ student.user.username }}"  style="font-size: 11px">
+                                                        <i class="fa fa-expand"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if student.user.last_login %}{{ student.user.last_login|date:"Y m d, H:i"  }}{% else %}Jamais{% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'ebep'  student.user.id  group.id  %}" class="helper_tip" style="color:#007EE2;" onclick="return ebepSelectedStudents('cet élève')" > 
+                                                <small>EBEP</small>
+                                                <div class="helper_tip_text">
+                                                    Elèves à Besoins Educatifs Particuliers
+                                                </div>
+                                            </a> 
+                                            <small>|</small> 
+                                            <a href="{% url 'detail_student_all_views'  student.user.id   %}"  style="font-size: 11px"> 
+                                               voir le bilan  
+                                            </a> 
+                                            <small>|</small> 
+                                            <a  href="{% url 'newpassword_student' student.user.id  group.id   %}" data-student_id="{{ student.user.id }}" title="mot de passe par défaut : sacado2020" 
+                                                onclick="return Newpassword()" style="font-size:11px; margin-right:5px"  >
+                                                Init. mot de passe
+                                            </a><small>|</small>       
+                                            <a  href="{% url 'delete_student' student.user.id  group.id %}"
+                                                onclick="return TestDelete('cet élève')" style="font-size:11px"  >
+                                                Supprimer
+                                            </a> 
+                                        </td>
+                                    </tr>
+                            {% else %}
+                                <tr>
+                                    <td>
+                                        {{ student.user.last_name|lower|title }}
+                                        {% if student.ebep %}<i class="fa fa-key" title="Elève à Besoins Educatifs Particuliers"></i> {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ student.user.first_name|lower|title }}
+                                    <td>
+                                        {{ student.user.email }}
+                                    </td>
+                                    <td>
+                                        <input  type="text" 
+                                                    id="studentUsername{{ student.user.id }}" 
+                                                    data-student_id="{{ student.user.id }}" 
+                                                    data-is_name="3" 
+                                                    class="updateStudent"  
+                                                    value="{{ student.user.username }}" 
+                                                    style="background: #f2f0f0; border: none;width:180px" />
+                                        <a href="#" data-toggle='modal' class="div_username"  data-target='#div_username' data-username_div="{{ student.user.username }}"  style="font-size: 11px"><i class="fa fa-expand"></i></a>  
+                                    </td>
+                                    <td>
+                                        {% if student.user.last_login %}{{ student.user.last_login|date:"Y m d, H:i"  }}{% else %}Jamais{% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'ebep'  student.user.id  group.id  %}" class="helper_tip"   style="color:#007EE2;" onclick="return ebepSelectedStudents('cet élève')"  > 
+                                            <small>EBEP</small><div class="helper_tip_text">
+                                                Elèves à Besoins Educatifs Particuliers
+                                            </div></a> 
+                                        <small>|</small> 
+                                        <a href="{% url 'detail_student_all_views'  student.user.id   %}"  style="font-size: 11px"> 
+                                           voir le bilan  
+                                        </a> 
+                                        <small>|</small> 
+                                        <a  href="{% url 'newpassword_student' student.user.id  group.id   %}" data-student_id="{{ student.user.id }}" title="mot de passe par défaut : sacado2020" 
+                                            onclick="return Newpassword()" style="font-size:11px; margin-right:5px"  >
+                                            Init. mot de passe
+                                        </a><small>|</small>       
+                                        <a  href="{% url 'delete_student' student.user.id  group.id %}"
+                                            onclick="alert('Vous avez la version établissement. Contacter le gestion SACADO de votre établissement.'); return false;" style="font-size:11px"  >
+                                            Supprimer
+                                        </a> 
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>   
+        </div> 
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                    {% if not sacado_asso %}
+                        <input value="Supprimer les élèves sélectionnés" type="submit" class="btn btn-danger" onclick="return TestDelete('ces élèves')"  />
+                    {% endif %}
+                    <a href="javascript:history.back()"><input type="button" value="Retour" class="btn btn-default "/></a>
+                </div>
+            </div>
+        </div> 
+    </form>
+	{% if group %}
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12 alert alert-info">
+            <div style="font-size: 16px"><i class="fa fa-info-circle"></i>
+                <b>Lien d'inscription :</b> Les élèves peuvent rejoindre ce groupe via cette URL à leur donner : <strong>https://sacado.xyz/group/{{ group.code }}</strong> <a href="https://sacado.xyz/group/{{ group.code }}" target="_blank"><img src="{% static 'img/external-link.png' %}"/></a>
+            </div>
+        </div>
+    </div>
+
+        {% if group.group_parcours.count == 0 %}
+            <div class="row">
+                <div class="col-lg-12 col-xs-12">
+                    <p></p>
+                    <div class="round" style="background-color: {{ group.color }};">
+                        <a href="{% url 'list_parcours_group' group.id %}" style="color: {{ group.color|contrast_color }};" > 
+                            <h1 class="sacado"> <br> 
+                                3. Créer <br> un dossier ou  <br> un parcours
+                            </h1>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    
+    {% endif %}
+
+
+</div> 
+
+
+    {% comment %}
+    <div class="modal fade bd-example-modal-lg" id="help"  tabindex="-1" role="dialog" aria-labelledby="help" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document" style="margin:0px!important">
+ 
+            {% if user.user_type == 2 %}
+                <div class="modal-content help" >
+ 
+                    <div class="helpdiv_help_title_page"  style="left:500px;">
+                        titre de page
+                    </div>
+                    <div class="helpdiv_help_groupe"   style="top:100px">
+                        <br><br><br><br><br><br><br><br><br><img src="{% static 'img/fleche_bottom_left.png' %}" width="40px" />
+                        <div class="help_groupe" style="float:left;width:200px;height:200px" >
+
+                               <br>
+                               <br><i class="fa fa-barcode"></i> Code
+                               <br> 
+                               <br><i class="fa fa-cubes"></i> Niveau
+                               <br> 
+                               <br><i class="fa fa-users"></i> Nombre d'élèves
+                               <br> 
+                               <br>Lien à donner aux élèves pour leur inscription en autonomie.
+
+                        </div>
+                    </div>
+
+
+                    <div class="helpdiv_help_acces"  style="top:45px;right:50px;border-top: 2px #fff solid;padding:10px;width:800PX">
+                        Sous menu contextuel <img src="{% static 'img/fleche_up_right.png' %}" width="40px" style="vertical-align:bottom" />
+                    </div>
+
+
+
+                    <div class="helpdiv_help_list">
+                        <div class="help_list">
+
+                            <br><br><br> Liste des élèves. <br>Cliquer sur un élève pour obtenir sa fiche de suivi.
+                        </div>
+                         <br> <br><img src="{% static 'img/fleche_up_right.png' %}" width="40px" /><br><br><img src="{% static 'img/fleche_bottom_right.png' %}" width="40px" style="vertical-align:middle;"/>
+
+                    </div>
+       
+
+
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endcomment %}
+
+<div class="modal fade" id="mdp_code" tabindex="-1" role="dialog" aria-labelledby="mdp_code" aria-hidden="true">
+    <div class="modal-dialog" role="document" >
+        <div class="modal-content">
+ 
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <h3>Mot de passe générique :</h3> 
+                    </div>
+                </div>
+                <div class="row" align="center">
+                    <div class="col-lg-12 col-xs-12">
+                        <font style="color:#cb2131  ;font-size: 80px"> sacado2020</font>
+                    </div>
+                </div>
+
+ 
+
+                <hr/>
+ 
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <h3>Code du groupe : </h3>
+                    </div>
+                </div>
+                <div class="row" align="center">
+                    <div class="col-lg-12 col-xs-12">
+                        <font style="color: {{ group.color}};font-size: 80px">{{ group.code }}</font>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="div_username" tabindex="-1" role="dialog" aria-labelledby="div_username" aria-hidden="true">
+    <div class="modal-dialog" role="document" >
+        <div class="modal-content">
+ 
+            <div class="modal-body">
+ 
+                <div class="row" align="center">
+                    <div class="col-lg-12 col-xs-12">
+                        <font style="color:#cb2131  ;font-size: 80px" id="response_username"></font>
+                    </div>
+                </div>
+
+ 
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="qr_code" tabindex="-1" role="dialog" aria-labelledby="qr_code" aria-hidden="true">
+    <div class="modal-dialog" role="document" >
+        <div class="modal-content">
+ 
+            <div class="modal-body">
+ 
+                <div class="row" align="center">
+                    <div class="col-lg-12 col-xs-12">
+                        {{ show_qr|safe }}
+                    </div>
+                </div>
+ 
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

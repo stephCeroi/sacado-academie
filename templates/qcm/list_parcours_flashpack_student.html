@@ -1,0 +1,65 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4_withoutMathJax.js' %}"></script>
+ 
+    <script>
+        require(['script/ajax-parcours']);
+    </script> 
+
+
+{% endblock %}
+
+ 
+
+{% block page_title %}
+{% include 'flashcard/logo.html' %}
+ 
+
+        {% include 'qcm/breadcrumb_student.html' %}   <span style="color:{{ parcours.color  }}"> <small class="thin">Les flashpacks</small></span>  
+{% endblock %}
+
+ 
+
+{% block page_menu_right %}
+    {% if not parcours.is_sequence %}
+        {% include 'qcm/submenu_parcours_student.html' %}
+    {% endif %}
+{% endblock %}
+
+ 
+
+{% block css_files %}
+{% endblock %}
+
+
+
+{% block body  %}
+
+{% include 'preloader.html' %}
+
+<section class="content_list" id="principal_section"> 
+
+ 
+        {% if sacado_asso %}    
+            {% for flashpack in flashpacks %}
+                {% include 'flashcard/flashpack_student_data.html' %} 
+            {% endfor %}
+
+        {% else %}
+            <div class="alert alert-danger">
+                <i class="fa fa-ban"></i> Version établissement nécessaire
+            </div>
+        {% endif %}
+
+  
+</section>
+
+ 
+
+{% endblock  %}   

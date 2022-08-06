@@ -1,0 +1,97 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-dashboard']);
+        require(['script/ajax-group']);
+    </script>
+{% endblock %}
+
+
+
+{% block page_title %}
+    <a href="{% url 'admin_tdb' %}">  <i class="fa fa-cloud"></i></a> Liste des cotisations 
+{% endblock %} 
+
+{% block page_menu_right %}
+
+
+
+    <a href="{% url 'update_school'  request.user.school.id    %}">{{ request.user.school.name }} </a>
+
+
+
+
+{% endblock %}
+
+
+
+
+{% block body %}
+    <section class="content_list"> 
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <table class="table table-bordered table-hover standard_tab_sort">
+                    <thead>
+                        <tr>
+                            <td>Date </td>
+                            <td>Référence</td>
+                            <td>Objet</td>                            
+                            <td>Montant </td>
+
+                            <td>Statut</td>
+                            <td> </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for accounting in  accountings %}
+                            <tr>
+                                <td>{{ accounting.date|date:"d N Y" }}</td>
+                                <td>{{ accounting.chrono }}</td>
+                                <td>{{ accounting.objet }}</td>                                
+                                <td>{{ accounting.amount }} €</td>
+                                <td>{% if accounting.date_payment %}Payé le {{ accounting.date_payment }}{% else %} En attente de paiement {% endif %}</td>
+                                <td>
+                                    {% if accounting.date_payment %}
+                                        <a href="{% url 'print_bill_school' accounting.id %}" class="btn btn-xs btn-default"><i class="fa fa-print"></i> Imprimer la facture </a>
+                                    {% else %} 
+                                        <a href="{% url 'print_accounting' accounting.id %}"  class="btn btn-xs btn-primary"> Imprimer la facture </a>
+                                        <a href="{% url 'renew_school_adhesion' %}" class="btn btn-xs btn-danger"> En attente de paiement </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% if renew_propose %}
+        <div class="row alert alert-warning">
+            <div class="col-sm-12 col-md-12">  
+                Une demande d'adhésion a été envoyée. La demande est en cours de traitement.  
+            </div>
+        </div>
+        {% endif %}
+
+
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">  
+                {% if not renew_propose %}
+                <a href="{% url 'renew_school_adhesion' %}" class="btn btn-warning" onclick="return TestRenew('cette adhésion')">Réabonnement Nouvelle Année Scolaire</a> 
+                {% endif %}
+                <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}

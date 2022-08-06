@@ -1,0 +1,247 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+ 
+    <script>
+        require(['script/ajax-parcours']);
+    </script> 
+
+<style>
+.extend_parcours .col-xs-4, .extend_parcours .col-sm-4, .extend_parcours .col-md-4, .extend_parcours .col-lg-4 {
+    padding-right: 0px!important;
+}
+
+</style>    
+{% endblock %}
+
+ 
+
+{% block page_title %}
+       <span style="color:{{ group.color|contrast_color_title }}"><i class="fa fa-th"></i>      </span>          {% include 'qcm/breadcrumb.html' %}
+{% endblock %}
+
+{% block page_menu_right %}
+
+
+    {% include 'group/submenu_group.html' %}
+
+    {% if role %}
+        {% include 'qcm/submenu_creation.html' %}
+    {% endif %}
+    
+{% endblock %}
+
+{% block css_files %}
+{% endblock %}
+
+
+
+{% block body  %}
+
+{% include 'preloader.html' %}
+
+<section class="content_list" id="principal_section"> 
+
+    
+    {% if folders.count > 0 %} 
+    <div class="row"> 
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin"> Mes dossiers  </h1> 
+                <form action="" methode="POST" id="folders_sortable"> 
+                {% for folder in folders  %}  
+
+                    {% include 'qcm/folder_tag.html' %}
+         
+                {% endfor %}
+                </form>    
+        </div>
+    </div>
+    {% endif %}
+    
+    
+    {% if parcourses.count > 0 %} 
+    <div class="row"> 
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin"> Mes parcours  </h1>  
+                <form action="" methode="POST" id="parcours_sortable"> 
+                {% for parcours in parcourses  %}  
+                    
+                    {% include 'qcm/parcours_evaluation_tag.html' %}
+         
+                {% endfor %}
+                </form>
+        </div>
+    </div>
+    {% endif %}
+    
+     
+    {% if evaluations.count > 0 %} 
+    <div class="row"> 
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin" id="evaluation">Mes évaluations</h1> 
+                <form action="" methode="POST" id="evaluations_sortable">
+                {% for parcours in evaluations  %}  
+                    
+                    {% include 'qcm/parcours_evaluation_tag.html' %}
+         
+                {% endfor %}
+                </form>
+        </div>
+    </div>
+    {% endif %}
+    
+
+    {% if quizzes %}
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin" id="evaluation" >Mes quizz </h1>
+            <div class="row"> 
+                <div class="col-sm-12 col-md-12">
+                    {% for quizz in quizzes %}   
+                          {% include 'tool/quizz_tag.html' %} 
+                    {% endfor %}
+                </div>
+            </div>
+    </div>    
+    {% endif %}
+    {% if bibliotexs %}
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin" id="evaluation" >Mes bilioTex </h1>
+            <div class="row"> 
+                <div class="col-sm-12 col-md-12">
+                    {% for bibliotex in bibliotexs %}   
+                          {% include 'bibliotex/bibliotex_tag.html' %} 
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+    {% if nb_bases == 0 %} 
+        {% if role %}
+        <div class="row"> 
+            <div class="col-sm-12 col-md-12">
+                <div class="alert alert-warning">
+
+                    <img src="{% static 'img/fleche_up_right_violet.png' %}" style="position: absolute; right:250px" />
+
+
+
+                    <h2 class='thin'> 3 façons de disposer d'un parcours </h2>  
+                    
+                        <ol><i class="fa fa-hand-o-right"></i> <label style="font-size:18px"> Les parcours personnalisés</label> 
+                            <p>Vous souhaitez tout paramétrer et créer le parcours en simplement quelques clics. Cet espace vous est dédié.<br>  Créer votre parcours personnalisé dans un premier temps puis sélectionner les exercices de votre choix. 
+                                
+                            </p>
+                        </ol>
+
+                        <ol><i class="fa fa-hand-o-right"></i> <label style="font-size:18px"> Les parcours mutualisés</label> (<em>Version ETABLISSEMENT seulement</em>)
+                            <p>La mutualisation des parcours vous permet de sélectionner tous les parcours de l'équipe SACADO ou de récupérer un parcours mutualisé par un enseignant de votre établissement. Il vous sera possible de le modifier une fois cloné.
+                            </p>
+                        </ol>
+
+                        <ol>
+                            <i class="fa fa-hand-o-right"></i> <label style="font-size:18px"> Les parcours par défaut </label> <p> Ces parcours contiennent tous les exercices  de  {{ group.level}}, classés par thème. Vous pouvez les utiliser directement, ajouter, supprimer des exercices.
+                        </ol>
+                </div>
+ 
+                <h3 class='thin'><i class="fa fa-question-circle text-warning"></i> Conseils : Classer vos parcours par dossier - 2 approches au choix.</h3> 
+                <div class="col-sm-6 col-md-6 col-lg-4">
+                    <div class="alert alert-warning">
+                        <ol>Méthode privilégiée <i class="fa fa-check text-success"></i> </ol>
+                        <ol><label style="font-size:18px">1. Créer un dossier</label> </ol>
+                        <ol><label style="font-size:18px">2. Depuis le dossier, créer vos parcours</label></ol>
+                        <div align="center">
+                        <img src="{% static 'img/dossier2.png' %}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-4">
+                    <div class="alert alert-warning">
+                        <ol><label style="font-size:18px">1. Créer vos parcours</label> </ol>
+                        <ol><label style="font-size:18px">2. Créer votre dossier</label></ol>
+                        <ol><label style="font-size:18px">3. Inclure les parcours créés dans le dossier</label></ol>
+                        <div align="center">
+                        <img src="{% static 'img/dossier1.png' %}"  />
+                        </div>
+                    </div>
+                </div>
+
+
+
+                        
+
+                        
+
+
+            </div>
+        </div>
+        {% else %}
+            <div class="row"> 
+                <div class="col-sm-12 col-md-12">
+                    <div class="alert alert-warning">Aucun parcours n'est affecté à ce groupe. 
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+
+  
+</section>
+
+<div class="modal fade" id="parcours_default_modal" tabindex="-1" role="dialog" aria-labelledby="parcours_default_modal">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2 class="thin sacado">Les parcours par défaut</h2>
+                Ces parcours contiennent tous les exercices proposés par <span class="sacado">sacado</span> dans le thème proposé.
+                <div id="remediation_shower"> 
+                    {% include 'qcm/parcours_default.html' %}
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="listing" tabindex="-1" role="dialog" aria-labelledby="listing" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>                
+                <h5 class="modal-title" id="exampleModalLabel">Liste des élèves - <span id="modal_group_name"></span></h5>
+            </div>
+            <div class="modal-body">
+                <div id="list_students"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ 
+
+{% endblock  %}   

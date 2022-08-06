@@ -1,0 +1,76 @@
+{% load bootstrap3 %}
+{% load static %}
+{% bootstrap_messages %}
+<html>
+    <head>
+        <title>SacAdo Quizz Play</title>
+        <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"/>
+        
+        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}"/>
+        <link href="{% static 'css/AdminLTEperso.css' %}" rel="stylesheet">
+        <link href="{% static 'css/play_quizz.css' %}" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+          integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    </head>
+    <body>
+  
+
+        <form action="{% url 'store_student_answer' %}" method="POST">
+            <input type="hidden" id="gquizz_id" name="gquizz_id"  value="{{ gquizz.id }}" required />
+
+
+
+            {% csrf_token %}
+            <div id="get_the_question_in_the_form">
+ 
+                <div class="row">  
+                    <div class="col-sm-12 col-md-12" >
+                        <h1 class="subtitle sacado">{% if starter %}Bonjour{% else %}Bien joué{% endif %} {{ student.user.first_name }},<br/>
+                        {% if starter %}le quizz va débuter{% else %}En attente de la question {% endif %}
+                        </h1>
+                    </div>
+                </div> 
+                <div class="row">  
+                    <div class="col-sm-12 col-md-12" >
+                        <i class="fa fa-gamepad fa-10x white"></i>
+                    </div>
+                </div> 
+ 
+            </div>
+
+            <div id="after_the_question">
+ 
+                <div class="row">  
+                    <div class="col-sm-12 col-md-12" >
+                        <h1 class="subtitle sacado"> 
+                         En attente de la prochaine question  
+                        </h1>
+                    </div>
+                </div> 
+                <div class="row">  
+                    <div class="col-sm-12 col-md-12" >
+                        <i class="fa fa-gamepad fa-10x white"></i>
+                    </div>
+                </div> 
+ 
+            </div>
+
+
+
+
+        </form>
+ 
+
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/play-quizz-student']);
+    </script> 
+
+
+    </body>
+</html>
+
+ 
+      
+ 

@@ -1,0 +1,153 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2_mini.js' %}"></script>
+    <script>
+        require(['script/ajax-list-course']);
+    </script> 
+{% endblock %}
+
+ 
+
+{% block page_title %}
+   <i class="fa fa-desktop sacado_color_text"></i> Mes cours
+{% endblock %}
+
+
+
+
+
+
+{% block page_menu_right %}
+ <li><a href="{% url 'courses_archives' %}"  class="no_button"><i class="fa fa-archive"></i> Archives ({{ nb_archive }})</a></li>
+
+    {% include 'qcm/course/submenu_creation_course.html' %}
+   
+{% endblock %}
+
+
+
+
+{% block body  %} 
+
+<section class="content_list"> 
+{% include 'preloader.html' %}
+
+<form action="{% url 'actioner' %}" method="POST" enctype='multipart/form-data'>
+    <div class="row">    
+        <div class="col-sm-12 col-md-12">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xs-6 col-md-3 ">
+                    <h2 class="thin sacado_color_text"></i> rattachés aux parcours</h2>
+                </div>
+
+                <div class=" col-xs-6 col-md-9">
+                    <div class="form-group">
+                        <input type="search" id="accordion_search_bar" class="form-control" placeholder="Ecrire un mot comme 'numérique' proposera les dossiers le contenant.">
+                    </div>
+                </div>
+            </div>
+            {% for parcours_course in parcours_courses %} 
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <div class="panel-group_list" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default" id="collapse{{ forloop.counter }}_container">
+                            <div class="panel-heading" role="tab" id="heading{{ forloop.counter }}">
+                                <h4 class="panel-title">
+                                <a role="button" 
+                                 data-toggle="collapse" class="actionner_accordion" 
+                                 data-loop ="{{ forloop.counter }}"  
+                                 data-parent="#accordion" 
+                                 href="#collapse{{ forloop.counter }}" 
+                                 aria-expanded="true" 
+                                 aria-controls="collapse{{ forloop.counter }}">
+
+
+                                 {% if parcours_course.parcours.vignette %}
+                                    <img src="{{ parcours_course.parcours.vignette.url }}" width="50px" height="50px">
+                                 {% else %}  
+                                    <i class="fa fa-square" style="font-size: 2.4em; color:{{ parcours_course.parcours.color }}"></i>
+                                 {% endif %}  
+
+
+
+                                 {{ parcours_course.parcours.title }} <i class="fa fa-angle-down"  id="collapser_angle{{ forloop.counter }}"></i>
+
+                                 <span class="list_label list_subject">{{ parcours_course.parcours.subject.shortname }}  </span>
+
+                                 <span class="list_label">{{ parcours_course.parcours.level.name }} </span>
+
+                                </a>
+                                </h4>
+                            </div> 
+                            <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="heading{{ forloop.counter }}">
+                                <div class="panel-body">         
+                                    <table class="table table-hovered standard_tab_10"  style="width:100%" >
+                                        <thead>  
+                                            <th>Titre </th>  
+                                            <th> </th>
+   
+                                            <th>Mutualisation</th>
+                                            <th>Publication</th>
+                                        </thead>
+                                        <tbody>
+                                            {% for course in parcours_course.courses %} 
+                                                <tr >
+                                                    {% include 'qcm/course/course_data.html' %}
+                                                </tr>
+                                            {% endfor  %}          
+                                         </tbody>
+                                    </table>
+                                    <div class="row" style="margin-top:10px">
+                                        <div class="col-sm-12 col-md-12">
+                     
+                                            <button class="btn btn-default" name="action" value="archiver" onclick="return TestArchive('ces évaluations')"> 
+                                                <i class="fa fa-archive"> </i>  {% if 'archive' in request.path %} Désarchiver {% else %} Archiver {% endif %}  la sélection
+                                            </button>
+                           
+
+                                            <button class="btn btn-default" name="action" value="deleter" onclick="return TestDelete('ces évaluations')"> 
+                                                <i class="fa fa-trash"> </i>   Supprimer la sélection
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+ 
+    <div class="row" style="margin-top:50px;padding-left: 15px;">
+        <div class="col-sm-12 col-md-12 alert alert-warning">
+            <img src="{% static 'img/conseil.png' %}"/> Pour désarchiver un cours, il suffit de désarchiver le parcours auquel il est lié.
+        </div>
+    </div>
+</form>
+ 
+</section>
+ 
+ 
+{% endblock  %}   
+
+
+
+ 

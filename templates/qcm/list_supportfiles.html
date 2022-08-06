@@ -1,0 +1,153 @@
+{% extends 'dashboard.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+   
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+
+    <script>
+        require(['script/ajax-supportfile']);
+    </script> 
+
+
+{% endblock %} 
+
+  
+{% block page_title %}
+    <img src="{% static 'img/ggb.png' %}" width="25px"> Les supports GGB<img src="{% static 'img/angle-right.png' %}"/> {{ level.name }}
+{% endblock %}
+
+{% block page_menu_right %}
+
+
+{% endblock %}
+
+
+{% block body %}
+<section class="content_container">
+
+<form method="POST">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <table class="table  table-hover display1000" style="width:100%;background-color: #d4cdc4" >
+                <thead> 
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead> 
+                <tbody  id="supportfile_ranking">  
+                    {% regroup waitings by theme as theme_list %}
+                    {% for theme in theme_list  %} 
+                        <tr style="background:#5d4391; color:white">
+                            <td style="width:85%">{{theme.grouper.subject.name}} : {{theme.grouper.name}}</td> 
+                        </tr> 
+
+
+
+                        {% for waiting in theme.list  %}
+                        
+                            <tr style="background:#aa98cd; cursor: pointer; color: white" class="opener out"  id="{{ waiting.id }}">
+                                <td style="width:85%"><i class="fa fa-caret-right"></i> {{waiting.name}}   <small><b>{{  waiting.supportfile_counter }} exercice{{ waiting.supportfile_counter|pluralize  }}</b>  </small> </td> 
+                            </tr>  
+                 
+ 
+                            {% for knowledge in waiting.knowledges.all  %}
+ 
+                                    <tr  style="background:#d4cbe6; cursor: pointer; color: black" class="listingtd opener_k opened{{ waiting.id }} out"  id="{{ knowledge.id}}"> 
+                                        <td>
+                                            <i class="fa fa-caret-right"></i>  
+                                            {{ knowledge.name|capfirst }}  <small><b>{{  knowledge.supportfile_counter  }} exercice{{  knowledge.supportfile_counter|pluralize  }}</b></small> 
+                                            {% if request.user.is_superuser and '/admin' in request.path or request.user.is_extra %}                                                       
+                                            <a href="{% url 'create_supportfile_knowledge' knowledge.id %}" ><i class='fa fa-plus pull-right' style="margin-right:20px"></i></a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                {% if knowledge.supportfile_counter > 0 %}
+
+                                    {% for supportfile in knowledge.supportfiles|not_title|dictsort:"ranking"  %} 
+                                        <tr  class="opener_e openedk{{ knowledge.id }} this_supportfile" style="background:#fff; cursor: move;" >
+                                            <td> 
+                                                <input type="hidden" value="{{ supportfile.id }}" name="this_supportfile_id" ><!--  sert à classer les thèmes  -->   
+                                                <div class="pull-right" > 
+                                                {% for e in supportfile.levels_used %}
+                                                    <span class="subtitle">{{ e.level.name }}</span>{% if not forloop.last %}<br>{% endif %}
+                                                {% empty %}
+                                                    <a href="{% url 'show_this_supportfile' supportfile.id  %}"  class="btn btn-danger" target="_blank" >Non utilisé</a>
+                                                {% endfor %}
+                                                   <br><a href="{% url 'create_exercise' supportfile.id %}" class="btn btn-primary"  >Associer/Dissocier un savoir faire à ce support</a>
+                                                </div>
+
+                                                    <a href="{% url 'show_this_supportfile' supportfile.id   %}" target="_blank"> 
+                                                    {% if supportfile.imagefile %} 
+                                                        <img src="{{ supportfile.imagefile.url }}" class="imagefile">
+                                                    {% else %} 
+                                                        <img src="{% static 'img/missing_img.png' %}" class="imagefile">
+                                                    {% endif  %} 
+                                                    </a>
+
+
+                                                    <a href="{% url 'update_supportfile'  supportfile.id   %}" class="listing" style="font-size: 18px">
+                                                                {% if supportfile.title %}  
+                                                                    {{ supportfile.title|cleanhtml|capfirst }}  
+                                                                {% else %}  
+                                                                    {{ supportfile.annoncement|cleanhtml|capfirst }} 
+                                                                {% endif %}
+                                                    </a>  
+
+
+                                                    {% if supportfile.calculator %}
+                                                      <img src="{% static 'img/calculator.png' %}" width="30px" />
+                                                    {% else %}
+                                                      <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                                                    {% endif  %}
+
+
+                                                     <br>
+                                                    <small>   
+                                                        <i class="fa fa-fw fa-barcode"></i> {{ supportfile.code }}  {% if supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                        <i class="fa fa-fw fa-clock-o"></i> {{ supportfile.duration }} minutes {% if supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                        {% if supportfile.is_ggbfile %}<i class="fa fa-fw fa-save"></i> {{ supportfile.situation}} situation{{ supportfile.situation|pluralize}} minimum{% endif %}<br>
+                                                        <i class="fa fa-fw fa-copyright"></i>
+                                                        {% if supportfile.skills.count > 0 %}
+	                                                        {% for skill in supportfile.skills.all %}
+	                                                        {{ skill.name}}{% if not forloop.last %}, {% endif %}
+	                                                        {% endfor %}
+                                                    	{% else %}
+                                                      		<small>compétence non renseignée</small>
+                                                    	{% endif  %}
+                                                    </small>   
+                                           </td>
+                                        </tr>
+                                    {% endfor %} 
+
+                                {% endif %}
+
+                            {% endfor %}
+                            
+                        {% endfor %}
+
+                        
+
+                    {% endfor %}  
+                </tbody>
+  
+            </table>
+
+
+
+        </div>
+    </div>
+</form>  
+ 
+
+</section>
+{% endblock %}                        
+
+ 
+
+ 

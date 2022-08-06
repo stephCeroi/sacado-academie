@@ -1,0 +1,486 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+
+
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>  
+
+    <script>
+        require(['script/ajax-exercise']);
+    </script>     
+
+    {% if not customexercise %}
+    <script>
+        require(['script/ajax-exercise-complement']);
+    </script> 
+    {% endif %}
+
+{% endblock %}
+
+ 
+
+{% block page_title %}
+ <span style="color:{{ parcours.color }}"><i class="bi bi-explicit-fill"></i> </span>
+
+    {% include 'qcm/breadcrumb.html' %}
+
+
+<small >Création d'un exercice non auto-corrigé</small>
+ 
+{% endblock %}
+
+
+{% block page_menu_right %}
+ 
+{% endblock %}
+
+
+{% block body %}
+<style>
+ul#id_skills li{
+    list-style: none;
+}
+</style>
+
+
+<div class="content_main">
+    <div class="col-xs-12 col-md-12">
+        <form action="" method="POST" enctype='multipart/form-data'>
+            {% csrf_token %}
+            <div class="row" id="standard_layer">
+ 
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+ 
+                            <div class="form-group">
+                                <label>Consigne :</label><br>
+                                {{ form.instruction |add_class:"form-control"|attr:"rows:3" }}
+                                {{ form.instruction.errors }}
+                            </div>
+ 
+                            <div class="form-group">
+                                <label>Savoir faire évalués : </label><em><small> Pour retrouver les savoir faire, taper un mot clé dans le champ</small></em><br>
+                                {{ form.knowledges|add_class:"form-control select2" }}
+                                {{ form.knowledges.errors }}
+                            </div>
+ 
+                            <div class="form-group">
+                                <label>Compétences évaluées :</label><br>
+                                {{ form.skills|add_class:"form-control select2" }}
+                                {{ form.skills.errors }}
+                            </div>
+ 
+                        <div class="row" style="margin:0px; background-color: #F0F0F0;padding:10px;">
+                            <label><a href="#"  id="enable_correction">Ajouter une correction</a> <small>(Falcultatif)</small>    </label>
+                            <div id="enable_correction_div">
+                                <div class="col-sm-12 col-md-12">                        
+                                    <div class="form-group"> 
+                                        {{ form.text_cor.label_tag }}                        
+                                        {{ form.text_cor }}
+                                        {{ form.text_cor.errors }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">                        
+                                    <div class="form-group">
+                                        {{ form.file_cor.label_tag }}                        
+                                        {{ form.file_cor|add_class:"btn btn-default" }}
+                                        {{ form.file_cor.errors }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">   
+                                    <div class="form-group">
+                                        {{ form.video_cor.label_tag }}
+                                        {{ form.video_cor |add_class:"form-control"|attr:"placeholder:Code de la vidéo" }} 
+                                        {{ form.video_cor.errors }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-2">   
+                                    <div class="form-group">
+                                        {{ form.is_publish_cor.label_tag }}
+                                        {{ form.is_publish_cor |attr:"data-toggle:toggle" |attr:"data-onstyle:success"|attr:"data-offstyle:danger"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {{ form.is_publish_cor.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label>Autres parcours affectés : </label> 
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >L'exercice est associé par défaut à ce parcours. Si vous souhaitez placer cet exercice dans un autre parcours.</div>
+                                </span> <br>
+                            {{ form.parcourses|add_class:"form-control select2" }}
+                            {{ form.parcourses.errors }}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    {{ form.duration.label_tag }}
+                                    {{ form.duration |add_class:"form-control" }} 
+                                    {{ form.duration.errors }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    {{ form.lock.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">A partir de cette date et heure, l'exercice ne pourra plus être remis. <small>(Facultatif)</small></div>
+                                    </span>
+                                    {{ form.lock |add_class:"form-control datetimepicker" }}
+                                    {{ form.lock.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        {% if  sacado_asso %}
+                        <div class="form-group">
+                            {{ form.imagefile.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">La vignette d'accueil propose un visuel de votre exercice. Sans vignette de votre part, SACADO associe une vignette par défaut.(Facultatif)</div>
+                                    </span>
+
+                                {% if customexercise.imagefile  %}
+                                    <img src="{{ customexercise.imagefile.url }}" width ="250px" />
+                                {% endif %}
+
+                                    
+                            {{ form.imagefile |add_class:"btn btn-default" }}
+                            {{ form.imagefile.errors }}
+                            <font style="font-size:12px;color:#c70000">Largeur : 750px - hauteur : 550px.</font>
+                        </div>
+                        {% endif %}
+
+
+                        {% if request.user.is_creator or request.user.is_superuser  %}
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                   Auto positionnement ? <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">Après la remise du travail, les critères d'autocorrection sont proposés aux élèves pour un auto-positionnement face à leir production</div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.is_autocorrection |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {{ form.is_autocorrection.errors }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row no_visu_on_load" id="positionnement">
+                            <div class="col-sm-12 col-md-12 div_positionnement">
+                                    {{ form.criterions }}
+                            </div>
+
+                            <div class="col-sm-12 col-md-12">
+                                <a href="#" data-toggle='modal' data-target='#more_criterion'  ><small>Ajouter un critère</small></a>
+                            </div>
+                        </div>
+                        {% endif %}
+
+
+
+
+
+
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <h4 class="thin">Configuration :</h4><hr/>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                   Publié ?
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.is_publish |attr:"data-toggle:toggle" |attr:"data-onstyle:success"|attr:"data-offstyle:danger"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {{ form.is_publish.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                   Mutualisé ?  
+                                   {% if not  sacado_asso %}
+                                    <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">L'exercice ne peut pas être mutualisé. Pour accéder à cette fonctionnalité, il faut utiliser la version établissement.</div>
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {% if  sacado_asso %}
+                                        {{ form.is_share |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {% else %}
+                                        {{ form.is_share |attr:"disabled" |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {% endif %}
+                                    {{ form.is_share.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                   Calculatrice ?
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.calculator |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {{ form.calculator.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                   Interface Python ? <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">SACADO propose une interface Python</div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.is_python |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {{ form.is_python.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                   Lien vers Scratch ? <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">Un lien vers Scratch est donné pour que les élèves puissent créer leur script. Il leur suffit de prendre une capture d'écran de leur script et de la glisser déposer dans la zone de texte.</div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.is_scratch |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {{ form.is_scratch.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="config_render">
+                            <h4 class="thin"> Type de remise :</h4><hr/>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-8">
+                                    <div class="form-group">
+                                        Saisie tapuscrite <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">Ecriture au clavier. Espace de saisie identique à celui de la consigne ci-contre.</div>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        {{ form.is_text |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {{ form.is_text.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %}
+                            <div class="row" {% if not customexercise %} id="collaborative_div" {% endif %}>
+                                <div class="col-sm-12 col-md-8">
+                                    <div class="form-group">
+                                        Saisie collaborative <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">Ecriture au clavier sur un espace partagé. L'enseignant voit en direct les travaux des élèves</div>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        {% if  sacado_asso %}
+                                        {{ form.is_collaborative |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {{ form.is_collaborative.errors }}
+                                        {% else %}
+                                            <span class="text-danger">Nécessite la version Etablissement.</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if teacher.user.is_superuser %}
+                            <div class="row">
+                                <div class="col-sm-12 col-md-8">
+                                    <div class="form-group">
+                                        Saisie manuscrite <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">fonctionnnalité qui permet aux élèves d'utiliser un stylet.</div>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        {% if  sacado_asso %}
+                                            {{ form.is_realtime |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {% else %}
+                                            {{ form.is_realtime |attr:"disabled" |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {% endif %}
+                                        {{ form.is_realtime.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endcomment %} 
+                            <div class="row">
+                                <div class="col-sm-12 col-md-8">
+                                    <div class="form-group">
+                                        Fichier <small>(pdf,doc,...)</small> <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">Nécessite la version Etablissement. Le rendu du travail est un fichier. Les élèves téléversent leurs rendus et l'enseignant le récupère dans sa console.</div>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        {% if  sacado_asso %}
+                                            {{ form.is_file |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {% else %}
+                                            {{ form.is_file |attr:"disabled" |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {% endif %}
+                                        {{ form.is_file.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-8">
+                                    <div class="form-group">
+                                        Image <small>(jpg,png) <span style="font-size:12px;color:#c70000">max. 500ko</span></small> <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text">Nécessite la version Etablissement. Le rendu du travail est une image. Les élèves téléversent leurs rendus et l'enseignant le récupère dans sa console.</div>
+                                    </span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        {% if  sacado_asso %}
+                                            {{ form.is_image |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {% else %}
+                                            {{ form.is_image |attr:"disabled" |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                        {% endif %} 
+                                        {{ form.is_image.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                    Notation ?
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.is_mark |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+                                    {{ form.is_mark.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="on_mark">
+                            <div class="col-sm-12 col-md-8">
+                                <div class="form-group">
+                                    Sur ?
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="form-group">
+                                    {{ form.mark |add_class:"form-control" }}
+                                    {{ form.mark.errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <input value="Enregistrer" type="submit" class="btn btn-primary" id="click_button" />
+                            <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default "/></a>
+                        </div>
+                    </div>
+                </div>
+                {% if customexercise %}
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12"> 
+                            {% if parcours %}
+                            <a href="{% url 'parcours_delete_custom_exercise' customexercise.id parcours.id  %}" class="btn btn-danger" style="margin-left:5px" onclick="return TestDelete('cet exercice personnalisé')" > 
+                                <i class="fa fa-trash"> </i>   Supprimer
+                            </a>
+                            {% else %}
+                            <a href="{% url 'parcours_delete_custom_exercise' customexercise.id 0  %}" class="btn btn-danger" style="margin-left:5px" onclick="return TestDelete('cet exercice personnalisé')" > 
+                                <i class="fa fa-trash"> </i>   Supprimer
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+    
+<div class="modal fade" id="more_criterion" tabindex="-1" role="dialog" aria-labelledby="more_criterion">
+    <div class="modal-dialog modal-maxsize" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>                 
+                <h2>Ajouter un critère</h2>              
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST" enctype='multipart/form-data' id="my_form_criterion">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label>Critère :</label><br>
+                                {{ form_c.label }}
+                                {{ form_c.label.errors }}
+
+                            </div>
+                        </div>
+                    </div>                                
+                    {{ form_c.subject }}
+                    {{ form_c.level }}
+ 
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label>Savoir faire associé</label><br/>
+                                {{ form_c.knowledge|add_class:"form-control select2" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label>Compétences associées</label><br/>
+                                {{ form_c.skill|add_class:"form-control select2" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <a href="#"  class="btn btn-primary" data-dismiss="modal" id="click_more_criterion_button" />Ajouter</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> 
+</div>
+
+ 
+
+{% endblock %}

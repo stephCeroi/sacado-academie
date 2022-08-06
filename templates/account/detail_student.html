@@ -1,0 +1,241 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load item_tags %}
+
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common4.js' %}"></script> 
+{% endblock %}
+
+
+ 
+{% block page_title %}
+    <span   style="color:{{ group.color|contrast_color_title }}" ><i class="fa fa-mortar-board"></i> </span>
+ 
+    {% if request.user.user_type == 2 %}
+        {% if group %} <a href="{% url 'list_parcours_group' group.id %}" style="color:{{ group.color|contrast_color_title }}" >{{ group.name }}</a> {% endif %}
+        {% if not students %}
+            {% if sprev_id %}
+                <a href="{% url 'detail_student' sprev_id  %}"  class="btn btn-default"> Elève précédent </a>{% endif  %}{{ student |truncatechars:"30" }} {% if snext_id %}<a href="{% url 'detail_student' snext_id  %}"  class="btn btn-default"> Elève suivant</a>
+            {% endif  %}
+        {% else %}
+ 
+            {% if 'detail_student_theme' in request.path %}
+                {% if sprev_id %}<a href="{% url 'detail_student_theme' sprev_id theme.id %}"  class="btn btn-default"> Elève précédent </a>{% endif  %}
+                <select name="select_sudent" id="select_student" style="width:250px; font-size: 20px;" onchange="location = this.value;">
+                {% for stdt in students %}
+                    <option value="{% url 'detail_student_theme' stdt.user.id  theme.id %}" {% if stdt.user.id == student.user.id %} selected {% endif %}>
+                        {{ stdt|truncatechars:"30" }}
+                    </option>
+                {% endfor %}
+                </select>
+
+                {% if snext_id %}<a href="{% url 'detail_student_theme' snext_id theme.id %}"  class="btn btn-default"> Elève suivant</a>{% endif  %}
+
+            {% elif 'detail_student_parcours' in request.path %}
+                {% if sprev_id %}<a href="{% url 'detail_student_parcours' sprev_id  parcours.id %}"  class="btn btn-default"> Elève précédent </a>{% endif  %}
+
+                <select name="select_sudent" id="select_student" style="width:250px; font-size: 20px;"  onchange="location = this.value;">
+                {% for stdt in students %}
+                    <option value="{% url 'detail_student_parcours' stdt.user.id  parcours.id %}" {% if stdt.user.id == student.user.id %} selected {% endif %}>
+                        {{ stdt|truncatechars:"30" }}
+                    </option>
+                {% endfor %}
+                </select>
+
+                {% if snext_id %}<a href="{% url 'detail_student_parcours' snext_id  parcours.id %}"  class="btn btn-default"> Elève suivant</a>{% endif  %}
+
+            {% elif 'detail_student_all_views' in request.path %}
+                {% if sprev_id %}<a href="{% url 'detail_student_all_views' sprev_id  %}"  class="btn btn-default"> Elève précédent </a>{% endif  %}
+
+                <select name="select_sudent" id="select_student" style="width:250px; font-size: 20px;"  onchange="location = this.value;">
+                {% for stdt in students %}
+                    <option value="{% url 'detail_student_all_views' stdt.user.id  %}" {% if stdt.user.id == student.user.id %} selected {% endif %}>
+                        {{ stdt|truncatechars:"30" }}
+                    </option>
+                {% endfor %}
+                </select>
+
+                {% if snext_id %}<a href="{% url 'detail_student_all_views' snext_id  %}"  class="btn btn-default"> Elève suivant</a>{% endif  %}
+            {% else %}
+                {% if sprev_id %}<a href="{% url 'detail_student' sprev_id  %}"  class="btn btn-default"> Elève précédent </a>{% endif  %}
+
+                <select name="select_sudent" id="select_student" style="width:250px; font-size: 20px;"  onchange="location = this.value;">
+                {% for stdt in students %}
+                    <option value="{% url 'detail_student' stdt.user.id  %}" {% if stdt.user.id == student.user.id %} selected {% endif %}>
+                        {{ stdt|truncatechars:"30" }}
+                    </option>
+                {% endfor %}
+                </select>
+
+                {% if snext_id %}<a href="{% url 'detail_student' snext_id  %}"  class="btn btn-default"> Elève suivant</a>{% endif  %}
+    
+            {% endif %}
+        {% endif %}
+    
+
+    {% elif request.user.user_type == 0 %}
+        Mes bilans et suivis
+ 
+    {% elif request.user.user_type == 1 %}
+        Bilans et suivis de {{ student.user }}  
+    {% endif %}
+
+{% endblock %}
+
+
+
+{% block page_menu_right %}
+
+
+    {% if  request.user.is_in_academy %}
+
+        {% if request.user.is_student %}
+
+        <li><a href="{% url 'synthese_parcours' user.id %}"  class="btn btn-new-violet"> Synthèse des parcours</a></li>
+        {% endif %}
+        
+    {% else %}
+
+
+        {% if request.user.user_type == 0 %}
+            <li><a href="{% url 'detail_student_all_views' user.id %}"  class="no_button"  style="font-size:18px;"> Mon suivi</a></li>
+        {% elif request.user.user_type == 1 %}
+
+            <li><a href="{% url 'detail_student_all_views' student.user.id  %}"  class="no_button"  style="font-size:18px;{% if 'detail_student_all_views' in request.path %}color:#007EE2{% endif %}"> Bilan</a></li>
+        {% else %}
+            {% if group %}
+            {% include 'group/submenu_group.html'  %}
+            {% else %}
+            <li><a href="{% url 'detail_student_all_views' student.user.id  %}"  class="no_button"  style="font-size:18px;{% if 'detail_student_all_views' in request.path %}color:#007EE2{% endif %}"> Bilan élève</a></li>
+            {% endif %}
+        {% endif %}
+
+
+
+        {% if request.user.user_type < 2 %}
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle no_button"  style="font-size:18px;{% if 'detail_student_theme' in request.path %}color:#007EE2{% endif %}"> Suivi par thème </a>
+                <ul id="products-menu" class="dropdown-menu clearfix pull-right" role="menu">
+                    <li {% if 'detail_student/' in request.path %} class="active" {% endif %} ><a href="{% url 'detail_student'  student.user.id  %}" > Général</a></li>
+                    <li class="divider"></li>
+
+                    {% regroup themes by subject as subjects %}
+                    {% for s in subjects   %}
+                        <li style="background: {{ s.grouper.color }}; color: {{ s.grouper.color|contrast_color }}; padding:5px ; font-size: 16px;" >
+                             {{ s.grouper }}
+                        </li>
+
+                        {% for thm in s.list %}
+                             <li {% if 'detail_student_theme/' in request.path and thm.id == theme.id %}  class="active" {% endif %}><a href="{% url 'detail_student_theme'  student.user.id  thm.id  %}" > {{ thm.name }}</a></li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </li>
+
+
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="dropdown-toggle no_button"  style="font-size:18px;{% if 'detail_student_parcours' in request.path %}color:#007EE2{% endif %}"> Suivi par Parcours </a>
+                <ul id="products-menu" class="dropdown-menu clearfix pull-right" role="menu">
+                    {% regroup parcourses by subject as subjects %}
+
+                    {% for s in subjects   %}  
+                        <li style="background: {{ s.grouper.color }}; color: {{ s.grouper.color|contrast_color }}; padding:5px ; font-size: 16px;" >
+                             {{ s.grouper }}
+                        </li>
+      
+                        {% for prcrs in s.list  %}  
+                            <li {% if 'detail_student_parcours/' in request.path and prcrs.id == parcours.id %}  class="active" {% endif %}> 
+                                {% get_publish_parcours_inside_folder prcrs prcrs.folders.all  student as publish_filter %}  
+                                {% if not publish_filter %} 
+                                <a href="{% url 'detail_student_parcours'  student.user.id  prcrs.id  %}"  >
+                                    <i class="fa fa-caret-right"></i> {{ prcrs.title }}    
+                                </a>
+                                {% endif %}
+                            </li> 
+                        {% endfor %}
+     
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+
+
+    {% endif %}
+
+
+
+{% endblock %}
+
+ 
+{% block body %}
+<section class="content_list"> 
+    <div class="col-xs-12 col-md-12" >
+ 
+
+        {% block datae %}
+            <table class="table table-bordered table-hover standard_tab_sort300">
+                <thead>
+                    <tr style="color:#FFF;background-color: {{ group.color }}">
+                        <td>{{ group.name }}<img width="25px" src="{% static 'img/angle-right-white.png' %}"/>    Savoir faire</td>
+                        <td style="width:400px">Score</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for theme in datas %} 
+                    <tr class="no_padding" style="color:#FFF;background-color: {{ group.color }};opacity:0.6">
+                        <td> {{ theme.name }} 
+                        </td>  
+                        <td> </td>              
+                    </tr>   
+                        {% for exercise in theme.exercises %} 
+                        <tr class="no_padding"  {% if not exercise.is_publish %} style="background-color:#F0F0F0"{% endif %} >
+                            <td {% if exercise.is_publish %} style="padding:0px" {% endif %}> 
+                                <div {% if exercise.is_publish %} style="border-left: 4px solid #00AC18; padding:10px;min-height:{% if  exercise.scores %}100{% else %}50{% endif %}px"{% endif %} >
+                                {{exercise.name.knowledge.name }} 
+                                </div>  
+                            </td>
+                            <td style="text-align: center">
+                                {% for sta  in exercise.scores  %}     
+                                    {% if sta.point != "" %}
+                                        <div class="markdown_div 
+                                                {% if sta.point < 30 %}
+                                                 red 
+                                                {% elif  sta.point < 60 %}
+                                                orange
+                                                {% elif  sta.point < 80 %}
+                                                green
+                                                {% else %}
+                                                darkgreen
+                                                {% endif %} white">
+                                            <strong>{{ sta.point }}%</strong>
+                                            <small>
+                                                <br>situations : {{ sta.numexo }}
+                                                <br>temps : {{ sta.secondes|time_done }}
+                                                <br>date : {{ sta.date|date:"d m Y" }}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+
+                    
+                {% endfor %}  
+                </tbody>      
+            </table>
+       
+        {% endblock %}
+
+        <div style="height:40px"></div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">     
+                    <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

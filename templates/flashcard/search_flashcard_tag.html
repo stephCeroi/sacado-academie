@@ -1,0 +1,57 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+<div class="contenair_search_flashcard" id="contenair_search_flashcard{{ flashcard.id }}">
+ 
+    <div>
+        <label class="container_checkbox">
+
+            <input type="checkbox"  data-flashcard_id="{{ flashcard.id }}"  data-flashpack_id="{{ flashpack.id}}" class="get_flashcard" name="flashcards"
+                   id="selected_flashcard{{ flashcard.id }}"  data-statut="{{ is_selected }}" {% if is_selected %}checked{% endif  %}/>
+            <span class="checkmark" ></span>
+
+            <span class="container_checkbox_title">{{ flashcard.title }} </span>
+
+            <small class="pull-right">
+                {% for s in exotex.skills.all %}
+                    {{ s.name }}.
+                {% endfor %}
+            </small>
+
+        </label> 
+    </div>
+
+
+
+    <div id="answer{{ flashcard.id }}" class="flashcard_div no_visu_on_load">
+        {{ flashcard.answer|safe }}
+    </div>
+    {% if flashcard.helper %}
+    <div id="helper{{ flashcard.id }}" class="flashcard_div no_visu_on_load">
+        {{ flashcard.helper|safe }}
+    </div>
+    {% endif %}
+    <div class="contenair_flashcard">
+        {{ flashcard.question|safe }}
+    </div>
+
+    <div class="label_flashcard">
+        <div class="col-sm-6 col-md-6">
+            <div data-statut="show_answer" data-flashcard_id="{{ flashcard.id }}" class="bottom_flashcard btn btn-default">
+                Voir la réponse proposée
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6">
+            {% if flashcard.helper %}
+            <div data-statut="show_helper" data-flashcard_id="{{ flashcard.id }}" class="bottom_flashcard  btn btn-default">
+                Voir l'aide proposée
+            </div>
+            {% endif %}
+        </div>
+    </div>   
+
+  
+
+
+</div>

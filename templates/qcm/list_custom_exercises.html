@@ -1,0 +1,116 @@
+{% extends 'dashboard.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+   
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+
+    <script>
+        require(['script/ajax-exercise_custom']);
+    </script> 
+{% endblock %} 
+
+  
+{% block page_title %}
+    <i class="bi bi-cloud-download-fill sacado_color_text"></i>  {% include 'qcm/breadcrumb.html' %} Récupérer un exercice
+{% endblock %}
+
+{% block page_menu_right %}
+
+ 
+
+
+    {% if request.user.is_superuser and  '/admin' in request.path %}
+    <li ><a href="{% url 'create_supportfile' %}"   class="btn btn-new"><img width="25px" src="{% static 'img/plus.png' %}"/> Nouveau support GGB </a> </li> 
+    {% endif  %}
+
+
+{% endblock %}
+
+
+{% block body %}
+<section class="content_main">
+<form method="POST"> 
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <table class="table  table-hover display100"  style="width:95%">
+                <thead> 
+                    <tr>
+                        <td>Enoncé</td>
+ 
+                        <td>Matière</td>
+                        <td>Compétences</td>
+                        <td>Savoir faire</td>
+                        <td>Interface</td>
+                        <td>Auteur</td>
+                        <td></td>
+                    </tr>
+                </thead> 
+                <tbody>
+                    {% for customexercise in customexercises  %} 
+                        
+                        <tr id="tr_custom{{ customexercise.id }}"> 
+                            <td>
+                                <span class="pull-right">
+                                    {% if customexercise.calculator %}
+                                      <img src="{% static 'img/calculator.png' %}" width="30px" />
+                                    {% else %}
+                                      <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                                    {% endif  %}
+                               </span>
+                               {{ customexercise.instruction|safe }} 
+                            </td>
+ 
+                            <td>
+                               {% for subject in customexercise.subjects %} 
+                                    {{ subject }}{% if not forloop.last %}<br>{% endif %}
+                               {% endfor %} 
+                            </td>
+                            <td>
+                               {% for s in customexercise.skills.all %} 
+                                {{ s }}{% if not forloop.last %}<br>{% endif %}
+                               {% endfor %} 
+                            </td>
+                            <td>
+                               {% for k in customexercise.knowledges.all %} 
+                                {{ k }}{% if not forloop.last %}<br>{% endif %}
+                               {% endfor %} 
+                            </td>
+                            <td>
+                                {% if customexercise.is_python %}
+                                      <img src="{% static 'img/is_python.png' %}" width="30px" />
+                                    {% else %}
+                                      <img src="{% static 'img/is_no_python.png' %}"  width="30px" />
+                                {% endif  %}
+                                {% if customexercise.is_scratch %}
+                                      <img src="{% static 'img/is_scratch.png' %}" width="30px" />
+                                    {% else %}
+                                      <img src="{% static 'img/is_no_scratch.png' %}"  width="30px" />
+                                {% endif  %}
+                            </td>
+                            <td>
+                                {{ customexercise.teacher }}
+                            </td>
+                            <td>
+                                <a href="#" data-exercise_id = '{{ customexercise.id }}' data-parcours_id = '{{ parcours.id }}' class="btn btn-primary getter_parcours_exercice_custom">Récupérer</a>
+                            </td>
+                        </tr>            
+                    {% endfor %} 
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>     
+</section>
+
+ 
+
+
+
+{% endblock %}
+

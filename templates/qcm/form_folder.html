@@ -1,0 +1,305 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+ 
+
+    <script>
+        require(['script/ajax-folders-create']);
+    </script> 
+
+    {% block require_complement %}
+        {% if not folder %}
+            <script>
+                require(['script/ajax-parcours-complement']);
+            </script> 
+        {% endif %}
+    {% endblock %} 
+
+{% endblock %} 
+
+
+{% block page_title %}
+ 
+   <i class="bi bi-folder sacado_color_text"></i> 
+ 
+
+      {% include 'qcm/breadcrumb.html' %}
+  
+    {% if folder %}
+        Configuration du dossier
+    {% else %}
+         Nouveau dossier   
+    {% endif %}
+ 
+{% endblock %}
+
+
+{% block page_menu_right %}
+{% endblock %}
+
+ 
+
+
+{% block body %}  
+<section class="content_main">
+
+    {% if folder %}
+        {% if folder.author != folder.teacher and folder.teacher != request.user.teacher %}
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <div class="alert alert-info">
+                    Le dossier est créé par <b>{{ folder.author }}</b> pour {% if folder.teacher.user.civilite == "Mme" %}sa{% else %}son{% endif %} collègue <b>{{ folder.teacher }}</b>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    <form action="" method="POST" enctype='multipart/form-data'> 
+    <div class="row">
+
+        <span style="display: none;">{{ form.groups|add_class:"select_all"}}</span>
+
+        <div class="col-sm-12 col-md-4">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12 col-md-8 col-lg-9">
+                    <div class="form-group">
+                        {{ form.title.label_tag }} <label> <small>(Inférieur à 18 lettres)</small></label>
+                        {{ form.title |add_class:"form-control" }}
+                        {{ form.title.errors }}
+                    </div>
+                </div>
+
+                <div class="col-sm-12  col-md-4  col-lg-3">
+                      {{ form.color.label_tag }}      
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >La couleur permet une reconnaissance rapide.</div>
+                                </span>
+                      <div id="color-picker-component" class="input-group colorpicker-component">
+                          {{ form.color.as_hidden }}
+                          <span class="input-group-addon"><i></i></span>
+                      </div>
+                </div>
+            </div> 
+
+            {% if  group %}                          
+                {{ form.subject.as_hidden}}
+                {{ form.level.as_hidden  }}
+            {% else %}                
+                <div class="row">          
+                    <div class="col-sm-12 col-md-6" >
+                        <div class="form-group">
+                            <label> Enseignement :</label><br/>
+                            {{ form.subject |add_class:"form-control select2" }}
+                            {{ form.subject.errors }}
+                        </div>
+                    </div>    
+                    <div class="col-sm-12 col-md-6" >
+                        <div class="form-group">
+                            <label> Niveau :</label><br/>
+                            {{ form.level |add_class:"form-control select2" }}
+                            {{ form.level.errors }}
+                        </div>
+                    </div> 
+                </div> 
+            {% endif %}
+
+
+
+
+            <div class="row">
+                <div class="col-sm-12 col-md-6" style="overflow-y: auto;height: 150px;">
+                    <label>Attribuer aux groupes proposés</label><span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                        <div class="helper_tip_text" >Facultatif, mais permet d'organiser ses documents.</div>
+                    </span> 
+                    {% if group or folder %}
+                        {{ form.groups  }}
+                        {{ form.groups.errors }}
+                    {% else %}
+                        {% if teacher.nb_boolean_multi_subjects %}
+                            <div class="form-group" id="grplist">
+                                 <div class="alert alert-warning">
+                                    <p style="font-size:12px">Choisir au moins un enseignement et un niveau.</p>
+                                </div>
+                            </div>
+                        {% else %} 
+                            <div class="form-group" id="grplist">         
+                                <label>Affecter à mes groupes :</label> {% if group %}
+                                        <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                            <div class="helper_tip_text" >Les groupes proposés sont du même niveau que le groupe {{ group.name }} {% if folder %} et contiennent le dossier {{ folder.title }}.{% endif %} </div>
+                                        </span> {% endif %}
+                                    {{ form.groups  }}
+                                    {{ form.groups.errors }}
+                            </div>
+                        {% endif %} 
+                    {% endif %}
+                </div>  
+                {% if group or folder %}
+                <div class="col-sm-12 col-md-6" style="overflow-y: auto;height: 230px;">
+                    <label>Inclure les parcours </label><span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                        <div class="helper_tip_text" >Facultatif, mais permet d'organiser ses documents.</div>
+                    </span> 
+                        {{ form.parcours|add_class:"select_all_parcours" }}
+                        {{ form.parcours.errors }} 
+                </div>
+                {% else %}
+                <div class="col-sm-12 col-md-6">
+                    <label>Inclure les parcours </label><span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                        <div class="helper_tip_text" >Facultatif, mais permet d'organiser ses documents.</div>
+                    </span> 
+                    <div class="form-group" id="pclist">
+                         <div class="alert alert-warning">
+                            <p style="font-size:12px">Choisir au moins un groupe.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+
+
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">  
+                        <div class="alert alert-warning">
+                            <p style="font-size:12px"><i class="fa fa-warning"></i> Lorsque plusieurs groupes sont cochés, le dossier est partagé entre ces groupes.</p>
+                        </div>
+                    </div>
+                </div> 
+
+
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-4" style="position: relative">
+            {% include 'qcm/insert_vignettes.html' %}
+        </div>
+
+        <div class="col-sm-12 col-md-4">                      
+            <table class="table borderless">
+                    <tr>
+                        <td>{{ form.is_publish.label_tag }}
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Visible par les élèves.</div>
+                            </span>
+                        </td>
+                        <td>{{ form.is_publish |attr:"data-toggle:toggle" |attr:"data-onstyle:success"|attr:"data-offstyle:danger"|attr:"data-on:Oui"|attr:"data-off:Non"}} </td>
+                        <td>{{ form.is_publish.errors }}</td>
+                    </tr>
+
+                    <tr class="publication_div">
+                        <td><label>Date de publication</label> 
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Date à partir de laquelle le dossier est publié.<br/>
+                                <span class="text-danger">Pour modifier la date, vider le champ.</span>
+                                </div>
+                            </span>
+                        </td>
+                        <td>{{ form.start|add_class:"form-control datetimepicker"}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.is_favorite.label_tag }} <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Accessible depuis son tableau de bord.</div>
+                            </span></td>
+                        <td>{{ form.is_favorite |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_favorite.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.is_share.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                                                <div class="helper_tip_text" >Mutualisation à l'ensemble des collègues de son établissement (si version établissement)</div>
+                        </td>
+                        <td>{{ form.is_share |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_share.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.stop.label_tag }} 
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Le dossier n'est pus publié à partir de cette date. 
+                                    <br/> 
+                                    <span class="text-danger">Pour modifier la date, vider le champ.</span>
+                                </div>
+                            </span>
+                        </td>
+                        <td>{{ form.stop|add_class:"form-control datetimepicker"}}</td>
+                        <td>{{ form.stop.errors}}{% for error in form.non_field_errors %}
+                                <p class="alert alert-danger">{{error}}</p>
+                            {% endfor %}</td>
+                    </tr>  
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="row" style="margin-top:40px">
+        <div class="col-sm-12 col-md-8">
+            <div class="form-group">
+ 
+                <input value="Enregistrer" type="submit"  class="btn btn-primary" onclick="return check_if_checked()" />
+ 
+                <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default"/></a>
+            </div>
+        </div> 
+
+        <div class="col-sm-12 col-md-4">
+        {% if folder  %}
+
+                {% if group %}
+                    {% if folder.is_archive  %}
+                        <a href="{% url 'folder_unarchive' folder.id  group.id %}" class="btn btn-warning"> 
+                            <i class="fa fa-th"> </i>   Désarchiver
+                        </a>
+                    {% else %}
+                        <a href="{% url 'folder_archive' folder.id  group.id %}" class="btn btn-warning"  onclick="return TestArchive('ce dossier')"> 
+                            <i class="fa fa-archive"> </i>   Archiver
+                        </a>
+                    {% endif %}
+                {% else %}
+                    {% if folder.is_archive %}
+                        <a href="{% url 'folder_unarchive' folder.id  0 %}" class="btn btn-warning"> 
+                            <i class="fa fa-th"> </i>   Désarchiver
+                        </a>
+                    {% else %}
+                        <a href="{% url 'folder_archive' folder.id 0 %}" class="btn btn-warning"  onclick="return TestArchive('ce dossier')"> 
+                            <i class="fa fa-archive"> </i>   Archiver
+                        </a>
+                    {% endif %}
+                {% endif %}  
+                
+                {% if group %}
+                    <a href="{% url 'delete_folder' folder.id  group.id %}" class="btn btn-danger"  onclick="return TestDeleteFolder('ce dossier')"> 
+                        <i class="fa fa-trash"> </i>   Supprimer
+                    </a>
+                {% else %}
+                    <a href="{% url 'delete_folder' folder.id  0 %}" class="btn btn-danger"  onclick="return TestDeleteFolder('ce dossier')"> 
+                        <i class="fa fa-trash"> </i>   Supprimer
+                    </a>
+                {% endif %}  
+
+
+        {% endif %}  
+
+        </div>
+    </div>  
+ 
+    </form> 
+
+</section>   
+
+
+
+
+
+{% endblock %}
+
+
+      
+ 
+ 

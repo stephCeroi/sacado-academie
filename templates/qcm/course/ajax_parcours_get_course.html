@@ -1,0 +1,62 @@
+    
+
+    {% if  not  sacado_asso %}
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="alert alert-danger">
+                Vous ne pouvez pas cloner d'exercice. Pour activer cette fonctionnalité, il faut utiliser la version établissement.
+            </div> 
+        </div>
+    </div>
+    <hr>     
+    {% endif  %}
+
+    {% if course %}
+    <label>Titre du chapitre : <b>{{ course.title }}</b></label>
+    {% else %} 
+    <label>Cours intégral : <b>{{ parcours.title }}</b></label>
+    {% endif %} 
+    <hr> 
+
+ 
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="form-group">
+
+                {% regroup parcourses by level as level_list %}
+                {% for level in level_list %}
+                    <h4 class="thin">{% if level.grouper.name %}{{ level.grouper.name }}{% else %}Aucun niveau renseigné{% endif %}</h4>
+
+                    {% for p in level.list|dictsort:"title" %}
+                        <label style="margin-bottom:4px" class="btn btn-{% if p.is_evaluation %}info{% else %}default{% endif %}"><input value="{{ p.id }}" name="get_parcourses" type="checkbox" /> {{ p }}
+                            {% if p.is_evaluation %}<small>- évaluation</small>{% endif %}
+
+                        </label>
+                    {% endfor %}
+                {% endfor %}  
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="form-group">
+                {% if  sacado_asso %}
+                    {% if course %}
+                        <a href="#" class="btn btn-primary clone_to" data-course_id = '{{ course.id }}'  data-parcours_id = '{{ parcours.id }}' data-all_parcours=0  data-dismiss="modal" aria-label="Close" >Cloner ce chapitre dans les parcours sélectionnés</a>
+                    {% else %}
+                        <a href="#" class="btn btn-primary clone_to" data-course_id = '{{ course.id }}' data-parcours_id = '{{ parcours.id }}' data-all_parcours=1  data-dismiss="modal" aria-label="Close" >Cloner le cours complet dans les parcours sélectionnés</a>
+                    {% endif %} 
+                {% else %}
+                    {% if course %}
+                        <span class="btn btn-default">Cloner ce chapitre dans les parcours sélectionnés</span>
+                    {% else %}
+                        <span class="btn btn-default">Cloner le cours intégral dans les parcours sélectionnés</span>
+                    {% endif %} 
+                {% endif  %}
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>

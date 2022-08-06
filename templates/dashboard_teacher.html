@@ -1,0 +1,392 @@
+{% load static %} 
+{% load item_tags %} 
+
+
+
+<div class="row" id ="principal_section">
+{% comment %} 
+    {% if nb_teacher_level > 0 %}   
+        <a href="#" class="sub_menu_right pull-right whire" id="right_menu_open"><i class="fa fa-angle-double-left"></i> </a> 
+    {% endif %}
+{% endcomment %} 
+
+    <div class="col-xs-12 col-md-12 col-lg-12" style="margin-top:0px">
+        <div class="row"></div>
+        {% for group in groups %}
+            {% get_group_parcours_counter group  teacher as data %}
+                <!-- small box -->
+                <div class="small-box" style="background-color:{{ group.color }};color:{{ group.color|contrast_color }}">
+                    <!-- modal qui affiche la liste des élèves -->
+                    <div class="group_show   no_visu_on_load" id="group_show{{group.id }}"> 
+                        <form action="" method="POST">
+                        {% csrf_token %}
+                        <a href="#" class="vue menuaction" data-toggle='modal' style="float:left; margin-right:10px"
+                           data-group_name='{{ group.name }}' data-group_id='{{ group.id }}' data-target='#exampleModal'> <span class="label label-default"> {{ data.count_students }}<i class="fa fa-users"></i></span></a>
+                        </form>
+                        <font style="color:#CCC">
+                            {% for s in data.students %} 
+                                <a href="{% url 'detail_student_all_views'  s.user__id   %}" class="small_users"> {{s.user__last_name|lower|capfirst}} {{s.user__first_name|lower|capfirst}}</a>{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </font>
+                        <div style="clear:both"></div>
+                        <span style="color:{{ group.color }};font-size:12px"><a href="{% url 'update_group' group.id %}" style="background-color:{{ group.color }}; color:{{ group.color|contrast_color }}; padding :1px 5px; border-radius: 3px">+ Ajouter</a> ou lien d'inscription à donner aux élèves  : https://sacado.xyz/group/{{ group.code }}   
+                              
+                        </span> 
+                    </div>
+
+
+                    <!-- Legende de la small-box -->
+                    <div class="inner" style="color:white;opacity:0.9"><br/>
+                        <span style="color:{{ group.color|contrast_color }};font-size: 35px">{{ group.name |truncatechars:"14" }} </span>{% if group.lock %} <i class="fa fa-lock" style="font-size: 14px" title="Ce groupe est verrouillé" ></i>{% endif %} <br/><br><br>
+                         <span style="color:{{ group.color|contrast_color }};font-size: 16px"> {{ group.code }} </span> 
+
+                            {% if group.is_task_exists %}
+                                <a  href="{% url 'group_tasks' group.id  %}" class="pull-right" style="color:{{ group.color|contrast_color }}; font-size:13px;margin-top:8px;"><i class="fa fa-calendar-check"></i> Tâche en cours </a>
+                            {% endif %}
+                     
+                         <br/> <br/>
+                        {% if teacher != group.teacher or group.is_shared %}
+                        <span class="shared_group"> Co-animation 
+                             <i class="fa fa-info-circle"></i>
+                                <div class="modal_helper_tip_text" > 
+                                    <small>{{ group.teacher }} (Propriétaire)</small><br>
+                                    {% for gs in group.group_sharingteacher.all %}
+                                        <small>{{ gs.teacher }} ({% if gs.role %}Editeur{% else %}Lecteur{% endif %})</small>{% if not forloop.last %}<br>{% endif %}
+                                    {% endfor %}
+                                </div>
+                        </span>
+                        {% endif %}
+                    </div>
+
+                        
+ 
+                    <div class="small-box-footer" >
+                        <div class="row">                                      
+                            <div class="col-lg-12 col-xs-12" style="padding-right:0px;font-size: 12px;margin-top: 7px">
+                                Dossiers favoris  
+                               <small> ({{ data.nb_folders }}) - 
+                                    {{ data.nb_folders_published }} publié{{ data.nb_folders_published|pluralize }}  
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row">                                      
+                            <div class="col-lg-12 col-xs-12" style="padding-right:0px;font-size: 12px;">
+                                Parcours favoris  
+                                <small> ({{ data.nb_parcours_favorite }}) - 
+                                    {{ data.nb_parcours_visible }} publié{{ data.nb_parcours_visible|pluralize }}  
+                                </small>
+
+                            </div>
+                        </div>
+                        <div class="row">                                      
+                            <div class="col-lg-12 col-xs-12" style="padding-right:0px;font-size: 12px">
+                            
+                                Evaluation{{ data.nb_evaluation_favorite|pluralize }} favorite{{ data.nb_evaluation_favorite|pluralize }} <small> ({{ data.nb_evaluation_favorite }}) - {{  data.nb_evaluation }} passée{{ data.nb_evaluation|pluralize }}</small>
+                            </div>
+                        </div>
+                        <div class="row">                                      
+                            <div class="col-lg-12 col-xs-12" style="padding-right:10px; margin-bottom: 18px; margin-top: 12px">
+                            
+
+                                <a href="{% url 'list_parcours_group' group.id  %}" class="btn btn-default btn-accueil" style="width:280px;color:{{ group.color}}"> 
+                                    Accéder                              
+                                    {% if group.is_pending_correction %}
+                                        <i class="fa fa-copyright pull-right" style="font-size:12px; margin-top:5px" title="Copies à corriger" ></i> 
+                                    {% endif %}
+                                </a>
+                        
+
+
+                            </div>
+                        </div>
+                        {% if data.nb_documents == 0 %}
+                            <div class="row">                                      
+                                <div class="col-lg-6 col-xs-6" style="padding-right:0px">
+                                    <a href="{% url 'show_group' group.id  %}" class="label_small_box" style="font-size:20px; color:{{ group.color|contrast_color }};"><i class="fa fa-arrow-circle-right"></i>
+                                        <span class="small_displayer"> Détails </span>
+                                    </a>    
+                                </div>
+                                <div class="col-lg-6 col-xs-6" style="padding-right:0px">
+                                    <a  href="javascript:void();"  class="label_small_box group_shower" data-group_id="{{group.id }}" style="font-size:20px; color:{{ group.color|contrast_color }};"><i class="fa fa-users"></i><span class="helper_tip small_displayer" style="color:{{ group.color|contrast_color }};"> {{ data.snt }} élève{{ data.snt|pluralize }}
+                                    </a>   
+                                </div>
+                            </div>
+                        {% else  %}
+                            <div class="row">                    
+                                <div class="col-lg-4 col-xs-4" style="padding-right:0px">
+                                    <a href="{% url 'show_group' group.id  %}" class="label_small_box" style="font-size:15px; color:{{ group.color|contrast_color }};"><i class="fa fa-arrow-circle-right"></i><span class="small_displayer"> Détails </span></a>    
+                                </div>
+
+                                <div class="col-lg-4 col-xs-4" style="padding-right:0px">
+                                    <a  href="{% url 'result_group_exercise'  group.id %}" style="font-size:15px; color:{{ group.color|contrast_color }};" title="Lien interne" ><i class="fa fa-mortar-board"></i><span class="small_displayer"> Suivis </span></a><a  href="{% url 'result_group_exercise'  group.id %}" target="_blank" title="Lien externe" > <img src="{% static 'img/external-link_white.png' %}"  width="8px" ></a>
+                                </div> 
+                                <div class="col-lg-4 col-xs-4" style="padding-right:0px">
+                                    <a  href="javascript:void();"  class="label_small_box group_shower" data-group_id="{{group.id }}" style="font-size:15px; color:{{ group.color|contrast_color }};"><i class="fa fa-users"></i>
+                                        <span class="helper_tip small_displayer"  style="color:{{ group.color|contrast_color }};"> 
+                                            Élève{{ data.snt|pluralize }}
+                                        </span> 
+                                    </a>   
+                                </div>
+                            </div>
+                        {% endif  %}
+                    </div>
+                </div>
+
+        {% empty %}
+
+            {% if nb_teacher_level == 0 %} 
+
+                <div class="row">
+                    <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2 alert alert-warning"> 
+                        <h1>Bienvenue dans l'univers SACADO </h1>
+                        L'esprit SACADO se base sur des exercices auto corrigés à variables didactiques aléatoires. Chaque exercice est rattaché à un savoir faire du programme du MENJS.<br/>
+                        Gérer vos groupes ou classes, des parcours d'apprentissage, des évaluations, des cours (version établissement), des quizz et utiliser nos outils pédagogiques testés en classe avec nos élèves.<br/>
+                        Pour démarrer, nous vous proposons :
+                        <li style="list-style: none">1. de configurer votre compte</li>
+                        <li style="list-style: none">2. de créer votre premier groupe</li>
+                        <li style="list-style: none">3. de créer votre premier parcours</li>
+                        Bonne prise en main. Pour toute difficulté, nous écrire via <a href="#">info@sacado.xyz</a>. 
+                        <span class="pull-right">L'équipe SACADO </span>
+                    </div>
+                </div>     
+                <div class="row">
+                    <div class="round" style="margin-top: 50px;"> 
+                        <h1 class="sacado">1.<br>Démarrez  avec </h1>
+                        <a href="{% url 'profile' %}">Configurer mon compte</a>
+                        <h1 class="sacado">sacAdo </h1>
+                    </div>
+                </div>
+            {% else %}  
+
+
+
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <p></p>
+                        <div class="round" style="background-color: #FFB400">
+                            <h1 class="sacado">2.<br>Démarrez  avec </h1>
+                            <a href="{% url 'create_group' %}" >Créer mon premier groupe</a>
+                            <h1 class="sacado">sacAdo </h1>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if teacher.groups.count > 0 and teacher.user.username|length < 50 %} 
+        <div class="col-lg-2 col-xs-2">
+            <a href="{% url 'create_group' %}" class="helper_tip"><i class="fa fa-plus-circle fa-3x btn-create-group" ></i> 
+                <div class="helper_tip_text" >Nouveau groupe</div>
+            </a>
+        </div>
+        {% endif %}
+ 
+                                
+        {% if folders_tab|length > 0 %}    
+            <div class="row"></div>
+            <h2 class="thin"> Mes dossiers non affectés</h2>
+            {% for folder in folders_tab %}  
+                {% include 'qcm/folder_tag.html' %}
+            {% endfor %}
+        {% endif %}
+
+
+
+
+        {% if parcours_tab|length > 0 %}
+  
+
+            {% regroup parcours_tab by is_evaluation as list_parcours %} 
+
+            {% for parcours_sort in list_parcours %}  
+            <div class="row"></div>
+            <h2 class="thin">{% if parcours_sort.grouper %}Mes évaluations non affectées{% else %} Mes parcours non affectés{% endif %}</h2>
+            <div class="row"></div><hr style="margin-top: 0px"/>             
+                {% for parcours in parcours_sort.list %}  
+                    <div  class="box box-widget widget-user-2"  
+                          style="opacity:0.7;{% if parcours.vignette %}background-image: url('{{ parcours.vignette.url }}'); background-size: cover; {% endif %} background-color:{{parcours.color }};">
+                          <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="handler widget-user-header">
+                            <a href="{% url 'delete_parcours' parcours.id 0 %}" class="pull-right btn btn-danger btn-xs"  onclick="return TestDelete('ce parcours')">
+                                <i class="fa fa-trash"></i>
+                            </a>  
+                                                                                  
+                            {% if parcours.is_folder %} 
+                                <a href="{% url 'update_folder' parcours.id 0 %}" class="btn btn-info btn-xs" >   Affecter ce dossier à un groupe</a><br>
+                            {% else %}   
+                                {% if parcours.is_evaluation %} 
+                                    <a href="{% url 'update_evaluation' parcours.id 0 %}" class="btn btn-default btn-xs" >   Affecter à un groupe</a><br>
+                                {% else %}
+                                    <a href="{% url 'update_parcours' parcours.id 0 %}" class="btn btn-default btn-xs" >   Affecter à un groupe</a><br>
+                                {% endif %}
+                            {% endif %}
+
+
+                                <div class="icon" style="opacity:0.9;top:50px;z-index:999;">
+
+
+                                    {% if parcours.level %}                
+                                        {{ parcours.level.shortname }} 
+                                    {% else %}                
+                                        {{ parcours.level_by_exercises }} 
+                                    {% endif  %}                 
+                                </div>                                    
+                          
+
+                            {% if parcours.vignette %}                
+                                <div class="box_title_underlay_vignette" style="background-color:{{ parcours.color }};">
+                                </div> 
+                            {% endif  %}
+                            <div class="box_title_vignette"> 
+                                <a {% if parcours.is_evaluation%} href="{% url 'show_evaluation'   parcours.id  %}" {% else %} href="{% url 'show_parcours' 0  parcours.id  %}"{% endif %}  style="color:{{ parcours.color|contrast_color }};"> {{ parcours.title|truncatechars:"18" }}
+                                    <span style="font-size:12px"> 
+                                        {% with parcours.nb_exercises as nb_p_exercises %}
+                                            {{ nb_p_exercises }} exercice{{ nb_p_exercises|pluralize }}
+                                        {% endwith %}
+                                        {{  parcours.duration_overall|int_minutes }}min.
+                                     </span>
+                                </a>
+                                {% if parcours.parcours_shared %}
+                                <span class="shared" style="color:{{ parcours.color }};">Parcours partagé</span>
+                                {% endif %} 
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="row extend">                              
+                                <div class="col-lg-3 col-xs-3">
+                                    {% if  is_folder %} 
+                                            <a href="{% url 'update_folder' parcours.id 0 %}" class="edit" >   
+                                    {% else %}
+                                        {% if parcours.is_evaluation %} 
+                                            <a href="{% url 'update_evaluation' parcours.id 0 %}" class="edit" >  
+                                        {% else %}
+                                            <a href="{% url 'update_parcours' parcours.id 0 %}" class="edit" >   
+                                        {% endif %}
+                                    {% endif %}
+                                        <i class="fa fa-edit"></i><span class="label_icon tool_tip">Conf.
+                                            <div class="tool_tip_text" >
+                                                <small>Configurer les paramètres.</small>
+                                            </div>
+                                        <span></a> 
+                                </div>                             
+                                <div class="col-lg-3 col-xs-3">
+                                    <a href="{% url 'peuplate_parcours' parcours.id   %}" class="edit"><i class="fa fa-cloud"></i><span class="label_icon tool_tip"> Sélec.
+                                        <div class="tool_tip_text"><small>Sélectionner les exercices du parcours</small></div>
+                                    </span></a>  
+                                </div>    
+                                <div class="col-lg-3 col-xs-3">
+                                     <a href="{% url 'show_course' 0 parcours.id   %}"  class="edit"><i class="fa fa-desktop"></i><span class="label_icon tool_tip"> Cours 
+                                        <div class="tool_tip_text"><small>Créer un cours attaché</small></div>
+                                     </span></a> 
+                                </div>  
+                                <div class="col-lg-3 col-xs-3">
+                                    <a href="{% url 'parcours_tasks_and_publishes' parcours.id %}"  class="edit"><i class="fa fa-indent"></i><span class="label_icon tool_tip"> Gérer
+                                        <div class="tool_tip_text"><small>Gérer les sections comme des chapitres</small></div>
+                                    </span></a> 
+                                </div>  
+                            </div>
+                        </div>
+                    </div>   
+                {% empty %}
+                    <div class="col-sm-12 col-md-12">
+                        <div class="alert alert-danger">Aucun parcours créé ou affecté. <a href="{% url 'parcours' %}" >Voir la liste de mes parcours</a></div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    </div>
+     <!-- ****************************************************************************************-->
+     <!-- ****************************************************************************************-->
+     <!--    ****************************          Colonne de droite              ****************-->
+     <!-- ****************************************************************************************-->
+     <!-- ***************************** **********************************************************-->
+    {% comment "Menu right" %}
+    <div class="col-xs-12 col-md-12 col-lg-2"> 
+        {% include 'right_menu.html' %}
+    </div>
+    {% endcomment %}
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>                
+                <h3 class="modal-title" id="exampleModalLabel">Liste des élèves - <span id="modal_group_name"></span></h3>
+            </div>
+            <div class="modal-body">
+                <div id="list_students"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="parcours_default_modal" tabindex="-1" role="dialog" aria-labelledby="parcours_default_modal">
+    <div class="modal-dialog" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2 class="thin sacado">Les parcours par défaut</h2>
+                <p>Ces parcours contiennent tous les exercices proposés par <span class="sacado">sacado</span> dans le thème proposé. </p>
+                <form action="{% url 'get_parcours_default'  %}" method="POST" enctype='multipart/form-data'>   
+                    {% csrf_token %}
+                    <p><span class="label label-primary">1</span> Sélectionner le niveau souhaité.</p>
+
+
+                    <p><select name="level_selected_id" id="level_selected_id"  data-url="yes" class="form-control select2" required>
+                            <option value=" ">Sélectionner un niveau</option>
+                            {% for level in teacher.levels.all %}
+                            <option value="{{ level.id }}">{{level.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
+
+                    <div id="parcours_shower"> 
+             
+                    </div>  
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="sacado_etablissement" tabindex="-1" role="dialog" aria-labelledby="sacado_etablissement" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width:900px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>                
+                <h3 class="modal-title"  >Sacado - Version établissement <a href="{% url 'get_first_adhesion' %}" class="btn btn-warning">Passer à la version établissement </a> </h3>
+            </div>
+            <div class="modal-body">
+ 
+
+                 {% include 'sacado_asso.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% comment %}
+<div class="menu_right_div" id="right_menu">
+ 
+    <div class="col-xs-12 col-md-12 col-lg-12"> 
+        {% include 'right_menu.html' %}
+    </div>
+
+</div>
+{% endcomment %}
+
+ 
+
+ 

@@ -1,0 +1,73 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+ 
+
+
+{% block page_title %}
+        Tutos Sacado en vidéo
+{% endblock %}
+
+
+
+
+{% block page_menu_right %} 
+<a href="{% url 'index' %}" class="btn btn-default">Retour au tableau de bord</a>
+{% endblock %}
+
+
+
+{% block body %}  
+<section class="content_main">
+  
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-lg-6 col-xs-6" style="text-align:center;">
+            <video src="https://sacado.xyz/ressources/videos/creer_groupe.mp4" width=560  height=315 controls  >
+              Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+            </video>
+        </div>
+        <div class="col-lg-6 col-xs-6" style="text-align:center;">
+            <video src="https://sacado.xyz/ressources/videos/individualiser.mp4" width=560  height=315 controls  >
+                Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+            </video>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-xs-6" style="text-align:center;">
+            <video src="https://sacado.xyz/ressources/videos/archiver_parcours.mp4" width=560  height=315 controls  >
+              Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+            </video>
+        </div>
+        <div class="col-lg-6 col-xs-6" style="text-align:center;">
+            <video src="https://sacado.xyz/ressources/videos/ranger.mp4" width=560  height=315 controls  >
+                Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+            </video>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-xs-6" style="text-align:center;">
+            <video src="https://sacado.xyz/ressources/videos/suivi_parent.mp4" width=560  height=315 controls  >
+              Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+            </video>
+        </div>
+        <div class="col-lg-6 col-xs-6" style="text-align:center;">
+            <video src="https://sacado.xyz/ressources/videos/suivis_bilan.mp4" width=560  height=315 controls  >
+                Cette vidéo ne peut être affichée sur votre navigateur Internet.<br>
+            </video>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">  
+            <a href="{% url 'index' %}" class="btn btn-default">Retour au tableau de bord</a>
+        </div>
+    </div>
+</section>   
+{% endblock %}

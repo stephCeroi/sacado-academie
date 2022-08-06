@@ -1,0 +1,173 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+
+{% block require %}
+ 
+
+
+    {% if subject %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4_withoutMathJax.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/ajax-subject']);
+    </script> 
+    {% endif %}
+ 
+
+
+
+
+
+{% endblock %}
+
+ 
+
+{% block page_title %}
+     Enseignement  <img src="{% static 'img/angle-right.png' %}"/>  
+     {% if subject %}
+     <small>Modification</small>
+    {% else %}
+     <small>Nouveau niveau</small>
+    {% endif %} 
+{% endblock %}
+
+{% block page_menu_right %}
+{% endblock %}
+
+{% block body  %} 
+<section class="content_main"> 
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <form method="post" action="" enctype='multipart/form-data'>
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <label>{{ form.name.label_tag }}</label>
+                            {{ form.name |add_class:"form-control" }}
+                            {{ form.name.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5  col-md-4 col-lg-3">
+                            <label>{{ form.color.label_tag }} </label>     
+                                    <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                        <div class="helper_tip_text" >La couleur permet une reconnaissance rapide.</div>
+                                    </span>
+                          <div id="color-picker-component" class="input-group colorpicker-component">
+                              {{ form.color.as_hidden }}
+                              <span class="input-group-addon"><i></i></span>
+                          </div>
+                    </div>
+
+                    <div class="col-sm-7 col-md-8 col-lg-9">
+                        <div class="form-group">
+                            <label>{{ form.shortname.label_tag }}</label>
+                            {{ form.shortname |add_class:"form-control" }}
+                            {{ form.shortname.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <label>{{ form.image.label_tag }}</label>
+                            {{ form.image |add_class:"form-control" }}
+                            {{ form.image.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <label>{{ form.themes.label_tag }}</label>
+                            {{ form.themes }}
+                            {{ form.themes.errors }}
+                        </div>
+                    </div>
+                </div>
+                {{ form_ds.management_form }} 
+                <script id="rowToClone" type="text/template">
+                    <div id="duplicate">  
+                        <div class="row" >
+                            <div class="col-sm-6 col-md-6 col-lg-6" > 
+                                <div class="form-group">
+                                    {{ form_ds.empty_form.imagefile|add_class:"form-control"  }}
+                                </div> 
+                            </div>
+                            <div class="col-sm-5 col-md-5 col-lg-5" > 
+                                <div class="form-group">
+                                    {{ form_ds.empty_form.level|add_class:"select2 form-control"  }}
+                                </div> 
+                            </div>
+                            <div class="col-sm-1 col-md-1 col-lg-1">
+                                <div class="form-group" >
+                                   <div class="delete_button"></div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="row" id="cloningZone">                            
+
+                        </div>
+                    </div>
+                </script> 
+ 
+                <div id="formsetZone">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6" >
+                            Les vignettes par niveau
+                        </div>  
+                        <div class="col-sm-6 col-md-6" >
+                            <a href="#"  class="btn btn-info add_more" >Ajouter </a><br/><br/>
+                        </div>                            
+                    </div>
+
+
+                    {% for form in form_ds %}
+                    <div id="duplicate0">  
+                        <div class="row" >
+                            <div class="col-sm-6 col-md-6" > 
+                                <div class="form-group">
+                                    <label>Niveau</label><br/>
+                                    {{ form.imagefile|add_class:"btn btn-default form-control" }}
+                                </div> 
+                            </div>
+                            <div class="col-sm-5 col-md-5 col-lg-5" > 
+                                <div class="form-group">
+                                    <label>Niveau</label><br/>
+                                    {{ form.level|add_class:"select2 form-control" }}
+                                </div> 
+                            </div>
+                            <div class="col-sm-1 col-md-1">
+                                <div class="form-group" > <br/>
+                                   <div class="delete_button"></div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                    {% endfor %}   
+                </div>
+ 
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>   
+                        
+                        <a href="javascript:history.back()" data-dismiss="modal" ><input type="button" value="Annuler" class="btn btn-default"   /></a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock  %}   

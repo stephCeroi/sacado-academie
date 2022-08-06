@@ -1,0 +1,48 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/ajax-show_flashpack']);
+    </script> 
+{% endblock %}
+
+
+
+{% block page_title %}
+        {% include 'flashcard/logo.html' %}  Flashcard <img width="25px" src="{% static 'img/angle-right.png' %}"/>
+{% endblock %}
+
+
+{% block page_menu_right %}
+
+    {% if request.user.user_type == 2 %}
+    <a href="{% url 'my_flashpacks' %}" class="btn btn-new-violet">Mes flashpack</a>
+    {% else %}
+    <a href="javascript:history.back()"><input type="button" value="Retour" class="btn btn-default "/></a>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+{% block body %}
+<section class="content_main">
+    {% include 'flashcard/show_flashcard_tag.html' %}
+
+
+    {% if request.user.user_type == 2 %}
+    <a href="javascript:history.back()"><input type="button" value="Retour" class="btn btn-default "/></a>
+    {% endif %}
+
+</section>
+ 
+ 
+{% endblock %} 

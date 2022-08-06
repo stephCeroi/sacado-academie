@@ -1,0 +1,194 @@
+{% extends 'academy.html' %}
+{% load item_tags %}
+{% load widget_tweaks %}
+{% load static %}
+
+
+{% block require %}
+           
+{% endblock %}  
+   
+
+
+
+
+{% block general_js %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+    <script type="text/javascript">
+    require(['script/accueil']); 
+    </script>
+{% endblock %} 
+
+
+
+
+
+
+
+
+
+{% block body %}
+
+ 
+ 
+<section class="content_main"> 
+    <div class="logolevel">
+        {% with  level.image as level_image %}
+            <img src="{% static level_image %}"  />
+        {% endwith %}
+    </div>
+
+ 
+    <div class="row">
+        <div class="col-sm-12 col-md-12 exercice_list_label">
+            Voici les exercices du niveau <span class='sacado'>{{ level.name }}</span> de <span class='sacado'>SACADO Académie</span>. 
+        </div>    
+    </div>
+
+    <hr/>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 exercice_list_label grandstander">
+            Essayez l'exercice.
+        </div>    
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12" align="center">
+            <div class = 'col-auto' id='ggb_applet_container' ></div>
+        </div>    
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12 exercice_list_label grandstander">
+            Déroulez les menus pour voir les exercices classés par compétences.
+        </div>    
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <table class="table  table-hover" style="width:100%">
+                <thead>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>                            
+                    {% regroup exercises by theme as theme_list %} 
+                    {% for theme in theme_list  %} 
+                        <tr style="background:#5d4391; color:white">
+                            <td style="width:85%"> {{theme.grouper.name}}</td> 
+                        </tr> 
+                         {% regroup theme.list by knowledge.waiting as waiting_list %} 
+                        {% for waiting in waiting_list  %}
+                            <tr style="background:#aa98cd; cursor: pointer; color: black" class="opener out"  id="{{ waiting.grouper.id }}">
+                                <td style="width:85%"><i class="fa fa-caret-right"></i> {{waiting.grouper.name}}   
+                                    <small>
+                                        {% with  waiting_counter=waiting.grouper.exercises_counter  %}
+                                        <b>{{  waiting_counter }} exercice{{ waiting_counter|pluralize  }}</b>  
+                                        {% endwith %}
+                                    </small> 
+                                </td> 
+                            </tr>  
+                            {% regroup waiting.list by knowledge as knowledge_list %} 
+                            {% for knowledge in knowledge_list  %}
+                                {% if knowledge_list|length > 0 %}
+                                        <tr style="background:#d4cbe6; cursor: pointer; color: black" class="opener_k opened{{ waiting.grouper.id }} out"  id="{{ knowledge.grouper.id}}" >
+                                            <td class="listingtd" style="font-size:14px"> 
+                                               <i class="fa fa-caret-right"></i> 
+                                                    {{ knowledge.grouper.name|capfirst }}  
+
+                                                    <b>  
+                                                        {% with  knowledge_counter=knowledge.grouper.exercises|counting  %}
+                                                            {{  knowledge_counter }} exercice{{ knowledge_counter|pluralize  }} 
+                                                        {% endwith %}
+                                   
+                                                    </b>
+
+
+                                            </td>
+                                        </tr>
+                                        {% for exercise in knowledge.list  %}
+                                            <tr class="opener_e openedk{{ knowledge.grouper.id }}">
+                                                <td>
+                                                    <img src="{{ exercise.supportfile.imagefile.url }}" class="imagefile">
+                                                    {% if exercise.supportfile.title %}  
+                                                        {{ exercise.supportfile.title|cleanhtml|capfirst }}  
+                                                    {% else %}  
+                                                        {{ exercise.supportfile.annoncement|cleanhtml|capfirst }} 
+                                                    {% endif %}
+                                                    {% if exercise.supportfile.calculator %}
+                                                        <img src="{% static 'img/calculator.png' %}" width="30px" />
+                                                    {% else %}
+                                                        <img src="{% static 'img/no_calculator.png' %}"  width="30px" />
+                                                    {% endif  %}
+                                                    <br>
+                                                    <small>
+                                                        <i class="fa fa-fw fa-barcode"></i> {{ exercise.supportfile.code }}  {% if exercise.supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                        <i class="fa fa-fw fa-clock-o"></i> {{ exercise.supportfile.duration }} minutes {% if exercise.supportfile.annoncement|make_list|length < 120 %}<br>{% endif %}
+                                                        {% if exercise.supportfile.is_ggbfile %}
+                                                        <i class="fa fa-fw fa-save"></i> {{ exercise.supportfile.situation}} situation{{ exercise.supportfile.situation|pluralize}} minimum
+                                                        {% endif %}
+                                                    </small>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+
+                        {% endfor %}
+                    {% endfor %} 
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="height:40px"></div>
+</section>
+
+ 
+    <script type="text/javascript" src="{% static 'js/lib/geogebra.js' %}"></script>
+
+    <script type="text/javascript">
+        // parameters of the geogebra app
+
+        var width               = "{{ exercise.supportfile.width }}" ;
+        var height              = "{{ exercise.supportfile.height }}" ; 
+        var showToolBar         = "{{ exercise.supportfile.toolBar|lower }}" ;
+        var showMenuBar         = "{{ exercise.supportfile.menuBar|lower }}" ;
+        var showAlgebraInput    = "{{ exercise.supportfile.algebraInput|lower }}" ;
+        var showResetIcon       = "{{ exercise.supportfile.resetIcon|lower }}" ; 
+        var enableShiftDragZoom = "{{ exercise.supportfile.dragZoom|lower }}" ;
+        var filename            = "{{ exercise.supportfile.ggbfile.url }}" ;
+
+        var parameters = {
+                  "appname":"classic",
+                  "id":"ggb_applet_container",
+                  "prerelease":false,
+                  "width": parseInt(width, 10),
+                  "height": parseInt(height, 10),
+                  "showToolBar": showToolBar,
+                  "showfullscreenbutton":true,
+                  "borderColor":"#f5f8fd",
+                  "showMenuBar": showMenuBar,
+                  "showAlgebraInput": showAlgebraInput ,
+                  "showResetIcon": showResetIcon ,
+                  "enableLabelDrags":false,
+                  "enableShiftDragZoom": enableShiftDragZoom,
+                  "enableRightClick":false,
+                  "capturingThreshold":null,
+                  "showToolBarHelp":false,
+                  "errorDialogsActive":false,
+                  "useBrowserForJS":false,
+                  "langage":"en",
+                  "filename": filename,
+                   "appletOnLoad" :  function(api) { 
+                            var situation = "{{ exercise.supportfile.situation }}" ;
+                            api.setValue("situation", situation );
+                      }
+            };
+        var applet = new GGBApplet('5.0', parameters,true);
+        // Geogebra applet creation
+        applet.inject('ggb_applet_container', 'preferHTML5');  
+    </script>
+
+{% endblock %}

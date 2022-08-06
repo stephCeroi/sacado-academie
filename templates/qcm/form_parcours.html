@@ -1,0 +1,322 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+    {% if parcours %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4_withoutMathJax.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3_withoutMathJax.js' %}"></script>
+    {% endif %}
+
+    <script>
+        require(['script/ajax-parcours-create']);
+    </script> 
+
+    {% block require_complement %}
+        {% if not parcours %}    
+            <script>
+                require(['script/ajax-parcours-complement']);
+            </script> 
+        {% endif %}
+    {% endblock %} 
+
+{% endblock %} 
+
+
+{% block page_title %}
+
+      {% include 'qcm/breadcrumb.html' %}
+
+    <small>  
+        {% if parcours %}
+            Configuration  
+        {% else %}
+            Nouveau parcours  
+        {% endif %}
+    </small> 
+
+{% endblock %}
+
+
+ 
+
+{% block page_menu_right %}
+
+
+ 
+
+{% endblock %} 
+
+
+{% block body %}  
+<section class="content_main">
+    <form action="" method="POST" enctype='multipart/form-data'>
+    <div class="row">
+        <div class="col-sm-12 col-md-4">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-7 col-md-8 col-lg-9">
+                    <div class="form-group">
+                        {{ form.title.label_tag }} <label> <small>(Inférieur à 18 lettres)</small></label>
+                        {{ form.title |add_class:"form-control" }}
+                        {{ form.title.errors }}
+                    </div>
+                </div>
+                <div class="col-sm-5  col-md-4 col-lg-3">
+                      {{ form.color.label_tag }}      
+                                <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                    <div class="helper_tip_text" >La couleur permet une reconnaissance rapide.</div>
+                                </span>
+                      <div id="color-picker-component" class="input-group colorpicker-component">
+                          {{ form.color.as_hidden }}
+                          <span class="input-group-addon"><i></i></span>
+                      </div>
+                </div>
+            </div>
+            <div class="row">
+                {% if group_id %}
+                        {{ form.subject.as_hidden}}
+                        {{ form.level.as_hidden  }}
+                {% else %}
+                <div class="col-sm-12  col-md-6">
+                    <div class="form-group">
+                        <label>Enseignement <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                    <div class="helper_tip_text" >Renseigner la matière  liée à ce parcours. Il vous sera cependant possible de choisir des exercices d'une autre matière. Par exemple, un enseignant de SPC doit renseigner ici SPC et pourra choisir des exercices de Maths plus tard dans ce parcours de SPC. </div>
+                                </span> :
+                        </label>
+                        {{ form.subject |add_class:"form-control select2"|attr:"required" }}
+                        {{ form.subject.errors }}
+                    </div>
+                </div> 
+                <div class="col-sm-12  col-md-6">
+                    <div class="form-group">
+                        <label>Niveau d'enseignement :</label>  
+                        {{ form.level|add_class:"form-control select2"|attr:"required"}}
+                        {{ form.level.errors }}
+                    </div>
+                </div> 
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-6" style="overflow-y: auto;height: 150px;">
+                    <label>Attribuer aux groupes proposés
+                        <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                            <div class="helper_tip_text" >Facultatif, mais permet d'organiser ses documents.</div>
+                        </span> 
+                    </label>
+                    {% if parcours or group %}
+                        {{ form.groups|add_class:"select_all"  }}
+                        {{ form.groups.errors }}
+                    {% else %}
+                        {% if teacher.nb_boolean_multi_subjects %}
+                            <div class="form-group" id="grplist">
+                                 <div class="alert alert-warning">
+                                    <p style="font-size:12px">Choisir au moins un enseignement et un niveau.</p>
+                                </div>
+                            </div>
+                        {% else %} 
+                            <div class="form-group">         
+                                {{ form.groups  }}
+                                {{ form.groups.errors }}
+                            </div>
+                        {% endif %} 
+                    {% endif %}
+                </div>  
+                {% if parcours or group  or folder %}
+                <div class="col-sm-12 col-md-6" style="overflow-y: auto;height: 230px;">
+                    <label>Associer aux dossiers </label><span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                        <div class="helper_tip_text" >Facultatif, mais permet d'organiser ses documents.</div>
+                    </span> 
+                    <div class="form-group" id="flist">
+                        {{ form.folders|add_class:"select_all_parcours" }}
+                        {{ form.folders.errors }} 
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-sm-12 col-md-6">
+                    <label>Associer aux dossiers </label><span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                        <div class="helper_tip_text" >Facultatif, mais permet d'organiser ses documents.</div>
+                    </span> 
+                    <div class="form-group" id="flist">
+                         <div class="alert alert-warning">
+                            <p style="font-size:12px">Choisir au moins un groupe.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-sm-12  col-md-12">
+                    <div class="form-group">  
+                        <div class="alert alert-warning">
+                            <p style="font-size:12px"><i class="fa fa-warning"></i> Lorsque plusieurs groupes sont cochés, le parcours est partagé entre ces groupes.</p>
+                            <p style="font-size:12px"><i class="fa fa-users"></i> Vous pourrez individualiser les élèves une fois le parcours créé.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="col-sm-12 col-md-12">
+                {% include 'qcm/insert_vignettes.html' %}
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-4">                             
+            <table class="table borderless">
+                {% block evaluation %} 
+                    <tr>
+                        <td>{{ form.is_publish.label_tag }} <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Visible par les élèves.</div>
+                            </span></td>
+                        <td>{{ form.is_publish |attr:"data-toggle:toggle" |attr:"data-onstyle:success"|attr:"data-offstyle:danger"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_publish.errors }}</td>
+                    </tr>
+                    <tr class="publication_div">
+                        <td><label>Date de publication :</label>  
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i> 
+                                        <div class="helper_tip_text" >Date à partir de laquelle le parcours est publié.<br/>
+                                        <span class="text-danger">Pour modifier la date, vider le champ.</span>
+                                        </div>
+                            </span>
+                        </td>
+                        <td>{{ form.start|add_class:"form-control datetimepicker"}}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.is_favorite.label_tag }} <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Accessible depuis son tableau de bord.</div>
+                            </span></td>
+                        <td>{{ form.is_favorite |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_favorite.errors }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>{{ form.is_share.label_tag }}
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Mutualisation à l'ensemble des collègues de son établissement (si version établissement)</div>
+                            </span>
+                        </td>
+                        <td>{{ form.is_share |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_share.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.zoom.label_tag }}
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Loupe au survol des exercices.</div>
+                            </span>
+                        </td>
+                        <td>{{ form.zoom |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.zoom.errors }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.stop.label_tag }} 
+                            <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Rendu des exercices impossible après la date renseignée. 
+                                    <br/> 
+                                    <span class="text-danger">Pour modifier la date, vider le champ.</span>
+                                </div>
+                            </span>
+                        </td>
+                        <td>{{ form.stop|add_class:"form-control datetimepicker"}}</td>
+                        <td>{{ form.stop.errors}}{% for error in form.non_field_errors %}
+                                <p class="alert alert-danger">{{error}}</p>
+                            {% endfor %}</td>
+                    </tr>
+   
+                    <tr>
+                        <td>{{ form.is_achievement.label_tag }}<span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Permet aux élèves de regarder l'avancement (en %) de leurs camarades sur le parcours.</div></td>
+                        <td>{{ form.is_achievement |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_achievement.errors }}</td>
+                    </tr> 
+                    
+                {% endblock %}
+                    <tr>
+                        <td><label>En ce moment </label> <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                                <div class="helper_tip_text" >Les élèves voient le parcours directement depuis leur tableau de bord même si le parcours est dans un dossier.</div>
+                            </span></td>
+                        <td>{{ form.is_active |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                        <td>{{ form.is_active.errors }}</td>
+                    </tr>
+
+                        
+                    {% comment %}
+                        <!-- affiche la possibilité de mettre le parcours dans un dossier si le parcours est créé hors du dossier -->
+                        {% if idp == 0 or parcours %}
+     
+                         <tr id="folder_parcours"  style="background-color: #fff7f7; color:#f27979">
+                            <td><label>Dossier <span class="helper_tip"> <i class="fa fa-question-circle text-danger"></i> </td>
+                            <td>{{ form.is_folder|attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}</td>
+                            <td>{{ form.is_folder.errors }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endcomment %}
+
+
+            </table>
+        </div>
+    </div>
+
+
+    
+    <div class="row" style="margin-top:40px">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+
+                <input value="Enregistrer et choisir les exercices" type="submit" name="save_and_choose" class="btn btn-primary" />                
+                <input value="Enregistrer" type="submit" name="saver" class="btn btn-default"  />
+
+                <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default "/></a>
+            </div>
+        </div> 
+
+        {% block save_evaluation %}
+        <div class="col-sm-12 col-md-6">
+        {% if parcours %}
+                
+                <a href="{% url 'clone_parcours' parcours.id  1 %}" class="btn btn-info"  onclick="return TestDuplicate('ce parcours')"> 
+                    <i class="fa fa-clone"> </i>   Dupliquer
+                </a>
+ 
+                {% if parcours.is_archive %}
+                    <a href="{% url 'unarchive_parcours' parcours.id  idg  %}" class="btn btn-warning"> 
+                        <i class="fa fa-th"> </i>   Désarchiver
+                    </a>
+                {% else %}
+                    <a href="{% url 'archive_parcours' parcours.id  idg  %}" class="btn btn-warning"  onclick="return TestArchive('ce parcours')"> 
+                        <i class="fa fa-archive"> </i>   Archiver
+                    </a>
+                {% endif %}
+                <a href="{% url 'delete_parcours' parcours.id  idg  %}" class="btn btn-danger"  onclick="return TestDelete('ce parcours')"> 
+                    <i class="fa fa-trash"> </i>   Supprimer
+                </a>
+
+
+                {% if request.user.is_superuser and not parcours.is_sequence %}
+                    <a href="{% url 'this_parcours_to_sequences' parcours.id   %}" class="btn btn-primary"> 
+                        <i class="fa fa-th"> </i>   Parcours <i class="bi bi-arrow-right"></i>  Séquence
+                    </a>
+                {% endif %}
+
+
+        {% endif %}  
+        </div>
+        {% endblock %}
+    </div>  
+
+    </form>      
+</section>   
+
+
+
+
+
+{% endblock %}
+
+
+      
+ 
+ 

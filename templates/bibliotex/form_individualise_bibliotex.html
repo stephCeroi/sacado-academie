@@ -1,0 +1,158 @@
+{% extends 'dashboard.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% block require %}
+ 
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+ 
+
+    <script>
+        require(['script/ajax-bibliotex']);
+    </script> 
+
+{% endblock %} 
+
+
+{% block page_title %}
+    {% include 'bibliotex/logo.html' %}  {{ bibliotex.title  }} <img src="{% static 'img/angle-right.png' %}" width="25px"> 
+   
+      <small> Individualiser </small> 
+{% endblock %}
+
+
+
+{% block page_menu_right %}
+
+
+ 
+        {% include 'bibliotex/submenu_bibliotex_exotex.html' %} 
+ 
+
+
+{% endblock %}
+
+
+
+
+{% block body %}
+      
+<section class="content_main">
+<form action="" method="POST" enctype='multipart/form-data'> 
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="alert alert-warning">
+                <img src="{% static 'img/conseil.png' %}" height="40px"/> Affecter tous les exercices aux élèves choisis au premier exercice  
+                <input id="select_all_exercices"  type="checkbox" data-toggle="toggle" data-onstyle="primary" data-offstyle="default" data-on="Oui" data-off="Non" /> 
+            </div>
+        </div>    
+    </div>
+    {% if nb_rc == 0 %}
+    <div class="row">
+        <div  class="col-sm-12 col-md-12">
+            <div class="alert alert-danger">  
+                Ce parcours ne contient aucun exercice. 
+                <a href="{% url 'exercise_bibliotex_peuplate'  bibliotex.id %}"   class="no_button"> Sélectionner les exercices</a> 
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+        <div class="col-sm-12 col-md-12">
+            {% csrf_token %}
+            {% for relationtex in bibliotex.relationtexs.all   %} 
+ 
+                <div class="row"  >
+                    <div class="col-sm-12 col-md-5">        
+  
+                        
+          
+                        {% if relationtex.calculator %}
+                          <img src="{% static 'img/calculator.png' %}" width="20px" />
+                        {% else %}
+                          <img src="{% static 'img/no_calculator.png' %}"  width="20px" />
+                        {% endif  %} {{ relationtex.exotex.title|cleanhtml|capfirst }} 
+                        <span id="loading{{ relationtex.id }}" class="pull-right"></span>
+                       
+        
+                         {% if relationtex.is_publish %} 
+                            <span class="pull-right" style="clear: both; width:150px; padding:5px; border-radius: 4px; background-color: #00a65a; color: #FFF"> Exercice publié </span> 
+                         {% else %}
+                            <span class="pull-right" style="clear: both; width:150px; padding:5px; border-radius: 4px; background-color: #cb2131; color: #FFF"> Exercice non publié </span> 
+                         {% endif %}
+
+                        <hr/>
+                        {% if relationtex.content %}
+                            {{ relationtex.content }} 
+                         {% else %}
+                            {{ relationtex.exotex.content }} 
+                         {% endif %}
+                    </div> 
+                    <div  class="col-sm-12 col-md-7">
+                            <span class="btn btn-info select_student" 
+                                id="selecteur{{relationtex.exercise.id}}"    
+                                data-student_id="0"   data-custom=0
+                                data-relationtex_id="{{ relationtex.id }}" 
+                                data-statut="False" style="min-width:75px; margin:1px; margin-right:0px" >Tous
+
+                                <input  type="checkbox"  style="display:none"
+                                data-student_id="0"    
+                                data-relationtex_id="{{ relationtex.id }}" 
+                                data-statut="False"    />
+                            </span>
+                            <span class="btn btn-warning select_student" 
+                                id="selecteur{{relationtex.exercise.id}}"    
+                                data-student_id="0" 
+                                data-relationtex_id="{{ relationtex.id }}" 
+                                data-statut="True" style="min-width:75px; margin:1px; margin-left:0px" >Aucun
+
+                                <input  type="checkbox"  style="display:none"
+                                data-student_id="0"    data-custom=0
+                                data-relationtex_id="{{ relationtex.id }}" 
+                                data-statut="True" />
+                            </span>
+
+                        {% get_only_students bibliotex group as  only_students %} 
+                         {%  for s in  only_students.students.all %}
+
+                            {% get_exercise s relationtex as has_it %}
+                            <span class="btn btn-{% if has_it %}success{% else  %}default{% endif  %} select_student selected_student{{relationtex.id}} selected_studentExo{{s.user.id }}" 
+                                id="student{{relationtex.id}}-{{s.user.id }}"
+                                data-student_id="{{ s.user.id }}" data-relationtex_id="{{ relationtex.id }}"  data-statut="{% if has_it %}True{% else  %}False{% endif  %}"  
+                                style="min-width:155px; margin:1px"/>{{ s.user.last_name }} {{ s.user.first_name|truncatechars:4 }}
+                            </span>
+
+                        {%  endfor %}
+                    </div>   
+                </div>                
+                <hr/>
+            {% endfor %}
+ 
+        </div>
+
+</form>
+
+
+
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+
+
+                <a href="javascript:history.back()"><input type="button" value="Retour" class="btn btn-default"/></a>
+        </div>
+    </div>
+
+
+</section>   
+{% endblock %}
+
+ 
+ 
+ 
+       
+ 
+ 

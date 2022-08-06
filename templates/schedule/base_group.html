@@ -1,0 +1,57 @@
+
+
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+
+{% block page_title %}
+        <span style="color:{{ group.color }}"><i class="fa fa-calendar"></i> </span>  
+        {% include 'group/breadcrumb.html' %}
+        <small>Calendrier des taches</small>
+
+{% endblock %}
+
+{% block page_menu_right %}
+
+    {% if group %}
+        {% include 'group/submenu_group.html'  %}
+    {% endif %}
+
+    <li><a href="{% url 'index' %}"  class="no_button" > Mes groupes</a></li> 
+{% endblock %}
+
+
+{% block require %}
+ 
+<script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common-for-calendar3.js' %}"></script>
+<script>
+    require(['script/ajax-schedule-group']);
+</script>
+
+{% endblock %} 
+
+
+
+
+{% block body  %} 
+
+    <link href="{% static 'schedule/fullcalendar/fullcalendar.min.css' %}" rel='stylesheet' />
+    <link href="{% static 'schedule/fullcalendar/fullcalendar.print.min.css' %}" rel='stylesheet' media='print' />
+
+
+<div class="col-xs-12 col-lg-12">   
+    <section class="paragraph">  
+      <form  action="" method="POST">
+          <input type="hidden" id="group_id" value="{{group.id}}" />
+          {% csrf_token %}  
+          <div class='calendar'></div>
+      </form>
+    </section>
+</div>
+
+ 
+
+     
+{% endblock %}

@@ -1,0 +1,118 @@
+ {% load item_tags %}
+ {% load static %}
+
+<section>  
+
+ 
+
+<div class="row">
+    <div class="col-md-12 col-lg-12 col-xs-12">
+        {%  for student in students %}
+
+            <a  href="{% url 'detail_student_all_views' student.user.id  %}"  class="edit" >
+            <div  class="box box-widget widget-user-2" 
+                  style="background-color: #af9cd4"  > 
+                  <!-- Add the bg color to the header using any of the bg-* classes -->
+                <div class="handler widget-user-header">
+                    {% if student.user.avatar %}
+                    <div style="position: absolute; top : 10px; text-align: center;"> 
+                        <img src="{{ student.user.avatar }}" class="avatar_big"  />
+                    </div>
+                    {% endif %}
+                    <div class="box_title_vignette"> 
+                        <span style="color:#FFF;" class="thin"> {{ student.user.first_name  }} </span>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row extend">                              
+                        <div class="col-lg-7 col-xs-7">
+                            <a  href="{% url 'detail_student_all_views' student.user.id  %}"  class="edit" ><i class="fa fa-mortar-board"></i> Suivi des exercices</a>   
+                        </div>
+                        <div class="col-lg-5 col-xs-5">
+                            <a  href="{% url 'detail_student_lesson' student.user.id  %}"  class="edit" ><i class="bi bi-camera-video-fill"></i> Leçons</a>   
+                        </div>
+                    </div>
+                    <div class="row">                              
+
+ 
+
+                        {% if not request.user.is_in_academy %}
+                        <div class="col-lg-12 col-xs-12">
+                            <a  href="{% url 'my_child_tasks' student.user.id %}"  {% if not student.is_task_exists %}class="edit"{% endif %}  >
+                                {% if not student.is_task_exists %}<i class="fa fa-calendar"></i>{% else %}<i class="fa fa-calendar-check"></i>{% endif %}
+                                Tâches
+                            </a>  
+                        </div>
+                        {% else %}
+                        <div class="col-lg-12 col-xs-12">
+                            <span class="helper_tip" style="color: #998fa6;"> <i class="bi bi-chevron-bar-right"></i>  {{ student.user.username }} 
+                                <div class="helper_tip_text" >Identifiant de connexion de {{ student.user.first_name  }} .</div>
+                            </span>
+                        </div>
+                        {% endif %}
+
+
+
+                    </div>
+                </div>
+            </div>
+            </a>  
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="row" >  
+    <hr>  
+    {% regroup last_exercises_done by student as responses_student %}
+
+    {%  for student in responses_student %} 
+    <div class="col-sm-12 col-md-{% if students.count > 2 %}6{% else %}12{% endif %}">
+        <h2>{{ student.grouper.user.first_name }}</h2>
+        <table class="table" style="background-color:#FFF; width:100%">
+            {% regroup student.list by exercise as responses_list %}
+            <thead>
+                <tr style="background-color:#f4f6f9"> 
+                <td><span  style="font-weight:100;font-size:20px ">Derniers exercices </span> </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in responses_list %}
+                <tr>
+                    <td> 
+                        <a href="{% url 'show_this_exercise'  r.grouper.id   %}" >  
+                            <img src="{{ r.grouper.supportfile.imagefile.url }}" class="imagefile">
+                        </a>
+                    </td>
+                    <td style="width:75%"><a href="{% url 'show_this_exercise' r.grouper.id %}">{{ r.grouper }}</a></td>
+                    <td>{{ r.grouper.theme.name }}</td>
+                    <td style="width:10%">
+                        {% for s in r.list  %}
+                            <div  class="markdown pull-right
+                                {% if s.point < 30 %}
+                                 red 
+                                {% elif s.point < 60 %}
+                                orange
+                                {% elif s.point < 80 %}
+                                green
+                                {% else %}
+                                darkgreen
+                                {% endif %}">
+                                <small>{{ s.point }}%</small>
+                            </div> 
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+</section> 
+
+
+ 

@@ -1,0 +1,258 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load item_tags %}
+
+
+{% block breadcrumbs  %}
+{% endblock  %}
+
+
+{% block python %}
+    <link type="text/css" rel="stylesheet" href="{% static 'corrector/css/bcPicker.css' %}"/>
+{% endblock %}
+
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+    <script>
+        require(['script/ajax-exercise']);
+
+        require(['script/corrector']);
+
+        {% if custom %}
+        require(['script/ajax-customexercise_correction']);
+        {% else %}
+        require(['script/ajax-exercise_correction']);
+        {% endif %}
+    </script>   
+{% endblock %}
+
+
+
+{% block page_title %}
+    {% if parcours %}
+    <span style="color:{{ parcours.color  }}"><i class="bi bi-pencil-square"></i> </span> 
+    {% endif %}
+
+      {% include 'qcm/breadcrumb.html' %}
+    <small> Interface de correction          
+    <a href="#" data-toggle='modal' data-target='#consigne' class="btn btn-primary" ><i class="fa fa-eye"></i> Voir l'énoncé </a></small>
+
+
+        <small>
+        {% if custom %}
+    		<a href="#" class="btn btn-{% if customexercise.lock %}danger{% else %}default{% endif %} closer_exercise"  
+    					data-exercise_id = "{{ customexercise.id }}"  data-custom= 1  
+    					data-parcours_id = "{{ parcours.id }}"  ><span id="closer"><i class="fa fa-{% if customexercise.lock %}lock{% else %}unlock{% endif %}"></i></span> Clôturer l'exercice </a>
+
+            <a href="#" class="btn btn-{% if customexercise.is_publish_cor %}danger{% else %}default{% endif %} correction_viewer"  
+                        data-exercise_id = "{{ customexercise.id }}"  data-custom= 1  
+                        data-parcours_id = "{{ parcours.id }}"  ><span id="showing_cor"><i class="fa fa-{% if customexercise.is_publish_cor %}eye{% else %}slash-eye{% endif %}"></i></span> Afficher le corrigé </a>
+
+            
+        {% else %}
+    		<a href="#" class="btn btn-{% if relationship.is_lock %}danger{% else %}default{% endif %} closer_exercise" data-custom= 0   
+    			data-exercise_id = "{{ relationship.id }}" ><span id="closer"><i class="fa fa-{% if relationship.is_lock %}lock{% else %}unlock{% endif %}"></i></span> Clôturer l'exercice  </a>
+
+            <a href="#" class="btn btn-{% if relationship.is_lock %}danger{% else %}default{% endif %} correction_viewer" data-custom= 0   
+                data-exercise_id = "{{ relationship.id }}" ><span id="showing_cor"><i class="fa fa-{% if relationship.exercise.supportfile.correction %}eye{% else %}slash-eye{% endif %}"></i></span> Afficher le corrigé </a>
+
+            
+        {% endif %}
+        </small>
+{% endblock %}
+
+
+
+{% block page_menu_right %}
+ 
+    {% if student %}
+        <h4 style="color:#999">Remis par <span  style="color:#5d4391">{{ student }}</span>, le {% if w_a %}{{ w_a.date|date:"D d M Y"}}{% endif %}{% if c_e %}{{ c_e.date|date:"D d M Y"}}{% endif %}</h4>
+    {% else %}
+
+        {% if folder_id %}
+            <a href="{% url 'show_parcours' folder_id parcours.id %}">
+                <input type="button" value="Retour au parcours" class="btn btn-default "/>
+            </a>
+        {% else %}
+            <a href="{% url 'show_parcours' 0 parcours.id %}">
+                <input type="button" value="Retour au parcours" class="btn btn-default "/>
+            </a>
+        {% endif %}
+    {% endif %}
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+{% block body %}
+
+<section class="content_list">  
+
+{% include 'preloader.html' %}
+    <div class="row"> 
+        <form method="POST" action="" enctype='multipart/form-data'>
+            {% csrf_token %} 
+            <div class="col-sm-12 col-md-2 div_students">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr style="background-color: #EFEFEF">
+                        <th>Noms et prénoms</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% block liste_student %} 
+                        {% for stud in relationship.just_students %}
+                            <tr>
+                                <td {% if student %}{% if student == stud %} style="background-color: #F0F0F0;"{% endif %}{% endif %}>
+                                    {% get_done relationship stud as done %}
+                                    {% get_score_student_for_this relationship stud as  studentanswer %}  
+                                                                   
+                                    {% if done %}
+                                        <a href="{% url 'correction_exercise' relationship.id  0  stud.user.id  %}" {% if not studentanswer.point %} style="color:#cb2131"{% endif %} >
+                                            <!--data-student_id="{{ student.user.id }}" data-relationship_id="{{ relationship.id }}" data-parcours_id="0" data-custom="0" class="choose_student"  --> 
+                                            {{ stud.user.last_name|title }} {{ stud.user.first_name|title }} 
+                                            {% if  studentanswer.point %}
+                                            <span id ="evaluate{{ stud.user.id }}">   
+                                                <i class="fa fa-square
+                                                        {% if studentanswer.point >= stage.up %}
+                                                         text-primary 
+                                                        {% elif studentanswer.point >= stage.medium %}
+                                                         text-success 
+                                                        {% elif studentanswer.point >=  stage.low  %}
+                                                         text-warning 
+                                                        {% else %}
+                                                            text-danger  
+                                                        {% endif %} pull-right"></i>
+                                            </span>
+                                            {% endif %}
+                                        </a>
+                                    {% else %}                
+                                    <span style="color:#DDD">
+                                        {{ stud.user.last_name }} {{ stud.user.first_name }}  
+                                        <a href="#" class="exercise_no_made" title="Marqué comme corrigé, avec compétences/savoir faire non évalués. Si note, note = 0." 
+                                                data-exercise_id ={{ relationship.id }} data-parcours_id ={{ parcours.id }}
+                                                data-custom =0
+                                                id="exercise_no_made{{ stud.user.id }}" 
+                                                data-student_id ={{ stud.user.id }} >
+                                                <i class="fa fa-toggle-off text-default pull-right"></i>
+                                        </a> 
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td>Aucun élève.</td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}                    
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-12 col-md-10" id="correction_div">
+            {% if student %}  
+                {% if custom %} 
+                    {% include 'qcm/ajax_correction_exercise_custom.html' %}                
+                {% else %}
+                    {% include 'qcm/ajax_correction_exercise.html' %} 
+                {% endif %} 
+            {% else %} 
+
+                {% if custom %}  
+                    {% include 'qcm/ajax_detail_customexercise.html' %}
+
+                {% else %}
+                    {% include 'qcm/ajax_detail_exercise.html' %} 
+                {% endif %}               
+            {% endif %}  
+            </div>
+        </form>
+    </div>
+    <div class="row">                             
+        <div class="col-sm-12 col-md-10">
+            <a href="javascript:history.back()"><input type="button" value="Retour"
+                                                                       class="btn btn-default "/></a>
+        </div>
+    </div>
+
+</section>
+ 
+<div class="modal fade" id="consigne" tabindex="-1" role="dialog" aria-labelledby="consigne">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>  <h4>Enoncé</h4>
+            </div>
+            <div class="modal-body">
+            {% block modal %} 
+                {% if relationship.instruction  %}  {{ relationship.instruction|safe }}  {% else %} {{ relationship.exercise.supportfile.annoncement|safe }} {% endif %}
+            {% endblock %}   
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" aria-label="Close">
+                        Fermer
+                </a> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="audio_comment" tabindex="-1" role="dialog" aria-labelledby="audio_comment">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>  <h4>Audio - Max 2.5MB</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row"> 
+                    <div class="col-sm-12 col-md-12">
+                        <form enctype="multipart/form-data" action="" method="post">                    
+                            <div class="col-sm-12 col-md-12">       
+                                <div class="form-group">
+                                    <div id="controls">
+                                        <button type="button" id="recordButton" class="btn btn-danger"><i class="fa fa-microphone"></i></button>
+                                        <button type="button" id="pauseButton" disabled  class="btn btn-default"><i class="fa fa-pause"></i> </button>
+                                        <button type="button" id="stopButton" disabled  class="btn btn-default"><i class="fa fa-stop"></i></button>
+                                    </div>
+                                    <div id="formats"></div>
+                                    <label><small>Vous pouvez vous enregistrer plusieurs fois pour déterminer la meilleure prise.</small></label>
+                                    <ol id="recordingsList"></ol>
+                                    <!-- inserting these scripts at the end to be able to use all the elements in the DOM  -->
+                                    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+                                    <script src="{% static 'js/script/recorder_voice.js' %}"></script>
+                                </div>
+                            </div>
+                                <input name="id_student" id="id_student" type="hidden" value="{{ student.user.id}}" />
+                                <input name="id_relationship" id="id_relationship" type="hidden"   value="{% if custom %}{{ customexercise.id}}{% else %}{{ relationship.id}}{% endif %}"   />
+                                <input name="id_parcours" id="id_parcours" type="hidden"   value="{% if custom %}{{ parcours.id}}{% else %}{{ relationship.parcours.id}}{% endif %}"  /> 
+                                <input name="custom" id="custom" type="hidden" value="{% if custom %}1{% else %}0{% endif %}" />                               
+                        </form>  
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal" aria-label="Close">
+                        Fermer
+                </a> 
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

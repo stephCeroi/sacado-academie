@@ -1,0 +1,76 @@
+{% load static %}
+{% load widget_tweaks %} 
+
+<script>
+    console.log("cfoucou")  ; 
+
+    $('#update_div').hide();
+
+    $('.update_event_modal').on('click', function () { 
+          
+            $('#update_div').toggle(500);
+    });
+
+ 
+</script>
+
+ 
+
+
+      <div class="modal-content">
+          <div class="modal-header" style="background-color: {{ event.color }}">
+              <div class="row" style="color:#FFF">                      
+                  <div class="col-sm-12 col-md-12">
+                     <div class="event-group">
+                        <h2> <a href="" class="white">{{ event.title  }}</a><small><a href="#" class="vue" data-dismiss="modal"><i class="fa fa-times pull-right"></i></a></small>
+
+                        </h2>
+                    </div>
+                  </div>
+              </div>
+              <div class="row"  style="color:#FFF">
+                    <div class="col-sm-9 col-md-9">                        
+                      <div class="event-group">
+                            <h3>
+                                Le {{ event.start|date:"l j b Y"  }} 
+                            </h3>
+                            <h5>
+                                De {{ event.start|date:"H:i:s"  }} à {{ event.end|date:"H:i:s"   }}
+                            </h5>
+                      </div> 
+                    </div> 
+                    <div class="col-sm-3 col-md-3"> 
+                            <a href="{% url 'delete_event' event.id %}" class="white pull-right" onclick="return TestDelete('cet événement ?')" ><i class='fa fa-trash'></i></a> 
+                            <a href="#" class="white update_event_modal pull-right" style='margin-right:10px' data-event_id="{{ event.id  }}" ><i class='bi bi-pencil'></i></a>   
+                    </div>   
+              </div>
+          </div>
+          <div class="modal-body" id="update_div">
+          {% include 'lesson/update_form.html'  %}
+
+          </div>
+          <div class="modal-body">                  
+                  <div class="row">   
+      
+                      <div class="col-sm-12 col-md-6">                      
+                          <div class="event-group">
+                              <div class="event-group"><i class='fa fa-users'></i> Elèves<hr/>
+                              {% for u in event.users.all  %}
+                                    <li class="sanspuce"><small>{{ u.get_full_name }}</small></li>
+                              {% empty %}
+                                   <br> Aucun élève inscrit
+                              {% endfor %}
+                              </div>
+                          </div>
+                      </div>                
+                      <div class="col-sm-12 col-md-6">
+                          <div class="event-group">
+                              <i class='fa fa-comment'></i>  Commentaire<hr/>
+                              <small>{{ event.comment |safe  }}</small>
+                          </div>
+                      </div>
+                  </div>   
+          </div>
+      </div>
+
+

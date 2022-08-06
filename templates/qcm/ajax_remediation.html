@@ -1,0 +1,289 @@
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+<style>
+.toggle.btn {
+    min-width: 80px;
+}
+</style>
+
+<form action="{% if customexercise %}{%  url 'json_create_remediation' customexercise.id parcours_id  1  %}{% else  %}{%  url 'json_create_remediation' relationship.id parcours_id 0  %}{% endif %}" method="POST" enctype='multipart/form-data'> 
+	 
+
+
+	<div class="row">
+	    <div class="col-sm-12 col-md-12">
+	 		{% if customexercise %} 
+	        	{{ customexercise.title }}  <input type="hidden" id="is_custom"  value="1" />
+			{% else  %} 
+	        	{{ relationship.parcours.title }} <input type="hidden" id="is_custom"  value="0" />
+			{% endif %} 
+	    </div>
+	</div>
+	<div class="row">
+	    <div class="col-sm-12 col-md-12">
+	 		{% if customexercise %} 
+	        	{{ customexercise.instruction|safe }}
+			{% else  %} 
+			    {% if relationship.exercise.supportfile.title %} {{ relationship.exercise.supportfile.title|cleanhtml|capfirst }}{% else %} {{ relationship.exercise.supportfile.annoncement|cleanhtml|capfirst }} {% endif %} 
+			{% endif %} 
+	    </div>
+	</div>
+
+	{% if remediations|length > 0 %}
+	<hr>
+	<div class="row">
+	    <div class="col-sm-12 col-md-12">
+	 		<label><a href="#" data-toggle="collapse" data-target="#toggleHelp" style="color: #222"> Aides et consignes [ {{ remediations|length }} ] <i class="fa fa-angle-down accordion_click"></i> </a></label>
+	    </div>
+	</div>	
+	<div class="row collapse" id="toggleHelp">
+	    <div class="col-sm-12 col-md-12">
+			{% for remediation in remediations %}
+			<div class="alert alert-info"> 
+		 		{% if  remediation.audio %}                 
+		 		<audio controls>
+                  	<source src="{{ remediation.audio.url }}" type="audio/mpeg">
+                  	<span class="text-danger">Votre navigateur ne lit pas l'audio.</span>
+                </audio>
+ 		 		{% elif  remediation.mediation %}	
+ 		 			<a href="{{ remediation.mediation.url }}"  target="_blank"><img src="{%  static 'img/pdf.png' %}" width="30px" /> {{ remediation.title }} </a>
+ 		 		{% elif  remediation.courses.all|length > 0 %} 
+ 		 			{% for c in remediation.courses.all %}
+		 				<a href="{% url 'show_course'  c.id  c.parcours.id   %}" target="_blank"><i class="fa fa-desktop"></i> {{ c.title }} </a> 
+ 		 			{% endfor %}
+ 		 		{% else %} 
+		 			<a href="https://www.youtube.com/watch?v={{ remediation.video }}"  target="_blank"><img src="{%  static 'img/video.png' %}" width="30px" />{{ remediation.title }} </a>
+		 		{% endif  %}
+				{% if customexercise %}
+		 		<a href="{%  url 'json_delete_remediation' remediation.id parcours_id 1 %}"  onclick="return TestDelete('cette ressource ')"  class="pull-right"><i class="fa fa-trash"></i></a>
+				{% else  %}
+		 		<a href="{%  url 'json_delete_remediation' remediation.id parcours_id 0 %}"  onclick="return TestDelete('cette ressource ')"  class="pull-right"><i class="fa fa-trash"></i></a>
+				{% endif %}
+				<small><em class="pull-right" style="margin-right: 30px">{% if remediation.consigne  %}Consigne{% else %}Aide{% endif %}</em></small>
+			</div>
+			{% empty  %}
+			Aucun document
+			{% endfor  %}
+	    </div>
+	</div>
+	<hr>
+	{% endif  %}
+	{% csrf_token %}
+	<div class="row">
+		<div class="col-sm-12 col-md-8">
+		    <div class="form-group">
+		        {{ form.title.label_tag }}
+		        {{ form.title |add_class:"form-control" }}
+		        {{ form.title.errors }}
+		    </div>
+		</div>           
+		<div class="col-sm-12 col-md-4">
+		    <div class="form-group">
+		        {{ form.duration.label_tag }}
+		        {{ form.duration |add_class:"form-control"|attr:"placeholder:15"|attr:"required" }}
+		    </div>
+		</div>   
+	</div> 
+
+	<div class="row">
+        <div class="col-sm-12 col-md-12">
+            <label>Format du document</label>
+        </div>
+	</div>
+	<div class="row" id="format">
+		<div class="col-sm-6 col-md-3">
+		    <div class="form-group">
+		        <label>Texte Audio  {{ form.audio|add_class:"selector_format" }}</label>
+		    </div>
+		</div>
+		<div class="col-sm-6 col-md-3">
+		    <div class="form-group">
+		        <label>Cours <input type="checkbox" id="id_is_course" class="selector_format"  /></label>
+		    </div>
+		</div> 
+		<div class="col-sm-6 col-md-3">
+		    <div class="form-group">
+		        <label>Fichier <input type="checkbox" id="is_file" class="selector_format"  /></label>
+		    </div>
+		</div>
+		{% if cookie_rgpd_accepted %}
+		<div class="col-sm-6 col-md-3">
+		    <div class="form-group">
+		        <label>Vidéo <input type="checkbox" id="is_video" class="selector_format"  /></label>
+		    </div>
+		</div>
+		{% endif %}
+	</div> 
+
+
+	<div class="row audio" id="consigne"  >
+		<div class="col-sm-6 col-md-3">
+		     <div class="form-group">
+		        <label>Consigne ?</label>
+		        <span class="helper_tip"> <i class="fa fa-question-circle"></i>
+                    <div class="helper_tip_text">Cocher si vous souhaitez que l'audio s'affiche en tant que consigne (en chapeau d'exercice). Sinon l'audio est une aide.</div>
+                </span>
+		    </div>
+		</div>
+		<div class="col-sm-6 col-md-9">
+		     <div class="form-group">
+		        {{ form.consigne |attr:"data-toggle:toggle" |attr:"data-onstyle:primary"|attr:"data-offstyle:default"|attr:"data-on:Oui"|attr:"data-off:Non"}}
+		        {{ form.consigne.errors }}
+		    </div>
+		</div>
+	</div> 
+
+	<div class="row"  id="course">
+        <div class="col-sm-12 col-md-12">
+            <div class="form-group">
+          		<table class="table display">
+	                <thead> 
+	                    <tr>
+	                        <td><label>Mes cours</label></td>
+	                    </tr>
+	                </thead> 
+	                <tbody>	
+              		{% for fc in  form.courses  %}
+	                    <tr>
+	                        <td>{{ fc  }}</td>
+	                    </tr>   
+                	{% endfor %}
+	                </tbody>	
+          		</table> 
+            </div>
+        </div>
+	</div>
+
+	<div class="row"  id="file">
+        <div class="col-sm-12 col-md-12">
+            <div class="form-group">
+                {{ form.mediation.label_tag }}
+                {{ form.mediation |add_class:"btn btn-default" }}
+                {{ form.mediation.errors }}
+            </div>
+        </div>
+	</div>
+	<div class="row" id="video">
+	    <div class="col-sm-12 col-md-6">            
+	        <div class="form-group">
+	            {{ form.video.label_tag }}
+	            {{ form.video |add_class:"form-control"|attr:"placeholder:INkui5BHDZU" }}
+	            {{ form.video.errors }}
+	        </div>
+	    </div>
+	    <div class="col-sm-12 col-md-6">            
+	        <div class="form-group">
+	            <small> N'utiliser que vos propres vidéos ou avec l'accord de son propriétaire</small>
+	        </div>
+	    </div>
+	    <div class="col-sm-12 col-md-12">            
+	        <div class="form-group">
+	            <img src="{% static 'img/code_video_youtube.png' %}"/>
+	        </div>
+	    </div>
+	</div> 
+
+
+
+	<div class="row" id="submission">
+        <div class="col-sm-12 col-md-12">
+             <div class="form-group">
+                <input value="Poster la ressource" type="submit" class="btn btn-primary"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">
+                    Annuler
+                </button> 
+            </div>
+        </div>    
+    </div>
+
+
+</form>
+
+<script>
+$(document).ready(function () { 
+
+
+	$('.display').dataTable();
+
+    $('#id_consigne').bootstrapToggle();  
+
+    $('#file').hide();
+    $('#video').hide();
+ 	$(".audio").hide(); 
+ 	$("#course").hide();  	
+ 	$("#submission").hide(); 
+ 
+ 
+        $('#id_audio').change(function () {
+ 				toggle_div('#id_audio','.audio','#file',"#course",'#video');
+ 				$("#submission").hide(500); 
+        });
+ 
+        $('#is_file').change(function () {
+ 				$("#submission").show(500);         	
+ 				toggle_div('#is_file','#file',".audio","#course",'#video');
+        });
+
+ 
+        $('#id_is_course').change(function () {
+ 				$("#submission").show(500);         	
+ 				toggle_div('#id_is_course','#course','#file',".audio",'#video');
+        });
+
+ 
+        $('#is_video').change(function () {
+ 				$("#submission").show(500);         	
+ 				toggle_div('#is_video','#video','#file',".audio","#course");
+        });
+
+
+
+        
+
+        function toggle_div(toggle,show,hide1,hide2,hide3){
+        	if ($(toggle).is(":checked")) {
+                $(show).show(500);
+                $(hide1).hide(500);
+                $(hide2).hide(500);
+                $(hide3).hide(500);
+                $('.selector_format').prop('checked', false);
+                $(toggle).prop('checked', true);
+            }  
+            else
+            {
+                $(show).hide(500);	
+ 				$("#submission").hide(500); 
+            }
+        }
+
+
+
+
+ 
+
+
+ 		$(".accordion_click").click(function(event) { 
+
+            if ($(this).hasClass('fa-angle-down')) {
+                $(this).removeClass('fa-angle-down').addClass('fa-angle-up');
+              }
+            else
+            {
+                $(this).removeClass('fa-angle-up').addClass('fa-angle-down');
+            }
+            event.preventDefault();        
+        }); 
+
+                
+});
+</script>   
+
+ 
+ 
+            
+
+
+
+

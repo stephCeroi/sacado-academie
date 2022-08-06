@@ -1,0 +1,87 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+
+ 
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common-accueil.js' %}"></script> 
+    <script>
+        require(['script/ajax-adhesion']);
+    </script>
+{% endblock %}
+
+
+
+{% block page_title %}
+    <i class='fa fa-audio-description'></i> Mes adhésions 
+{% endblock %}
+
+
+{% block page_menu_right %}
+    <a href="{% url 'add_adhesion' %}" class="btn btn-inscription pull-right"> Nouvelle adhésion</a>  
+
+
+ 
+    <a href="{% url 'renewal_adhesion'   %}" class="btn btn-inscription pull-right"> Renouveler</a>   
+
+{% endblock %}
+
+
+
+
+{% block body %}
+    <section class="content_main"> 
+        <div class="row">
+            <div class="col-sm-12 col-md-7">
+                <form action="" method="POST" enctype='multipart/form-data'>
+                {% csrf_token %}
+                    <table id="standard_tab" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Chrono</th>
+                            <th>Adhésions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for facture in factures %}
+                                <tr>
+                                    <td>
+                                        
+
+                                        {% if facture.file %}
+                                            <a href="{{ facture.file.url }}" target="_blank" class="pull-right"> Télécharger {{ facture.chrono }}</a>
+                                        {% else %}
+                                            {{ facture.chrono }}
+                                        {% endif %}
+
+
+                                    </td>
+                                    <td>
+                                        {% for adh in facture.adhesions.all %}
+                                            <li class="sanspuce">
+                                                {{ adh.student }} - {{ adh.amount }}   
+                                            </li>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">     
+                    <a href="javascript:history.back()"  class="btn btn-default " >Retour </a>
+            </div>
+        </div>
+    </section>
+    </div>
+ 
+
+
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
+    <script>
+        require(['script/ajax-show_flashpack']);
+    </script> 
+{% endblock %}
+
+
+
+{% block page_title %}
+    {% include 'flashcard/logo.html' %}  Flashcard <img width="25px" src="{% static 'img/angle-right.png' %}"/> <small> Validation </small>
+{% endblock %}
+
+
+{% block page_menu_right %}
+
+    {% if request.user.user_type == 2 %}
+    <a href="{% url 'my_flashpacks' %}" class="btn btn-new-violet">Mes flashpack</a>
+    {% else %}
+    <a href="javascript:history.back()"><input type="button" value="Retour" class="btn btn-default "/></a>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+{% block body %}
+<section class="content_main">
+
+    <form action="{% url 'validate_flashcards_to_flashpack' flashpack.id  %}" method="POST">
+        {% csrf_token %}    
+
+        <table class="table table-hovered display_info borderless"  style="width:100%" >
+            <thead> 
+                <tr>  
+                    <th style="width:10px">
+                        <span class="tool_tip"><i class="fa fa-question-circle"></i><div class="tool_tip_text" >Valider ou modifier la flashcard </div></span>
+                    </th>
+                    <th style="width:200px">Titre</th>
+                    <th style="width:200px">Question</th>
+                    <th style="width:40px">  </th>
+                    <th style="width:200px">Réponse</th>
+                    <th>Aide</th>
+                    <th>Thèmes</th>
+                    <th>Contributeurs</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {% for fc in  flashcards  %}
+                    <tr class="tr_edit" id="tr_flashchard{{ fc.id }}" bgcolor="{% if fc.is_validate %}#eeffeb{% endif %}"> 
+                        <td style="width:10px;" >
+                            <input type="checkbox" value="{{ fc.id }}" name="id_flashcard" {% if fc.is_validate %} checked {% endif %} />
+                            <a href="{% url 'update_flashcard' fc.id %}" class="edit" title="Modifier la flashcard" /><i class="bi bi-pencil"></i>
+                            <a href="#" data-toggle='modal' data-target='#textarea_display' id="this_question_textarea_display"  data-flashcard_id="{{ fc.id }}" class="edit"  title="Voir la flashcard"><i class="bi bi-eye"></i></a>
+
+                            <a href="javascript:void();" class="edit ajax_delete_flashcard" data-flashcard_id="{{ fc.id }}"  title="Supprimer la flashcard" onclick="return TestDelete('cette flashcard')" /><i class="bi bi-trash"></i>
+                            <a href="#" data-toggle='modal' data-target='#comment_flashcard' data-flashcard_id="{{ fc.id }}" class="edit this_comment_display"  title="Ajouter un commentaire pour la flashcard" ><i class="bi bi-bookmark-plus"></i></a>
+                            {% if fc.is_commented %}
+                            <a href="#" data-toggle='modal' data-target='#textarea_display' data-flashcard_id="{{ fc.id }}" class="edit this_show_comments"  title="Lire les commentaires" ><i class="bi bi-chat-left-quote"></i></a>
+                            {% endif %} 
+                        </td>
+                        <td style="width:200px">{{ fc.title|safe }}</td>
+                        <td style="width:200px">{{ fc.question|safe  }}</td>
+                        <td> <img src="{% if fc.calculator %}{% static 'img/calculator.png' %}{% else %}{% static 'img/no_calculator.png' %}{% endif %}" width="25px"/></td>
+                        <td style="width:200px">{{ fc.answer|safe  }}</td>
+                        <td>{{ fc.helper|safe  }}</td>                        
+                        <td style="width:200px">{% for t in fc.themes.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                        <td style="width:200px">{% for u in fc.authors.all %}{{ u }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                    </tr>
+                {% endfor %}              
+             </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12"> 
+                <div class="form-group">
+ 
+
+                    <input value="Valider les flashcards sélectionées" type="submit" class="btn btn-primary"/>
+
+                    <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default "/></a>
+                </div>
+            </div>    
+        </div>
+
+    </form>
+</section>
+ 
+<div class="modal fade" id="textarea_display" tabindex="-1" role="dialog" aria-labelledby="textarea_display" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width:630px;font-size: 16px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h3 id="title_textarea_display">Visualisation</h3>              
+            </div>
+            <div class="modal-body" id="q_of_textarea_display" >
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="comment_flashcard" tabindex="-1" role="dialog" aria-labelledby="comment_flashcard" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width:630px;font-size: 16px">
+        <form action="{% url 'ajax_comment_flashcard'  %}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> 
+                    <h3>Commenter la flashcard</h3>              
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %} 
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">  
+                            <div class="form-group">
+                                <input type="text" id="id_flashcard" name="flashcard"  /> 
+                                <input type="text" id="id_flashpack" name="flashpack" value="{{ flashpack.id }}" /> 
+                            </div>
+                        </div>    
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12"> 
+                            <div class="form-group">
+                                {{ form.comment|attr:"placeholder:Ecrire votre commentaire"}}  
+                            </div>
+                        </div>    
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12"> 
+                            <div class="form-group">
+                                <input value="Commenter la flashcard" type="submit" class="btn btn-primary"/>
+                                <a href="javascript:history.back()"><input type="button" value="Annuler" class="btn btn-default "/></a>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}                     

@@ -1,0 +1,115 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load item_tags %}
+
+
+{% block require %}
+ 
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common4.js' %}"></script>
+ 
+    <script>
+        require(['script/ajax-parcours']);
+        require(['script/ajax-quizz-result_from_list']);
+    </script> 
+
+
+{% endblock %}
+
+ 
+
+{% block page_title %}
+<span  style="color:{{ parcours.color }}"><i class="bi bi-list-ul"></i>  
+ 
+
+        {% include 'qcm/breadcrumb_student.html' %}   <span style="color:{{ parcours.color  }}"> <small class="thin">Les quizz</small></span>  
+{% endblock %}
+
+{% block page_menu_right %}
+
+
+        
+    {% include 'qcm/submenu_parcours_student.html' %}
+
+  
+{% endblock %}
+
+{% block css_files %}
+{% endblock %}
+
+
+
+{% block body  %}
+
+{% include 'preloader.html' %}
+
+<section class="content_list" id="principal_section"> 
+    {% for q in quizzes %}
+        <div class="col-xs-6 col-md-4 col-lg-3" > 
+            <div class="card" style="float:none; height:250px;width:250px;position: relative;">
+                {% if q.vignette %}
+                    <img src="{{ q.vignette.url }}" width="250px" height="150px" border=0 />
+                {% else %}
+                    <img src="{% static 'img/quizz.jpg' %}" width="250px" border=0  />
+                {% endif %}
+
+                
+                    <div style="padding: 10px;width:100%; height:75px; position:absolute;bottom: 0px">
+
+                        <a {% if q.is_numeric and not q.is_video %} href="{% url 'goto_quizz_student' q.id  %}" target="_blank"{% else %} href="{% url 'show_quizz_student' q.id  %}" {% endif %}  style="font-weight: normal">
+
+                        {{ q.title|truncatechars:28 }} 
+                        </a>
+
+                        <small>
+                        <a href="#" data-toggle='modal' class="show_my_quizz_result" data-target='#my_quizz_results' data-quizz="{{ q.id }}" class="pull-right" style="bottom:40px; right:15px; position:absolute;font-size: 30px">
+                            {% if  q.is_video %}
+                                <i class="bi bi-trophy" title="Résultats" style="font-size: 20px"></i>
+                            {% elif  q.is_numeric %}
+                                <i class="bi bi-trophy" title="Résultats" style="font-size: 20px"></i>
+                            {% endif %}
+                        </a>
+ 
+
+
+                            <br/>
+                        <i class="fa fa-barcode fa-xs"></i> {{ q.code }} 
+                        <span class="pull-right" style="bottom:10px; right:10px; position:absolute;font-size: 30px">
+                            {% if  q.is_video %}
+                               <i class="bi bi-controller" title="Jeu SacadoQuizz"></i>
+                            {% elif  q.is_numeric %}
+                                <i class="bi bi-play" title="Quizz numérique"></i>
+                            {% else %}
+                                <i class="bi bi-aspect-ratio" title="Projection pour papier"></i>
+                            {% endif %}
+                        </span>
+                        <br/> 
+                        {{ q.questions.count }} diapos</small> 
+                    </div> 
+                    
+                
+            </div>
+        </div>
+    {% endfor %}
+</section>
+
+ 
+
+<div class="modal fade" id="my_quizz_results" tabindex="-1" role="dialog" aria-labelledby="my_quizz_results">
+    <div class="modal-dialog modal-maxsize" role="document" style="width:70%">
+        <div class="modal-content" >
+            <div class="modal-header">        
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+                <h2 class='thin' >Résultats</h2>    
+            </div>
+            <div class="modal-body" id="my_result">
+      
+            </div>
+        </div>
+    </div> 
+</div>
+{% endblock  %}   
+
+ 
