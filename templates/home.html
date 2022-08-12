@@ -85,7 +85,7 @@ Intro Section -
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#Autonomie'  class="detail_index"><i class="bi bi-cursor"></i>  Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
-                    <a href="{% url 'choice_menu' 'accompagnement' %}" class="btn btn-asso">Choisir ce menu</a>
+                    <a href="{% url 'choice_menu' 1 %}" class="btn btn-asso">Choisir ce menu</a>
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@ Intro Section -
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#IA'  class="detail_index"><i class="bi bi-cursor"></i>  Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
-                    <a href="{% url 'choice_menu' 'ia' %}" class="btn btn-asso">Choisir ce menu</a>
+                    <a href="{% url 'choice_menu' 2 %}" class="btn btn-asso">Choisir ce menu</a>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@ Intro Section -
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#Suivi'  class="detail_index"><i class="bi bi-cursor"></i> Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
-                    <a href="{% url 'choice_menu' 'suivi' %}" class="btn btn-asso">Choisir ce menu</a>
+                    <a href="{% url 'choice_menu' 3 %}" class="btn btn-asso">Choisir ce menu</a>
                 </div>
             </div>
         </div>
@@ -146,9 +146,9 @@ Intro Section -
                 <div class="card-body">
                     <div class="this_price"> <span class="currency">??? €</span>/mois</div>
                     <div class="card-block plus">
-                        <p class="card-text">  <a href="#" data-toggle='modal' data-target='#Autonomie'  class="detail_index"><i class="bi bi-cursor"></i>  Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
+                        <p class="card-text">  <a href="#" data-toggle='modal' data-target='#accompagnement'  class="detail_index"><i class="bi bi-cursor"></i>  Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
-                    <a href="{% url 'choice_menu' 'accompagnement' %}" class="btn btn-asso">Choisir ce menu</a>
+                    <a href="{% url 'choice_menu' 4 %}" class="btn btn-asso">Choisir ce menu</a>
                 </div>
             </div>
         </div>
@@ -244,19 +244,21 @@ Votre enfant est accompagné par un enseignant qui adapte les parcours et consei
 
 
 
-<div class="modal fade" id="Encadrement" tabindex="-1" role="dialog" aria-labelledby="Encadrement">
+<div class="modal fade" id="accompagnement" tabindex="-1" role="dialog" aria-labelledby="accompagnement">
     <div class="modal-dialog" role="document" style="width:70%">
         <div class="modal-content" >
             <div class="modal-header">
 
-                <h2 > <img src="{% static 'img/menu_accompagnement.png' %}"  width="60px"> Menu Accompagnement </h2>
+                <h2 > <img src="{% static 'img/menu_accompagnement.png' %}"  width="60px"> Menu Personnalisé </h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> 
 
             </div>
             <div class="modal-body" id="indiv_this_exercise">
-votre enfant est accompagné et suivi  par un enseignant qui adapte les parcours et échange avec votre enfant par visioconférence.  Les parents peuvent contrôler le temps passer de connexion et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits ainsi qu’un commentaire bilan de l'enseignant.
+ Votre enfant est accompagné et suivi  par un enseignant qui adapte les parcours et échange avec votre enfant par visioconférence.  Les parents peuvent contrôler le temps passer de connexion et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits ainsi qu’un commentaire bilan de l'enseignant.
+
+
 
             </div>
         </div>

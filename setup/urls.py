@@ -49,7 +49,7 @@ urlpatterns = [
     ############################################################################################
     path('academy', academy, name='academy'), 
     path('student_to_association', student_to_association, name='student_to_association'),     
-    path('choice_menu/<slug:name>', choice_menu, name='choice_menu'), 
+    path('choice_menu/<int:id>', choice_menu, name='choice_menu'), 
     path('details_of_adhesion', details_of_adhesion, name='details_of_adhesion'), 
     path('commit_adhesion', commit_adhesion, name='commit_adhesion'), 
     path('save_adhesion', save_adhesion, name='save_adhesion'), 

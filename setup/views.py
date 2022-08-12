@@ -231,7 +231,7 @@ def all_routes(request,adresse):
 
 def logout_academy(request):
     logout(request)
-    return redirect("academy")
+    return redirect("index")
 
 
 
@@ -747,51 +747,34 @@ def student_to_association(request):
     return render(request, 'setup/student_association.html', context)
 
 
-def choice_menu(request,name):
-    formules = Formule.objects.filter(name=name)
+def choice_menu(request,id):
+    formule  = Formule.objects.get(pk=id)
     end  = end_of_contract()
-    context = { 'formules' : formules , 'end' : end , 'name' : name  }
+    context = { 'formule' : formule , 'end' : end ,  }
     return render(request, 'setup/menu.html', context)   
 
 
 def details_of_adhesion(request) :
 
-    total_price = request.POST.get("total_price")    
-    month_price = request.POST.get("month_price")
-    nb_month    = request.POST.get("nb_month")    
-    date_end    = request.POST.get("date_end")
-    menu_id     = request.POST.get("menu_id")
+    nb_child   = request.POST.get("children")
+    formule_id = request.POST.get("formule_id")
+
 
     data_post = request.POST
-    levels = Level.objects.all()
+    levels    = Level.objects.all()
+    formule   = Formule.objects.get(pk = formule_id)
 
-    try :
-        nb_child = int(request.POST.get("nb_child"))
-    except :
-        nb_child = 1
+    if request.user.is_authenticated and request.user.is_in_academy :
+        adhesion = Adhesion.objects.filter(user = request.user).last()
+        context  = {  'formule' : formule , 'data_post' : data_post , "nb_child" : nb_child ,  'levels' : levels ,  'adhesion' : adhesion, "renewal" : True,   }
+        template    = 'setup/renewal_adhesion.html'
+ 
+    else : 
+        userFormset = formset_factory(UserForm, extra = int(nb_child) + 1, max_num= int(nb_child) + 2, formset=BaseUserFormSet)
+        context     = {  'formule' : formule ,    'data_post' : data_post ,  'levels' : levels ,  'userFormset' : userFormset, "renewal" : False }
+        template    = 'setup/detail_of_adhesion.html'
 
-    if nb_child == 0 :
-        no_parent = True
-    else :
-        no_parent = False
-  
-    formule = Formule.objects.get(pk = 1)
-
-    try :
-        if request.user.is_in_academy :
-            formules = Formule.objects.filter(pk__lte=3)
-            adhesion = Adhesion.objects.filter(user = request.user).last()
-            context = {  'formule' : formule , 'formules'  : formules ,   'no_parent' : no_parent , 'data_post' : data_post , "nb_child" : nb_child ,  'levels' : levels ,  'adhesion' : adhesion, "renewal" : True,   }
-            return render(request, 'setup/renewal_adhesion.html', context)   
-        else : 
-            userFormset = formset_factory(UserForm, extra = nb_child + 1, max_num= nb_child + 2, formset=BaseUserFormSet)
-            context = {  'formule' : formule ,  'no_parent' : no_parent , 'data_post' : data_post ,  'levels' : levels ,  'userFormset' : userFormset, "renewal" : False }
-            return render(request, 'setup/detail_of_adhesion.html', context)   
-    except :
-        userFormset = formset_factory(UserForm, extra = nb_child + 1, max_num= nb_child + 2, formset=BaseUserFormSet)
-        context = {  'formule' : formule ,  'no_parent' : no_parent , 'data_post' : data_post ,  'levels' : levels ,  'userFormset' : userFormset, "renewal" : False }
-        return render(request, 'setup/detail_of_adhesion.html', context)   
-
+    return render(request, template , context)   
 
 
 
@@ -1122,13 +1105,10 @@ def add_adhesion(request) :
 def commit_adhesion(request) :
 
     data_post   = request.POST
-    try :
-        nb_child = int( data_post.get("nb_child") )
-    except :
-        nb_child = 1     
+    nb_child = int( data_post.get("nb_child") )
 
-    menu_id     = int(data_post.get("menu_id"))    
-    data_posted = {"total_price" : data_post.get('total_price'), "month_price" : data_post.get('month_price'), "nb_month" : data_post.get('nb_month'), "date_end" : data_post.get('date_end'), "menu_id" : menu_id , "nb_child" : nb_child }
+    formule_id     = int(data_post.get("formule_id"))    
+    data_posted = {"total_price" : data_post.get('total_price'), "month_price" : data_post.get('month_price'), "nb_month" : data_post.get('nb_month'), "date_end" : data_post.get('date_end'), "formule_id" : formule_id , "nb_child" : nb_child }
  
     levels      = request.POST.getlist("level")
 
@@ -1136,7 +1116,7 @@ def commit_adhesion(request) :
     userFormset = formset_factory(UserForm, extra = nb_child + 1, max_num = max_num , formset=BaseUserFormSet)
     formset     = userFormset(data_post)
 
-    if int(menu_id) > 0 : formule = Formule.objects.get(pk = int(menu_id))
+    if int(formule_id) > 0 : formule = Formule.objects.get(pk = int(formule_id))
     else :  
         formule= None
 
@@ -1188,20 +1168,18 @@ def save_adhesion(request) :
     parents_of_adhesion = request.session.get("parents_of_adhesion")
     students_of_adhesion = request.session.get("students_of_adhesion")
     data_posted = request.session.get("data_posted") # détails de l'adhésion
-    total_price = data_posted.get("total_price")
     nb_child = int(data_posted.get("nb_child"))
 
     users = []
 
     total_price = 0
-    formule          = None
-    formule_adhesion = " période d'essai "
-    formule_name     = " Essai "
+    formule          = Formule.objects.get(pk=data_posted['formule_id'])
+    formule_adhesion = " période d'essai "+ formule.name 
+    formule_name     = formule.name 
     today = time_zone_user(request.user)
     #date_end_dateformat = today + timedelta(days=7)
-    date_end_dateformat = datetime(2022,8,15)  
+    date_end_dateformat = datetime(2022,8,31)  
     date_end = str(date_end_dateformat)
-    nb_month = 0
     menu_id = 1
     ##################################################################################################################
     # Insertion dans la base de données
@@ -1215,7 +1193,6 @@ def save_adhesion(request) :
         level = Level.objects.get(name = level)    
         user, created = User.objects.update_or_create(username = username, password = password , user_type = 0 , defaults = { "last_name" : last_name , "first_name" : first_name  , "email" : email , "country_id" : 4 ,  "school_id" : 50 , "closure" : date_end_dateformat })
         student,created_s = Student.objects.update_or_create(user = user, defaults = { "task_post" : 1 , "level" : level })
-
         success = attribute_all_documents_to_student_by_level(level,student)
 
         folders = Folder.objects.filter(level = level, teacher_id = 2480 , is_trash=0) # 2480 est SacAdoProf
@@ -1226,16 +1203,17 @@ def save_adhesion(request) :
             students_in.append(student) # pour associer les enfants aux parents 
 
  
-        adhesion = Adhesion.objects.create( student = student , level = level , start = today , amount = total_price , stop = date_end_dateformat , formule_id  = None )
+        adhesion = Adhesion.objects.create( student = student , level = level , start = today , amount = total_price , stop = date_end_dateformat , formule_id  = formule.id )
         adhesions_in.append(adhesion)
 
     i = 0
+
     for p in parents_of_adhesion :
 
         # if nb_child == 0 : # enfant émancipé ou majeur
         #     Adhesion.objects.update_or_create(user = user, amount = total_price , menu = menu_id, defaults = { "file"  : creation_facture(user,data_posted,code), "date_end" : date_end_dateformat,  "children" : nb_child, "duration" : nb_month })
         last_name, first_name, username , password , email =  p["last_name"]  , p["first_name"] , p["username"] , p["password"] , p["email"] 
-        user, created = User.objects.update_or_create(username = username, password = password , user_type = 1 , defaults = { "last_name" : last_name , "first_name" : first_name  , "email" : email , "country_id" : 4 ,  "school_id" : 50 ,  "closure" : date_end_dateformat })
+        user, created = User.objects.update_or_create(username = username, password = password , user_type = 1 , defaults = { "last_name" : last_name , "first_name" : first_name  , "email" : email , "country_id" : 5 ,  "school_id" : 50 ,  "closure" : date_end_dateformat })
         parent,create = Parent.objects.update_or_create(user = user, defaults = { "task_post" : 1 })
 
         if i == 0 :
