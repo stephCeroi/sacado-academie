@@ -101,6 +101,18 @@ urlpatterns = [
 
     path('scheduledTasks/send_reports/', send_reports ,name='send_reports'), 
     #path('<slug:adresse>', all_routes , name='all_routes'), 
+
+
+    ############################################################################################
+    #######  Academy
+    ############################################################################################
+    path('acad_exercises', acad_exercises, name='acad_exercises'), 
+    path('parents', parents, name='parents'),
+    path('numeric', numeric, name='numeric'),
+    path('contact', contact, name='contact'),
+    path('advises_index', advises_index, name='advises_index'),
+    path('faq', faq, name='faq'),
+
 ]
 
 

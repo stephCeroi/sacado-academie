@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+
+{% block body %}
+<!--==========================
+Intro Section -
+============================-->
+<section class="container suivis vspace">
+     <div class="row">
+        <div class="col-xs-12 col-md-12" align="center" >
+            <h1 class="thin grandstander">... L'espace parent ...</h1>
+        </div>
+    </div>
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-6">            
+            <h3 class="thin grandstander color_sacado">Suivi des progrès de chaque enfant</h3>
+            SACADO Académie propose un suivi détaillé par enfant, exercices par exercices, par compétences et savoir faire des textes officiels de l'Éducation Nationale.
+            <li class="sanspuce">+ Vous recevez des <b>rapports d'activités</b> par mail bi-mensuellement.</li>
+            <li class="sanspuce">+ Vous pouvez consulter les actvités réalisées par votre enfant ainsi que sa <b>progression par rapport au contenu du programme de l'Éducation Nationale</b> française.</li>
+            <li class="sanspuce">+ Vous pouvez contrôler le <b>temps passé d'utilisation</b> .</li>
+        </div>
+        <div class="col-xs-12 col-md-6" align="center">
+            <img src="../../static/img/radar.png"  class="responsive" />
+        </div>        
+    </div>
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-12" align="center">
+            <img src="../../static/img/bilans.png"  class="responsive" />
+        </div>
+    </div>
+</section>
+
+
+
+<div class="modal fade" id="tarifs" tabindex="-1" role="dialog" aria-labelledby="tarifs">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h2  class='sacado'  >Les tarifs</h2>              
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+            </div>
+            <div class="modal-body">
+                <h3>Gratuité jusqu'au 15 août</h3><p>Et ensuite ?</p>
+                {% for formule in formules %} 
+                    <p>{% cycle  12 3 1   %} mois : {{  formule.price }}  € x {{ formule.nb_month }} = {{  formule.total }} €</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div> 
+</div>
+{% endblock %} 

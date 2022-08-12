@@ -38,8 +38,9 @@ h6 {
   padding: 0;
 }
 
-
- 
+.icon_index{
+  font-size:32px;
+}
 
 #display_rgpd{
   position: fixed;
@@ -54,6 +55,38 @@ h6 {
   padding:20px;
   z-index: 9999999;
   text-align: center;
+}
+
+.btn-asso {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5f5b96;
+  border-radius: 0;
+  padding: 5px 12px;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  display: inline-block;
+  background: #5d4391;
+  color: #fff;
+}
+
+.btn-inscription {
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5f5b96;
+  padding: 10px 24px;
+  margin-right: 10px;
+  letter-spacing: 1px;
+  border-radius: 20px;
+  display: inline-block;
+  background: #5d4391;
+  color: #fff!important;
+}
+
+.btn-inscription:hover {
+  opacity: 0.5;
 }
 
 

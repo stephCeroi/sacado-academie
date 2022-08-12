@@ -1,0 +1,547 @@
+{% extends 'academy.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+
+{% block body %}
+<!--==========================
+Intro Section -
+============================-->
+<section class="inside_page">
+    <div class="row">
+        <div class="col-xs-12 col-md-12 texte_accueil grandstander" align="center" >
+           10 minutes/jour pour réviser tout le programme de l'année  
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-12 titre_texte_accueil" align="center" >
+            SACADO Académie, la version SacAdo pour les familles.
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-12 texte_accueil" align="center" >
+            De la maternelle à la terminale, SACADO Académie propose des parcours adaptés à chaque enfant avec des cours interactifs conformes aux programmes scolaires de l’Éducation Nationale. <br/><br/>
+            Votre enfant progresse à son rythme, chaque exercice est corrigé immédiatement, la solution est expliquée. Des enseignants de l’Éducation Nationale le soutiennent et l'encouragent au cours de son avancée dans ses parcours.  
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-md-12 texte_accueil full_height" align="center" >
+            <a href="{% url 'student_to_association' %}" class="btn-test grandstander outline_orange">Version de lancement : Période gratuite jusqu'au 31 août. </a>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-5 col-md-5 texte_accueil" align="center" >
+            <a href="#exercise" class="btn-inscription bg_orange"> Testez les exercices </a>
+        </div>
+        <div class="col-xs-5 col-md-5 texte_accueil" align="center" >
+            <a href="#" data-toggle='modal' data-target='#tarifs' class="btn-inscription bg_orange ">Tarifs</a>
+        </div>
+        
+    </div>
+</section>
+{% endblock %}
+
+
+
+{% block description %}
+<section class="container description">
+    <div class="row">
+        <div class="col-xs-12 col-md-12" align="center" >
+            <h1 class="thin sacado">SACADO ACADÉMIE</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <img src="{% static 'img/students.png' %}" class="responsive" /> 
+        </div>
+        <div class="col-xs-12 col-md-6"  align="center">
+            <img src="../../static/img/horloge10.png" width="60px" />
+            <br/> <br/> 
+            <h2 class="color_sacado grandstander">Un peu de maths tous les jours</h2>
+            <li class="sanspuce grandstander"><h4><b>10 minutes/jour</b> x 6 jours = 1h/semaine</h4> </li>
+            <li class="sanspuce grandstander"><h4>= Tout le programme sur l'année</h4></li>
+        </div>    
+    </div>
+</section>
+
+
+<section class="container suivis vspace">
+     <div class="row">
+        <div class="col-xs-12 col-md-12" align="center" >
+            <h1 class="thin grandstander">... L'espace parent ...</h1>
+        </div>
+    </div>
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-6">            
+            <h3 class="thin grandstander color_sacado">Suivi des progrès de chaque enfant</h3>
+            SACADO Académie propose un suivi détaillé par enfant, exercices par exercices, par compétences et savoir faire des textes officiels de l'Éducation Nationale.
+            <li class="sanspuce">+ Vous recevez des <b>rapports d'activités</b> par mail bi-mensuellement.</li>
+            <li class="sanspuce">+ Vous pouvez consulter les actvités réalisées par votre enfant ainsi que sa <b>progression par rapport au contenu du programme de l'Éducation Nationale</b> française.</li>
+            <li class="sanspuce">+ Vous pouvez contrôler le <b>temps passé d'utilisation</b> .</li>
+        </div>
+        <div class="col-xs-12 col-md-6" align="center">
+            <img src="../../static/img/radar.png"  class="responsive" />
+        </div>        
+    </div>
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-12" align="center">
+            <img src="../../static/img/bilans.png"  class="responsive" />
+        </div>
+    </div>
+ 
+
+</section>
+
+
+
+<section class="container tests"  id="exercise">
+    <div class="row">
+        <div class="col-xs-12 col-md-12" align="center" >
+            <h1 class="thin grandstander">... Testez quelques exercices ...</h1>
+        </div>
+    </div>
+
+    <!--maternelle -->
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-8">
+            <h2 class="color_sacado font_sacado thin">MATERNELLE</h2>
+                <a href="{% url 'academy_level'  14  %}" >
+                    <div class="imagebox">
+                        <div> Petite Section</div>
+                        <img src="../../static/img/levels/level14_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level'  14  %}">
+                    <div class="imagebox">
+                        <div> Moyenne Section</div>
+                        <img src="../../static/img/levels/level14_1_.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 14  %}" >
+                    <div class="imagebox">
+                        <div > Grande Section</div>
+                        <img src="../../static/img/levels/level14_1__.png" width="200" />
+                    </div>
+                </a>
+        </div>
+        <div class="col-xs-12 col-md-4 label_exercise_mater">
+            <li class="sanspuce color_sacado">Découvrir les nombres</li>
+            <li class="sanspuce color_sacado">Explorer des formes</li>
+            <li class="sanspuce color_sacado">Explorer des grandeurs</li>
+            <li class="sanspuce color_sacado">Explorer des suites organisées</li>
+        </div>
+    </div>
+ 
+    <!--élémentaire -->
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-4 label_exercise">
+        
+            <li class="sanspuce color_sacado">Nombres et Calculs</li>
+            <li class="sanspuce color_sacado">Espace et Géométrie</li>
+            <li class="sanspuce color_sacado">Grandeurs et Mesures</li>
+            <li class="sanspuce color_sacado">Problèmes</li>
+        </div>
+        <div class="col-xs-12 col-md-8 hspace" > 
+            <h2 class="color_sacado font_sacado thin">ÉLÉMENTAIRE</h2>
+                <a href="{% url 'academy_level'  1  %}">
+                    <div class="imagebox">
+                        <div> Cours préparatoire</div>
+                        <img src="../../static/img/levels/level1_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 2  %}">
+                    <div class="imagebox">
+                        <div> Cours élémentaire 1</div>
+                        <img src="../../static/img/levels/level2_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 3  %}">
+                    <div class="imagebox">
+                        <div > Cours élémentaire 2</div>
+                        <img src="../../static/img/levels/level3_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 4  %}" style="padding-left:100px">
+                    <div class="imagebox">
+                        <div> Cours Moyen 1</div>
+                        <img src="../../static/img/levels/level4_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 5  %}" >
+                    <div class="imagebox">
+                        <div > Cours Moyen 2</div>
+                        <img src="../../static/img/levels/level5_1.png" width="200" />
+                    </div>
+                </a>
+        </div>
+    </div>
+
+    <!--collège -->
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-6">
+                <h2 class="color_sacado font_sacado thin">COLLÈGE</h2>
+                <a href="{% url 'academy_level'  6  %}" >
+                    <div class="imagebox">
+                        <div> Sixième</div>
+                        <img src="../../static/img/levels/level6_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level'  7  %}" >
+                    <div class="imagebox">
+                        <div> Cinquième</div>
+                        <img src="../../static/img/levels/level7_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 8  %}" >
+                    <div class="imagebox">
+                        <div> Quatrième</div>
+                        <img src="../../static/img/levels/level8_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 9  %}" >
+                    <div class="imagebox">
+                        <div> Troisième</div>
+                        <img src="../../static/img/levels/level9_1.png" width="200" />
+                    </div>
+                </a>
+        </div>
+        <div class="col-xs-12 col-md-4 label_exercise">
+            <li class="sanspuce color_sacado">Nombres et Calculs</li>
+            <li class="sanspuce color_sacado">Organisation et Gestion de données</li>
+            <li class="sanspuce color_sacado">Espace et Géométrie</li>
+            <li class="sanspuce color_sacado">Grandeurs et Mesures</li>
+        </div>
+    </div>
+
+    <!-- lycée -->
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-4 label_exercise_lycee" style="padding-top:20px;" >
+            <li class="sanspuce color_sacado">Algèbre et analyse, fonctions</li>
+            <li class="sanspuce color_sacado">Algorithmique et programmation</li>
+            <li class="sanspuce color_sacado">Géométrie</li>
+            <li class="sanspuce color_sacado">Probabilités et statistiques</li>
+            <li class="sanspuce color_sacado">Combinatoire et dénombrement</li>
+            <li class="sanspuce color_sacado">Maths expertes : Graphes et Matrices</li>
+            <li class="sanspuce color_sacado">Maths expertes : Arithmétique</li>
+        </div>
+        <div class="col-xs-12 col-md-8 hspace">
+                <h2 class="color_sacado font_sacado thin">LYCÉE</h2>
+                <a href="{% url 'academy_level'  10  %}" >
+                    <div class="imagebox">
+                        <div > Seconde</div>
+                        <img src="../../static/img/levels/level10_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 11  %}" >
+                    <div class="imagebox">
+                        <div> Première</div>
+                        <img src="../../static/img/levels/level11_1.png" width="200" />
+                    </div>
+                </a>
+                <a href="{% url 'academy_level' 12  %}" >
+                    <div class="imagebox">
+                        <div > Terminale</div>
+                        <img src="../../static/img/levels/level12_1.png" width="200" />
+                    </div>
+                </a>
+ 
+        </div>
+    </div>
+</section>
+
+<section class="container exercices">
+    <div class="row">
+        <div class="col-xs-12 col-md-12" align="center" >
+            <h1 class="thin grandstander">Votre enfant est plutôt ....</h1>
+        </div>
+    </div>
+
+    <div class="row  align-items-center">
+        <div class="col-xs-6 col-md-4" align="center">
+            <div class="photo_background" id="photo_background2">
+                <img src="{% static 'img/academy_index6.jpg' %}"  class="photo_background"  />
+                <div class="photo_background_titre"></div>                 
+                <div class="photo_titre">en fragilité </div>
+
+                <div class="photo_background_texte"  id="photo_background_texte2"><small><b>Et il veut</b></small> <br/> Retrouver les bonnes méthodes </div>
+            </div>
+        </div>        
+
+        <div class="col-xs-6 col-md-4" align="center">
+            <div class="photo_background" id="photo_background1">
+                <img src="{% static 'img/academy_index5.jpg' %}" class="photo_background"  /> 
+                <div class="photo_background_titre"></div>                 
+                <div class="photo_titre">en décrochage </div>
+                <div class="photo_background_texte"  id="photo_background_texte1"><small><b>Et il veut</b></small> <br/> Revenir sur le chemin de la réussite</div>
+            </div>  
+        </div>
+
+        <div class="col-xs-6 col-md-4" align="center">
+            <div class="photo_background" id="photo_background3">
+                <img src="{% static 'img/academy_index2.jpg' %}" class="photo_background"   /> 
+                <div class="photo_background_titre"></div>                 
+                <div class="photo_titre">en stress </div>
+                <div class="photo_background_texte"  id="photo_background_texte3"><small><b>Et il veut</b></small> <br/> Reprendre confiance en ses capacités </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row  align-items-center" style="margin-top: 20px">
+
+        <div class="col-xs-6 col-md-4" align="center">
+            <div class="photo_background" id="photo_background5">
+                <img src="{% static 'img/academy_index3.jpg' %}" class="photo_background"  /> 
+                <div class="photo_background_titre"></div>                 
+                <div class="photo_titre">en plein essor </div>
+                <div class="photo_background_texte"  id="photo_background_texte5"><small><b>Et il veut</b></small> <br/> Performer pour atteindre l'élite </div>
+            </div>
+        </div>
+
+
+        <div class="col-xs-6 col-md-4" align="center">
+            <div class="photo_background" id="photo_background4">
+                <img src="{% static 'img/academy_index1.jpg' %}" class="photo_background"   />  
+                <div class="photo_background_titre"></div>                 
+                <div class="photo_titre">en I.E.Famille </div>
+                <div class="photo_background_texte"  id="photo_background_texte4"><small><b>Et il veut</b></small> <br/> Maitriser le socle des compétences </div>
+            </div> 
+        </div>
+        <div class="col-xs-6 col-md-4" align="center">
+            <div class="photo_background" id="photo_background6">
+                <img src="{% static 'img/academy_index4.jpg' %}" class="photo_background"  /> 
+                <div class="photo_background_titre"></div>                 
+                <div class="photo_titre">en mode élite </div>
+                <div class="photo_background_texte"  id="photo_background_texte6"><small><b>Et il veut</b></small> <br/> Dynamiser ses pratiques </div>
+            </div>
+        </div> 
+    </div>
+</section>
+
+
+
+<section class="container lesplus vspace">
+  <div class="container">
+    <h2 class="thin color_sacado">Progressivités et Programmes <img src="{% static 'img/logo-france.jpg' %}" width="150px" class="img-fluid"/></h2>
+    <div class="row">
+
+        <div class="col-lg-4 col-md-4">
+            <h4 clas="grandstander">Primaire</h4>
+            <li class="sanspuce"><a href="https://eduscol.education.fr/document/20062/download" target="_blank"> Maternelle - Programme </a></li>
+
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/73/2/02-Maths-CP-attendus-eduscol_1114732.pdf" target="_blank"> CP - Repère de progressivité</a></li>
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/73/4/04-Maths-CE1-attendus-eduscol_1114734.pdf" target="_blank"> CE1 - Repère de progressivité</a></li>
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/73/6/06-Maths-CE2-attendus-eduscol_1114736.pdf" target="_blank"> CE2 - Repère de progressivité</a></li>
+
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/73/8/08-Maths-CM1-attendus-eduscol_1114738.pdf" target="_blank">CM1 - Repère de progressivité</a></li>
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/74/0/10-Maths-CM2-attendus-eduscol_1114740.pdf" target="_blank">CM2 - Repère de progressivité</a></li>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <h4 clas="grandstander">Collège</h4>
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/74/2/12-Maths-6e-attendus-eduscol_1114742.pdf" target="_blank">6<sup>ème</sup> - Repère de progressivité</a> </li>
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/74/4/14-Maths-5e-attendus-eduscol_1114744.pdf" target="_blank">5<sup>ème</sup> - Repère de progressivité</a> </li>
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/74/6/16-Maths-4e-attendus-eduscol_1114746.pdf" target="_blank">4<sup>ème</sup> - Repère de progressivité </a></li>
+
+            <li class="sanspuce"><a href="https://cache.media.eduscol.education.fr/file/Attendus_et_reperes_C2-3-4/74/8/18-Maths-3e-attendus-eduscol_1114748.pdf" target="_blank">3<sup>ème</sup> - Repère de progressivité </a></li>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <h4 clas="grandstander">Lycée</h4>
+            <li class="sanspuce"><a href="https://cache.media.education.gouv.fr/file/SP1-MEN-22-1-2019/95/7/spe631_annexe_1062957.pdf" target="_blank">2<sup>nde</sup> - Programme </a></li>
+
+            <li class="sanspuce"><a href="https://cache.media.education.gouv.fr/file/SP1-MEN-22-1-2019/16/8/spe632_annexe_1063168.pdf" target="_blank">1<sup>ère</sup> - Programme </a></li>
+
+            <li class="sanspuce"><a href="https://cache.media.education.gouv.fr/file/SPE8_MENJ_25_7_2019/90/7/spe246_annexe_1158907.pdf" target="_blank">T<sup>ale</sup> - Programme </a> </li>
+        </div>
+    </div>
+  </div>
+</section>
+
+<section class="container lesplus vspace">
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-12" align="center">
+            <img src="{% static 'img/lesplus.png' %}" />
+        </div>
+    </div>
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-12">
+            <h2 class="thin color_sacado">100% digital</h2>
+            Offrez  à votre enfant, un environnement digital : une plateforme d’entraînement et de préparation aux révisions, idéale pour les examens (DNB, Bac, évaluations). Grâce à nos parcours adaptés, il progresse à son rythme avec des exercices interactifs corrigés immédiatement, pour mieux comprendre le suivant.
+
+            <li class="sanspuce">+ Tableau de suivi en temps réel pour voir les progrès.</li>
+
+            <li class="sanspuce">+ Flashcards : 
+
+ 
+
+            construisez des cartes de révision pour entraîner la mémoire de votre enfant. 
+
+           
+            <ul> <b>Sacado Académie</b> s’appuie sur les neurosciences et les 4 piliers de l’apprentissage :
+            <li class="sanspuce">+ L’attention</li> 
+            <li class="sanspuce">+ L'engagement actif</li> 
+            <li class="sanspuce">+ Le retour d'information</li> 
+            <li class="sanspuce">+ La consolidation des acquis</li>   
+            </ul>
+        </li>
+
+        {% comment %}
+
+            <h2 class="thin color_sacado vspace">Cahiers de révisions numériques</h2>
+
+            <li class="sanspuce">Pour solidifier et mieux mémoriser les acquis de l’année.</li> 
+            <li class="sanspuce">Pour se remettre à niveau avant la rentrée scolaire.</li> 
+            <li class="sanspuce">Pour prendre de l’avance et avoir de bonnes notes dès la rentrée.</li> 
+         {% endcomment %}
+
+            <img src="{% static 'img/academy_circle.png' %}" class="pull-right" style="padding: 30px" />    
+            <h2 class="thin color_sacado vspace">Accompagnement scolaire</h2>
+
+            <li class="sanspuce">+ De nombreuses situations d'entrainement avec chacune son corrigé immédiat. </li> 
+            <li class="sanspuce">+ Des parcours clés en main pour vous accompagner dans votre projet pédagogique.</li>
+            <li class="sanspuce">+ Un complément numérique pour l’école à la maison, l’instruction en famille, l’enseignement à distance ou les cours par correspondance.</li>
+
+        </div>
+    </div>
+</section>
+
+
+<section class="container lesplus vspace">
+    <div class="row vspace">
+        <div class="col-xs-12 col-md-12" align="center">
+
+ 
+     
+        </div>
+    </div> 
+</section>
+
+
+<footer id="footer" class="section-bg wow fadeIn">
+    <div class="footer-top" style="padding-top:40px">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-sm-12 col-md-6">
+
+            <div class="row">
+
+                <div  class="col-sm-12 col-md-6">
+                  <div class="footer-info">
+                    <h3 class="color_sacado">SACADO Académie</h3>
+                    <p>Nos supports d’exercices sont interactifs et conformes aux  nouveaux programmes scolaires de l’Éducation Nationale, ils sont disponibles en ligne 24h/24 et 7j/7.
+
+                    <br><br>Les exercices sont accessibles sur téléphones, tablettes et ordinateurs.
+
+                    <br><br>Nos Professeurs (du primaire à la prépa) sont toujours en poste et connaissent la réalité du terrain.  </p>
+                  </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <h3 class="color_sacado">Contacts</h3>
+                    <b class="color_sacado">Maternelle et élémentaire </b><br/>
+                    Sandrine Rébéna<br/><br>             
+                    <b class="color_sacado">Collège - Lycée</b><br>
+                    Audrey Ledoux  <br>
+                    Bruno Serres   <br>
+                    Nicolas Villemain  <br> 
+                    Philippe Demaria<br/> <br>
+                    <b class="color_sacado">Classe Prépa</b><br>
+                    Stéphan Ceroi    
+
+                    <br><br>
+                    <p> <a href="{% url 'rgpd' %}"  class="color_sacado">RGPD</a> - <a href="{% url 'cgv' %}"  class="color_sacado">CGV</a><br>
+
+                      <a href="{% url 'mentions_academy' %}"  class="color_sacado" >Mentions Légales</a> </p>
+
+
+                </div>
+            </div>
+
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+
+            <div class="form">
+
+              <h3 class="color_sacado">Envoyez un message</h3>
+              <p>Vous souhaitez obtenir des infos sur SACADO Académie, laissez-nous un message. Réponse rapide.</p>
+              <form action="{% url 'send_message' %}" method="post" >
+                  {% csrf_token %}
+                <div class="form-group">
+                  <input type="text" name="name" class="form-control" id="name" placeholder="Votre nom" data-rule="minlen:4" data-msg="Please enter at least 4 chars" required />
+                </div>
+                <div class="form-group">
+                  <input type="email" class="form-control" name="email" id="email" placeholder="Votre email" data-rule="email" data-msg="Please enter a valid email" required />
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="subject" id="subject" placeholder="Objet" data-rule="minlen:4" data-msg="Au moins 8 caractères" required />
+                </div>
+                <div class="form-group">
+                  <textarea class="form-control" name="message" rows="5" required data-msg="Ecrire votre message" placeholder="Message"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <img src="{% static 'img/som_token.png' %}" />
+                  <input type="text" name="token" class="form-control" id="token" placeholder="Ecrire le résultat de la somme" required />
+                </div>
+
+                <div class="text-center"><button type="submit" name="info_academy" value="yes" class="btn-inscription">Envoyer</button></div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+        <div class="row" style="padding-bottom:40px;padding-top:40px">
+
+            <div class="col-sm-4" align="center">
+
+            </div>
+            <div class="col-sm-4" align="center">
+                propulsé par <a href="https://www.lws.fr/"  style="color:#535074" target="_blank"><img src="{% static 'img/lws_gris.png' %}" width="50px"></a>
+            </div>
+            <div class="col-sm-4" align="center">
+
+            </div>
+        </div>
+      </div>
+    </div>
+</footer>
+
+
+
+
+
+<div class="modal fade" id="tarifs" tabindex="-1" role="dialog" aria-labelledby="tarifs">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h2  class='sacado'  >Les tarifs</h2>              
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+            </div>
+            <div class="modal-body">
+                <h3>Gratuité jusqu'au 15 août</h3><p>Et ensuite ?</p>
+                {% for formule in formules %} 
+                    <p>{% cycle  12 3 1   %} mois : {{  formule.price }}  € x {{ formule.nb_month }} = {{  formule.total }} €</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div> 
+</div>
+{% endblock %} 

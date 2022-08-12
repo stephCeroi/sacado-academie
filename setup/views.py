@@ -169,52 +169,18 @@ def index(request):
     else:  ## Anonymous
         #########
         ###################
-        form    = AuthenticationForm()
-        u_form  = UserForm()
-        t_form  = TeacherForm()
-        s_form  = StudentForm()
+        nb_exercises = Exercise.objects.filter(supportfile__is_title=0 ).count()
+        nb_students  = Student.objects.count()
+        formules = Formule.objects.filter(pk__lte=3)
+     
+
+        form = AuthenticationForm()
         np_form = NewpasswordForm()
-        levels  = Level.objects.order_by("ranking")
 
-        try :
-            holidaybook = Holidaybook.objects.get(pk=1)
-            sacado_voyage = holidaybook.is_display
-        except :
-            sacado_voyage = False
+        levels = Level.objects.order_by("ranking")
+        context = { 'nb_exercises' : nb_exercises , 'form' : form , 'np_form' : np_form , 'levels' : levels , 'nb_students' : nb_students , 'formules'  :  formules  }
 
-        rates = Rate.objects.all() #tarifs en vigueur 
-        school_year = rates.first().year #tarifs pour l'année scolaire
-
-        nb_teacher = Teacher.objects.all().count()
-        nb_student = Student.objects.all().count()
-        
-        subjects = Subject.objects.filter(pk__in=[1,2,3])
-        #abonnements = Abonnement.objects.filter(is_active =1).prefetch_related("school__country").order_by("school__country__name")
-        abonnements  = Abonnement.objects.filter(is_active = 1).order_by("school__country__name")
  
-        today_start = datetime.date(datetime.now())
-
-        communications = Communication.objects.filter(active= 1).order_by("-today")
-
-
-        nb_student_answers = Studentanswer.objects.filter(date__gte= today_start).count() + Customanswerbystudent.objects.filter(date__gte= today_start).count() + Writtenanswerbystudent.objects.filter(date__gte= today_start).count()
-        
-        exercises = Exercise.objects.select_related("supportfile").filter(supportfile__is_title=0 )
-        exercise_nb = exercises.count() - 1
-
-        nb_exotex = Exotex.objects.count() 
- 
-        i = random.randrange(0, exercise_nb)
-        exercise = exercises[i]
-
-
-        cookie_rgpd_accepted = request.COOKIES.get('cookie_rgpd_accepted',None)
-
-        cookie_rgpd_accepted = not ( cookie_rgpd_accepted  == "True" )
-
-        context = { 'cookie_rgpd_accepted' : cookie_rgpd_accepted , 'form': form, 'u_form': u_form, 't_form': t_form, 's_form': s_form, 'np_form': np_form, 'levels': levels,  'nb_teacher': nb_teacher, 'nb_student_answers': nb_student_answers,  'communications': communications,
-                    'nb_exotex': nb_exotex, 'nb_exercise': exercise_nb, 'exercise': exercise,  'nb_student': nb_student, 'rates': rates, 'school_year': school_year, 'subjects': subjects,  'sacado_voyage' : sacado_voyage,  'abonnements' : abonnements}
-
         response = render(request, 'home.html', context)
         return response
  
@@ -709,6 +675,42 @@ def python(request):
 ########  Inscription élève isolé
 ###############################################################################################################################################################################
 ###############################################################################################################################################################################
+
+def acad_exercises(request):
+    context = {}
+    return render(request, 'setup/exercises.html', context)
+
+
+
+def parents(request):
+    context = {}
+    return render(request, 'setup/parents.html', context)
+
+
+
+def numeric(request):
+    context = {}
+    return render(request, 'setup/numeric.html', context)
+
+
+def contact(request):
+    context = {}
+    return render(request, 'setup/contact.html', context)
+ 
+
+def advises_index(request):
+    context = {}
+    return render(request, 'setup/advises.html', context)
+
+
+def faq(request):
+    context = {}
+    return render(request, 'setup/faq.html', context)
+
+
+
+
+
 
 
 def academy(request):
