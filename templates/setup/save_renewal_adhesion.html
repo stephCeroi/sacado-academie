@@ -43,10 +43,10 @@
                     <div class="renewal_user renewal_student" > 
                         <h5>{{ s.name }} </h5>
                          
-                        <h5>Abonnement : {{ s.duration }} mois</h5>
-
+                        <h5>Abonnement :  {{ s.formule }}</h5>
+                        <h5>Durée : {{ s.duration }} mois </h5>
                         <h5>Niveau : {{ s.level_name }} </h5>
-
+                        <h5>Montant TTC : {{ s.price }} € </h5>
                     </div>
                 {% endfor %}
         </div>

@@ -4,25 +4,15 @@
 {% load item_tags %}
 
 {% block require %}
- 
-    {% if group %}
-    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common3.js' %}"></script>
-    {% else %}
     <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
-    {% endif %}
-
-     <script>
+    <script>
         require(['script/ajax-adhesion']);
     </script>
- 
- 
 {% endblock %}
 
 
 {% block page_title %}  
-    
     <i class='fa fa-audio-description'></i> Renouvellement d'adhésion
-
 {% endblock %}
 
 
@@ -53,26 +43,29 @@
                         <h5>{{ s }} </h5>
                         <input type="hidden" value="{{ s.user.id }}" name="student_ids"   />
                         <div class="renewal_user_level"> 
+                            <label>Menu :</label>
+                            <select id="formule{{ s.user.id }}" name="formule{{ s.user.id }}" class="form-control select2 formule"  data-user = "{{ s.user.id }}">
+                                    <option value=" "  >---- Choisir ----</option>
+                                {% for f in formules %}
+                                    <option value="{{ f.id }}" {% if f.id == adhesion.fomule_id %} selected {% endif %} >{{ f.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="renewal_user_level"> 
                             <label>Niveau favori :</label>
-                            <select id="level{{ s.user.id }}" name="level" class="form-control select2">
+                            <select id="level{{ s.user.id }}" name="level{{ s.user.id }}" class="form-control select2">
                                 {% for l in levels %}
                                     <option value="{{ l.id }}" {% if l.id == s.level.id %} selected {% endif %}>{{ l.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <h5>Durée d'engagement</h5>
-                        <div class="renewal_student"> 
-                            {% for formule in formules %} 
-                            <div>
-                                <label>
-                                    <input  type="radio"  name="engagement{{ s.user.id }}"  
-                                            value="{{ s.user.id }}-{{ formule.nb_month }}-{{ formule.total }}" /> 
-                                            {% cycle  12 3 1   %} mois : {{  formule.price }}  € x {{ formule.nb_month }} = {{  formule.total }} €
-                                </label>
-                            </div>
-                            {% endfor %}
+                        <div class="renewal_student" id="engage{{ s.user.id }}"> 
+ 
                         </div>
-
+ 
+                        <hr/>
                          <a href="#"  
                             class="cancel_user_class btn btn-defaut" 
                             data_id="cancel{{ s.user.id }}"   
@@ -85,7 +78,11 @@
                             class="renewal_user_class btn btn-sacado pull-right" 
                             data_id="renewal{{ s.user.id }}"   
                             data_user_id="{{ s.user.id }}"  > Choisir </a>
-              
+
+
+
+
+
                     </div>
                 {% endfor %}
 
@@ -95,7 +92,7 @@
             <div class="col-sm-12 col-md-6">
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
-                        <p class="thin"><b>Adhésion pour</b></p>
+                        <p class="thin"><b>Adhésion.s souhaitée.s pour</b></p>
                     </div>
                 </div>
                 <div class="row">

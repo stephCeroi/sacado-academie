@@ -33,7 +33,7 @@ define(['jquery', 'bootstrap'], function ($) {
         $('.validate_renewal').attr("disabled",true); 
         var liste = [] ;
  
-        $('.renewal_user_class').on('click', function (event) { 
+        $('form').on('click', '.renewal_user_class' ,  function (event) { 
 
             let data_user_id = $(this).attr("data_user_id");
             let data_name = $(this).attr("data_name");
@@ -42,6 +42,11 @@ define(['jquery', 'bootstrap'], function ($) {
             levels = ["Cours Préparatoire", "Cours Elémentaire 1", "Cours Elémentaire 2","Cours Moyen 1","Cours Moyen 2","Sixième", "Cinquième", "Quatrième","Troisième","Seconde","Première","Terminale","Classe Prépa PCSI","Maternelle"]
 
             let engagement = $("input[name='engagement"+data_user_id+"']:checked").val() ;
+                            
+
+            console.log("Enfant",data_name, levels[level-1] ,data_id , engagement ) ; 
+
+
             construct_user("Enfant",data_name, levels[level-1] ,data_id , engagement ) ; 
          
         });    
@@ -56,14 +61,14 @@ define(['jquery', 'bootstrap'], function ($) {
 
 
                 nb =  parseInt(nb_child);
-                var div = "<div class='renewal_user selector' id="+id+"><div>"+ name +"<br/> "+ level + "<br/> "+ tab_eng[1] +" mois<br/> "+tab_eng[2]+"€ </div></div>" ;
+                var div = "<div class='renewal_user selector' id="+id+"><div>"+ name +"<br/> "+ level + "<br/> "+ tab_eng[1] +" mois<br/> "+tab_eng[0]+"€ </div></div>" ;
 
 
                 if ( document.getElementById(id) !== null ) {
                     $("#"+id).remove() ;
                 }
 
-                $("#show_confirm_renewal").append(div) ;
+                $("#show_confirm_renewal").html("").append(div) ;
 
 
 
@@ -172,6 +177,61 @@ define(['jquery', 'bootstrap'], function ($) {
                 $("#verif_username").html( $("#id_username").val() );
 
             });
+
+
+
+
+ 
+        $('.formule').on('change', function (event) {
+            let formule_id = $(this).val();
+            let csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+            let student_id = $(this).data("user");
+
+
+            $.ajax(
+                {
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        'formule_id': formule_id,
+                        'student_id': student_id,
+                        csrfmiddlewaretoken: csrf_token
+                    },
+                    url: "ajax_prices_formule",
+                    success: function (data) {
+                        $('#engage'+student_id).html("");
+                        // Remplir la liste des choix avec le résultat de l'appel Ajax
+                        let prices = data["prices"];
+                        for (let i = 0; i < prices.length; i++) {
+
+                            let price_id   = prices[i].price;
+                            let price_name =  prices[i].nb_month;
+
+                            $('#engage'+student_id).append('<label for="engagement'+student_id+'"><input type="radio" id="engagement'+student_id+'" name="engagement'+student_id+'" value="'+ price_id +'-'+price_name+'" /> '+price_name+' mois - '+ price_id +'€</label><br/>')
+                                
+ 
+                        }
+                    }
+                }
+            )
+        }); 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     });

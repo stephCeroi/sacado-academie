@@ -33,7 +33,7 @@ from group.views import student_dashboard
 from qcm.models import Folder , Parcours, Exercise,Relationship,Studentanswer, Supportfile, Customexercise, Customanswerbystudent,Writtenanswerbystudent
 from sendmail.models import Communication
 from setup.forms import WebinaireForm , TweeterForm
-from setup.models import Formule , Webinaire , Tweeter
+from setup.models import Formule , Webinaire , Tweeter , Formuleprice
 from school.models import Stage , School
 from school.forms import  SchoolForm
 from school.gar import *
@@ -435,7 +435,7 @@ def school_adhesion(request):
                     is_active   = False # date d'effet, user, le paiement est payé non ici... doit passer par la vérification
                     observation = "Paiement en ligne"             
  
-                    accounting_id = accounting_adhesion(school_exists, today , today, user, is_active , observation) # création de la facturation
+                    accounting_id = accounting_adhesion(school_exists, today , None, user, is_active , observation) # création de la facturation
 
                     ########################################################################################################################
                     #############  Abonnement
@@ -781,12 +781,22 @@ def details_of_adhesion(request) :
 def renewal_adhesion(request) :
 
     levels = Level.objects.order_by("ranking")
-    formules = Formule.objects.filter(pk__lte=3)
+    formules = Formule.objects.all()
     context = {    'formules'  : formules,  'levels'  : levels }
     return render(request, 'setup/renewal_adhesion.html', context)   
 
 
+def ajax_prices_formule(request) :
+ 
+    formule_id = request.POST.get("formule_id",None)
+    student_id = request.POST.get("student_id",None)
+    data = {}
+    if formule_id :
+        prices = Formuleprice.objects.values("price","nb_month").filter(formule_id=int(formule_id)).order_by("-nb_month") 
 
+    data["prices"] = list(prices)
+
+    return JsonResponse(data) 
 
 
 
@@ -916,26 +926,40 @@ def save_renewal_adhesion(request) :
     #------------- extraction des infos pour les passer au template
     somme = 0
     students = []
+
+
     for student_id in request.POST.getlist('student_ids') :
- 
+
+        engagement  = request.POST.get('engagement'+student_id,None) 
+        formule_id  = request.POST.get('formule'+student_id,None)  
+        level_id  = request.POST.get('level'+student_id,None) 
+
         try :
+            formule = Formule.objects.get(pk=formule_id)
+
+
             engagement_si_tab = request.POST.get('engagement'+student_id)
-            student_id,duration,amount = engagement_si_tab.split("-")
+            amount, duration = engagement_si_tab.split("-")
             amount=amount.replace(",",".")
             somme +=  float(amount)
-            level_si = request.POST.get('level'+student_id)
-            student  = Student.objects.get(pk = student_id)
-            level    = Level.objects.get(pk = level_si)
+            student  = Student.objects.get(user_id = student_id)
+            level    = Level.objects.get(pk = level_id)
+            formuleprice = Formuleprice.objects.get(nb_month= duration, formule_id=formule_id)
             students.append({
-                'duration' : duration, 
-                'name' : student.user.first_name +" " +student.user.last_name ,
-                'level_name' : level.name } 
+                'duration'  : duration, 
+                'name'      : student.user.first_name +" " +student.user.last_name,
+                'formule'   : formule.name,
+                'level_name': level.name,
+                'price'     : formuleprice.price  } 
                 )
 
 
 
         except :	
             pass
+
+    print(students)
+
     somme = "{:.2f}".format(somme).replace(".",",")
     context = { 'somme' : somme , 'students' : students }
 

@@ -163,6 +163,20 @@ class Formule(models.Model):
 
 
 
+
+
+class Formuleprice(models.Model):
+
+
+	formule  = models.ForeignKey(Formule, on_delete=models.CASCADE,  related_name='prices', verbose_name="Menu")
+	price    = models.DecimalField(max_digits=6, decimal_places = 2 , verbose_name="Montant")
+	nb_month = models.PositiveIntegerField(default=1, verbose_name="Nombre de mois")     
+
+	def __str__(self):
+	    return "{}".format(self.formule.name)
+
+
+
 TIMES = (
 	    (20, 20),
 	    (30, 30),

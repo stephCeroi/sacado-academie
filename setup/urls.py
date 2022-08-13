@@ -58,16 +58,13 @@ urlpatterns = [
     path('ajax_remboursement', ajax_remboursement, name='ajax_remboursement'),
     path('add_adhesion', add_adhesion, name='add_adhesion'),
     path('save_renewal_adhesion', save_renewal_adhesion, name='save_renewal_adhesion'),
-
     path('accept_renewal_adhesion', accept_renewal_adhesion, name='accept_renewal_adhesion'),
-
-    path('renewal_adhesion', renewal_adhesion, name='renewal_adhesion'),
-
     path('list_exercises_academy/<int:id>', list_exercises_academy, name='academy_level'),
-
     path('logout_academy', logout_academy , name='logout_academy'), 
-
     path('renewal_adhesion', renewal_adhesion, name='renewal_adhesion'),
+    path('ajax_prices_formule', ajax_prices_formule, name='ajax_prices_formule'),
+
+
     ############################################################################################
     #######  SACADO Cahier de vacances 
     ############################################################################################
@@ -75,7 +72,6 @@ urlpatterns = [
     path('play_quizz', play_quizz, name='play_quizz'), 
     path('play_quizz_login', play_quizz_login, name='play_quizz_login'), 
     path('play_quizz_start', play_quizz_start, name='play_quizz_start'), 
-
     path('ajax_get_subject/', ajax_get_subject, name='ajax_get_subject'),#gère les div des subjects sur la page d'accuril des exercices.
 
     ############################################################################################
