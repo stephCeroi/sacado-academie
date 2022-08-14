@@ -43,10 +43,6 @@ define(['jquery', 'bootstrap'], function ($) {
 
             let engagement = $("input[name='engagement"+data_user_id+"']:checked").val() ;
                             
-
-            console.log("Enfant",data_name, levels[level-1] ,data_id , engagement ) ; 
-
-
             construct_user("Enfant",data_name, levels[level-1] ,data_id , engagement ) ; 
          
         });    
@@ -68,7 +64,7 @@ define(['jquery', 'bootstrap'], function ($) {
                     $("#"+id).remove() ;
                 }
 
-                $("#show_confirm_renewal").html("").append(div) ;
+                $("#show_confirm_renewal").append(div) ;
 
 
 

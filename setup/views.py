@@ -73,6 +73,13 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 ############## FIN bibliothèques pour les impressions pdf  #########################
 
 
+
+def delete_and_erase():
+    User.objects.filter(user_type=0).exclude(school_id=50).delete()
+
+
+
+
 def end_of_contract() :
 
     data = {}
@@ -172,7 +179,8 @@ def index(request):
         nb_exercises = Exercise.objects.filter(supportfile__is_title=0 ).count()
         nb_students  = Student.objects.count()
         formules = Formule.objects.filter(pk__lte=3)
-     
+        
+        #delete_and_erase()     
 
         form = AuthenticationForm()
         np_form = NewpasswordForm()
@@ -235,101 +243,6 @@ def logout_academy(request):
 
 
 
-def singleLogoutGar(request):
-
-    # création du dictionnaire qui avec les données du GAR  
-    data_xml = request.headers["X-Gar"]
-    gars = json.loads(data_xml)
-    dico_received = dict()
-    for gar in gars :
-        dico_received[gar['key']] = gar['value']
-    username   = dico_received["IDO"]
-    logout(request)
-
-
-def ressource_sacado(request): #Protection saml pour le GAR
-
-    # création du dictionnaire qui avec les données du GAR  
-    data_xml = request.headers["X-Gar"]
-    gars = json.loads(data_xml)
-    dico_received = dict()
-    for gar in gars :
-        dico_received[gar['key']] = gar['value']
-    ##########################################################
-    today = datetime.now()
- 
-
-    print(" ======================= singleLogoutGar =================================== ")
-    print(dico_received)
-    print(" ========================================================== ")
-
-
-
-    uai        = dico_received["UAI"]
-    school     = School.objects.get(code_acad = uai)
-    last_name  = dico_received["NOM"] 
-    first_name = dico_received["PRE"]
-
-    email = str(today.timestamp()) + "@sacado.xyz"
- 
-    if 'ens' in dico_received["PRO"] :
-        user_type  = 2
-        if "P_MEL" in dico_received.keys() : 
-            email = dico_received["P_MEL"]
-            if not email :
-                email = str(today.timestamp()) + "@sacado.xyz"
-    else :
-        user_type  = 0 
-
-    closure    = None
-    time_zone  = "Europe/Paris"
-    is_extra   = 0
-    is_manager = 0 
-    cgu        = 1
-    is_testeur = 0
-    country    = school.country
-    is_board   = 0
-
-    username   = dico_received["IDO"]
-    password   = make_password("sacado_gar")
-
-    groups     = dico_received["GRO"]
-    civilite   = dico_received["CIV"]
-    ###########################################################################################
-    ###########################################################################################
-    request.session["is_gar_check"] = True # permet de savoir si l'utilisateur passe par le GAR
-    ###########################################################################################
-    ###########################################################################################
-
-    if Abonnement.objects.filter( school__code_acad = uai ,  date_stop__gte = today , date_start__lte = today , is_active = 1 ) :
- 
-        user, created = User.objects.get_or_create(username = username, defaults = {  "school" : school , "user_type" : user_type , "password" : password , "time_zone" : time_zone , "last_name" : last_name , "first_name" : first_name  , "email" : email , "closure" : closure ,  "country" : country , })
-        if user_type == 0 and created :
-            level      = dico_received["E_MS1"]
-            student,created_s = Student.objects.get_or_create(user = user, defaults = { "task_post" : 0 , "level" : level })
-
-        elif user_type == 2 and created :
-            teacher,created_s = Teacher.objects.get_or_create(user = user, defaults = { "notification" : 0 , "exercise_post" : 0    })
-        
-        if user_type == 2 :
-            for group in groups :
-                g_tab = group.split("##")
-                #name = g_tab[0]
-                teacher = Teacher.objects.get(user = user)
-                #level   =  Level.objects.get(pk = 10)
-                #Group.objects.get_or_create(name = name , teacher = teacher ,  level = level ,  school = school , defaults = { "lock" : 1 })
-
-        user_authenticated = authenticate( username= username, password= "sacado_gar")
- 
-        if user_authenticated is not None:
-            login(request, user_authenticated,  backend='django.contrib.auth.backends.ModelBackend' )
-            request.session["user_id"] = user.id
-        else : 
-            messages.error(request,"Votre compte n'est pas connu par SACADO.")
-
-    else :
-        messages.error(request,"Votre établissement n'est pas abonné à SACADO.")
-    return index(request)
 
 
 
@@ -677,34 +590,46 @@ def python(request):
 ###############################################################################################################################################################################
 
 def acad_exercises(request):
-    context = {}
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
     return render(request, 'setup/exercises.html', context)
 
 
 
 def parents(request):
-    context = {}
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
     return render(request, 'setup/parents.html', context)
 
 
 
 def numeric(request):
-    context = {}
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
     return render(request, 'setup/numeric.html', context)
 
 
 def contact(request):
-    context = {}
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
     return render(request, 'setup/contact.html', context)
  
 
 def advises_index(request):
-    context = {}
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
     return render(request, 'setup/advises.html', context)
 
 
 def faq(request):
-    context = {}
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
     return render(request, 'setup/faq.html', context)
 
 
@@ -1044,7 +969,7 @@ def accept_renewal_adhesion(request) :
 
 def attribute_all_documents_to_student_by_level(level,student) :
     try :
-        group = Group.objects.filter(level = level, school_id = 50, name__contains="SacAdo").first()
+        group = Group.objects.filter(level = level, school_id = 50, teacher_id=2480).first()
         group.students.add(student)
         groups = [group]
         test = attribute_all_documents_of_groups_to_a_new_student(groups, student)
