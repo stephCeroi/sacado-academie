@@ -32,7 +32,21 @@
         </div>
     </div>
     <!-- box-footer DES FONCTIONNALITES  -->
-    <div class="box-footer" style="position: relative; padding-top: 0px;">
+    <div class="box-footer" style="position: relative; padding-top: 0px;font-size:14px;height: 150px; overflow-y: hidden">
+
+
+
+                <div style="margin-bottom: 15px"><br/>
+                    {% for p in folder.parcours.all %}
+                    <li class="sanspuce"><i class="bi bi-caret-right-fill" style="font-size:10px"></i><a href="{% url 'show_parcours_student' p.id %}">{{ p.title|truncatechars:40 }}</a></li>
+                    {% endfor %}
+                </div>
+
+
+
+
+
+        {% comment %}
         <div class="row dossier" style="padding-top: 3px;padding-bottom: 3px;"> 
 
 
@@ -71,6 +85,9 @@
                 </div>
             </div>
         </div>
+        {% endcomment %}
+
+
     </div>
 </div>   
 

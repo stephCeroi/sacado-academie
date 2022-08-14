@@ -137,11 +137,7 @@
                                             Prise en main  <img src="{% static 'img/pdf.png' %}" width="15px"/>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="{% url 'tutos_video_sacado' %}" class="btn btn-outline-danger" >
-                                            Les tutos en vidéo
-                                        </a>
-                                    </li>
+ 
                                 {% endif %}
                             {% endif %}  
                             <form method="post"  enctype='multipart/form-data' class="pull-right search_div" >{% csrf_token %}
@@ -749,16 +745,6 @@
     </div>
     <div class="row">
         <div class="col-lg-12 col-xs-12">
-            <a href="{% url 'webinaires' %}">Webinaires </a> - <a href="{% url 'tweeters' %}">Tweets </a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 col-xs-12">
-            <a href="{% url 'gestion_files' %}">Gestions des fichiers </a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 col-xs-12">
             <a href="{% url 'list_avatars' %}">Gestions des avatars</a> - <a href="{% url 'list_backgrounds' %}">fonds </a>
         </div>
     </div>
@@ -775,17 +761,10 @@
     </div>
  
     {%  if request.user.is_board %}
-    <hr class="divider">
-    <p class="thin">SACADO </p>
-    <div class="row">
-        <div class="col-lg-12 col-xs-12">
-            <a href="{% url 'association_index' %}">L'association </a>
-        </div>
-    </div>
     <hr class="divider">    
     <div class="row">
         <div class="col-lg-12 col-xs-12">
-            <a href="{% url 'academy_index' %}">L'académie </a>
+            <a href="{% url 'academy_index' %}">SACADO Académie </a>
         </div>
     </div>
     {% endif %}

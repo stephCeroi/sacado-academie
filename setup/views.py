@@ -633,6 +633,63 @@ def faq(request):
     return render(request, 'setup/faq.html', context)
 
 
+@is_manager_of_this_school
+def admin_tdb(request):
+
+    school = request.user.school
+    schools = request.user.schools.all()
+ 
+    schools_tab = [school]
+    for s in schools :
+        schools_tab.append(s)
+
+    teachers = Teacher.objects.filter(user__school=school, user__user_type=2)
+
+    nb_teachers = teachers.count()
+    nb_students = User.objects.filter(school=school, user_type=0).exclude(username__contains="_e-test_").count()
+    nb_groups   = Group.objects.filter(Q(teacher__user__school=school)|Q(teacher__user__schools=school)).count()
+    
+    is_lycee = False
+    try :
+        if not school.get_seconde_to_comp :
+            for t in teachers :
+                if t.groups.filter(level__gte=10).count() > 0 :
+                    is_lycee = True
+                    break
+    except :
+        pass
+
+    try:
+        stage = Stage.objects.get(school=school)
+        if stage:
+            eca, ac, dep = stage.medium - stage.low, stage.up - stage.medium, 100 - stage.up
+        else:
+            eca, ac, dep = 20, 15, 15
+
+    except:
+        stage = {"low": 50, "medium": 70, "up": 85}
+        eca, ac, dep = 20, 15, 15
+    
+    if len(schools_tab) == 1 :
+        school_id = request.user.school.id
+        request.session["school_id"] = school_id
+    else :
+        if request.session.get("school_id",None) :
+            school_id = int(request.session.get("school_id",None))
+        else :
+            school_id = 0
+
+    rates       = Rate.objects.all() #tarifs en vigueur 
+    school_year = rates.first().year #tarifs pour l'année scolaire
+
+
+    renew_propose = renew(school)
+
+ 
+    return render(request, 'dashboard_admin.html', {'nb_teachers': nb_teachers, 'nb_students': nb_students, 'school_id' : school_id , "school" : school ,  'renew_propose' : renew_propose ,
+                                                    'nb_groups': nb_groups, 'schools_tab': schools_tab, 'stage': stage, 'is_lycee' : is_lycee , 'school_year' : school_year ,  'rates' : rates , 
+                                                    'eca': eca, 'ac': ac, 'dep': dep , 'communications' : [],
+                                                    })
 
 
 

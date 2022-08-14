@@ -15,6 +15,9 @@ urlpatterns = [
     path('mentions', mentions, name='mentions'), 
     path('mentions_academy', mentions_academy, name='mentions_academy'), 
 
+    path('admin_tdb', admin_tdb, name='admin_tdb'),
+
+
     ############################################################################################
     #######  SACADO Académie
     ############################################################################################
