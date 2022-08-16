@@ -969,23 +969,40 @@ def detail_student_all_views(request, id):
 
  
         today   = time_zone_user(request.user) 
-        nxt_mnth = today.replace(day=28) +  timedelta(days=4)
-        res = nxt_mnth -  timedelta(days=nxt_mnth.day)
+        year  = int(today.strftime("%Y"))
+        month = int( today.strftime("%m"))
+        
 
- 
+
+        nxt_mnth = today.replace(day=28) +  timedelta(days=4)
+        res = nxt_mnth -  timedelta(days=nxt_mnth.day) 
+
         maxiset = []
         for j in range(3):
+            upper_set = dict()
             dataset = []
             max_student_answers_nb = 1
             step = 0
             init , end = 1 + 10*j, 11+10*j
+            begin   = datetime( year , month , init)
+            last_d  = datetime( year , month , end)
+
             if j == 2 :
                 end = int(res.day+1)
+                last_d = datetime( year , month+1 , 1)
+
+ 
+            student_answers_global = Studentanswer.objects.filter( student  = student , date__gte  = begin , date__lte  = last_d )
+            nb_exo_count_g = student_answers_global.count()
+            data_g = student_answers_global.aggregate( duration = Sum("secondes"), average_score_g=Avg('point'))
+            if data_g["average_score_g"] : average_score_g = int(data_g["average_score_g"]) 
+            else : average_score_g = 0
+            if data_g["duration"] : duration_g = data_g["duration"] 
+            else : duration_g = 0
+
+
             for i in range(init,end):
                 datas = {}
-                year  = int(today.strftime("%Y"))
-                month = int( today.strftime("%m"))
-
                 test_date = datetime( year , month , i)
                 if i == res.day: 
                     mnth = month + 1
@@ -994,7 +1011,7 @@ def detail_student_all_views(request, id):
 
                 student_answers    = Studentanswer.objects.filter( student  = student , date__gte  = test_date , date__lte  = test_date_last)
                 student_answers_nb = student_answers.count()
-                average            = student_answers.aggregate( average_score=Avg('point'))
+                average            = student_answers.aggregate( duration = Sum("secondes"), average_score=Avg('point'))
 
                 if not average["average_score"] : average["average_score"] = 0
 
@@ -1023,7 +1040,16 @@ def detail_student_all_views(request, id):
                 d["h"]  = int((d["h"]/max_student_answers_nb)*300)
                 d["hn"] = d["h"]+20
 
-            maxiset.append(dataset)
+            upper_set['datas']           = dataset 
+            upper_set['nb_exo_g']        = nb_exo_count_g
+            upper_set['average_score_g'] = average_score_g
+            upper_set['duration_g']      = duration_g
+
+            if nb_exo_count_g : is_display = True
+            else : is_display = False 
+            upper_set['is_display']      = is_display
+
+            maxiset.append(upper_set)
 
             #datebar = "du "+str(date_start.strftime("%d/%m/%Y"))+" au "+str(today.strftime("%d/%m/%Y"))
  
