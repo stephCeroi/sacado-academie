@@ -87,6 +87,9 @@ urlpatterns = [
     path('ajax_detail_student/', ajax_detail_student, name='ajax_detail_student'),
     path('ajax_detail_student_exercise/', ajax_detail_student_exercise, name='ajax_detail_student_exercise'),
     path('ajax_detail_student_parcours/', ajax_detail_student_parcours, name='ajax_detail_student_parcours'),
+    
+    path('ajax_get_details_graph/', ajax_get_details_graph, name='ajax_get_details_graph'),
+
 
     path('register_parent', register_parent, name='register_parent'),
     path('update_parent/<int:id>', update_parent, name='update_parent'),

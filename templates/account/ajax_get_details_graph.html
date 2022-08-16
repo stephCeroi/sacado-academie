@@ -1,0 +1,10 @@
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+{% for s in student_answers %}
+
+<li class="sanspuce"><img src="{{ s.exercise.supportfile.imagefile.url }}" width="200px" /> {{ s.exercise }} : {{ s.exercise.knowledge }}</li>
+
+
+{% endfor %}

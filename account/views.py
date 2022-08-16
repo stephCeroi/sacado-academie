@@ -999,7 +999,7 @@ def detail_student_all_views(request, id):
             else : average_score_g = 0
             if data_g["duration"] : duration_g = data_g["duration"] 
             else : duration_g = 0
-
+            e_k_count_g = Studentanswer.objects.values_list("exercise__knowledge" ,flat =True).filter( student  = student , date__gte  = begin , date__lte  = last_d ).distinct().count()
 
             for i in range(init,end):
                 datas = {}
@@ -1021,6 +1021,9 @@ def detail_student_all_views(request, id):
                 datas["a"]    = int(average["average_score"])
                 datas["n"]    = student_answers_nb
                 datas["l"]    = 9*step
+                datas["le"]   = student_answers  
+                datas["m"]    = month
+
                 if int(average["average_score"]) < 50 :
                     datas["c"] = "red" 
                 elif int(average["average_score"]) < 70 :
@@ -1044,6 +1047,8 @@ def detail_student_all_views(request, id):
             upper_set['nb_exo_g']        = nb_exo_count_g
             upper_set['average_score_g'] = average_score_g
             upper_set['duration_g']      = duration_g
+            upper_set['k_count_g']       = e_k_count_g
+
 
             if nb_exo_count_g : is_display = True
             else : is_display = False 
@@ -1058,6 +1063,33 @@ def detail_student_all_views(request, id):
 
 
     return render(request, 'account/detail_student_all_views.html', context)
+
+
+
+
+
+def ajax_get_details_graph(request):
+    student_id  = int(request.POST.get("student_id"))
+    month       = int(request.POST.get("month"))
+    date        = request.POST.get("date")
+    d , m  , y , r = date.split(" ")
+
+    date_f = datetime(int(y),month,int(d))
+    date_e = date_f + timedelta(days=1)
+
+    student = Student.objects.get(pk = student_id)
+    student_answers    = Studentanswer.objects.filter( student  = student , date__gte  = date_f , date__lte  = date_e)
+ 
+
+    context = {'student_answers': student_answers}
+
+    data = {}
+
+    data['this_date'] =  date_f.strftime("%d-%m-%Y") 
+    data['html'] = render_to_string('account/ajax_get_details_graph.html', context)
+ 
+    return JsonResponse(data)
+
 
 
 

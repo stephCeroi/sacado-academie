@@ -5,16 +5,16 @@
 
 
 {% block require %}
-    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common4.js' %}"></script> 
+    <script src="{% static 'js/require.js' %}" data-main="{% static 'js/common3.js' %}"></script> 
     <script>
         require(['script/ajax-group']);
     </script>
 
-    {% if request.user.is_in_academy or student.user.is_in_academy %}
+
     <script>
-        // require(['script/charts']);
+        require(['script/details_graph_bar']);
     </script>
-    {% endif %}
+
 
 
 {% endblock %}
@@ -147,7 +147,7 @@
             </div>
 
 
-
+            <form method="POST">
             {% for dataset in maxiset %}
                 {% if dataset.is_display  %}
                 <div class="row ">
@@ -157,7 +157,12 @@
                                 {% if data.n %}
                                 <div class="container_bars" style="height:{{ data.hn }}px;left:{{ data.l }}%;"><label>{{ data.n }}</label>
                                     <div class="bars {{ data.c }}" style="height:{{ data.h }}px; ">
-                                           <div class="average">{{ data.a }}%</div>
+                                        <div class="average">
+                                            {{ data.a }}% 
+                                        </div>
+                                        <div class="detail_bar_score">
+                                            <a href="#" data-toggle='modal' data-target='#detail_bar_score' data-student_id="{{ student.user.id}}" data-date="{{ data.date}}"  data-month="{{ data.m}}" class="get_details_bar white"><i class="bi bi-question-circle"></i></a> 
+                                        </div>
                                     </div>
                                 </div>  
                                 {% endif %}
@@ -173,7 +178,12 @@
                                     <td>
                                         Exercices faits <span class="pull-right">{{ dataset.nb_exo_g  }}</span>
                                     </td>
-                                </tr>    
+                                </tr>  
+                                <tr>
+                                    <td>
+                                        Compétences travaillées <span class="pull-right">{{ dataset.k_count_g  }}</span>
+                                    </td>
+                                </tr> 
                                 <tr>
                                     <td>
                                         Score moyen  <span class="pull-right">{{ dataset.average_score_g  }}%</span> 
@@ -190,6 +200,26 @@
                 </div>
                 {% endif %}
             {% endfor %}
+            </form>
+
+
+
+            <div class="modal fade" id='detail_bar_score' tabindex="-1" role="dialog" aria-labelledby='detail_bar_score'>
+                <div class="modal-dialog" role="document" style="width:70%">
+                    <div class="modal-content" >
+                        <div class="modal-header">
+                            <h2 > Exercices du <span id="title_detail_bar"></span> </h2>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button> 
+
+                        </div>
+                        <div class="modal-body" id="body_detail_bar">
+ 
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 
