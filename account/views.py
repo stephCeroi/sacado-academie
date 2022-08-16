@@ -928,56 +928,7 @@ def detail_student_all_views(request, id):
         if relation.exercise.knowledge not in knowledges:
             knowledges.append(relation.exercise.knowledge)
 
-
-    parcourses = student.students_to_parcours.filter(is_publish=1,is_trash=0).order_by("subject__name")
-    relationships = Relationship.objects.filter(parcours__in=parcourses,is_publish=1,exercise__supportfile__is_title=0).exclude(date_limit=None)
-
-    done, late, no_done = 0, 0, 0
-    for relationship in relationships :
-        nb_ontime = student.answers.filter(exercise = relationship.exercise ).count()
-
-        utc_dt = dt_naive_to_timezone(relationship.date_limit, student.user.time_zone)
-
-        nb = student.answers.filter(exercise = relationship.exercise, date__lte= utc_dt ).count()
-        if nb_ontime == 0:
-            no_done += 1
-        elif nb > 0:
-            done += 1
-        else:
-            late += 1
-
-    std = {
-        "nb": no_done + done + late,
-        "no_done": no_done,
-        "done": done,
-        "late": late,
-        "nb_exo": studentanswers.count(),
-    }
-
-    std.update(studentanswers.aggregate(duration=Sum('secondes'), average_score=Avg('point')))
-
-    if std['duration'] is None:
-        std['duration'] = 0
-    else:
-        std['duration'] = int(std['duration'])
-
-    if std['average_score'] is None:
-        std['average_score'] = 0
-    else:
-        std['average_score'] = int(std['average_score'])
-
-    try:
-        std['median'] = int(median(studentanswers.values_list('point', flat=True)))
-    except StatisticsError:
-        std['median'] = 0
-
-    months = []
-    names  = ["janvier","février","mars","avril","mai","juin","juillet","aout","septembre","octobre","novembre","décembre"]
-    for i in range(1,13):
-        this_month = {}
-        this_month["rg"] = i
-        this_month["name"] = names[i-1]
-        months.append(this_month)
+ 
     score_bool = False
     if request.user.is_teacher:
         students = []
@@ -996,7 +947,7 @@ def detail_student_all_views(request, id):
         sender_mail(request,form)
         if group :
             nav = navigation(group, id)
-            context = {'exercises': exercises, 'knowledges': knowledges,  'parcourses': parcourses, 'std': std, 'themes': themes, 'students' : students ,  'group' : group , 'communications' : [], 'today' : today , 'form' : form ,  'groups' : groups ,
+            context = {'exercises': exercises, 'knowledges': knowledges,    'themes': themes, 'students' : students ,  'group' : group , 'communications' : [], 'today' : today , 'form' : form ,  'groups' : groups ,
                    'student': student, 'parcours': None, 'sprev_id': nav[0], 'snext_id': nav[1] , 'teacher' : teacher,'months':months }
         else :
             messages.error(request, "Erreur...L'élève "+str(student.user.first_name)+" "+str(student.user.last_name)+" n'est pas associé à un groupe.")
@@ -1011,48 +962,73 @@ def detail_student_all_views(request, id):
             themes.update(student.level.themes.filter(subject=g.subject)) 
 
 
-        scoreswRadar  = ""
-        waitingsRadar = ""
-        score_str     = 0
-        datebar       = ""
 
         ###################
         #### Suivi si academie
         i = 1
 
-        if request.user.school_id == 50 or student.user.is_in_academy :
-            sep = "-"
-            for waiting in group.waitings() :
-                if i == len(group.waitings()) :
-                    sep = ""
-                waitingsRadar += waiting.name[:100]+sep
-                score , total_score = 0 , 0 
-                if student.result_waitings(waiting) : 
-                    score = student.result_waitings(waiting)
-                    total_score += score
-                scoreswRadar += str(score)+sep
-                i+=1
+ 
+        today   = time_zone_user(request.user) 
+        nxt_mnth = today.replace(day=28) +  timedelta(days=4)
+        res = nxt_mnth -  timedelta(days=nxt_mnth.day)
+
+ 
+        maxiset = []
+        for j in range(3):
+            dataset = []
+            max_student_answers_nb = 1
+            step = 0
+            init , end = 1 + 10*j, 11+10*j
+            if j == 2 :
+                end = int(res.day+1)
+            for i in range(init,end):
+                datas = {}
+                year  = int(today.strftime("%Y"))
+                month = int( today.strftime("%m"))
+
+                test_date = datetime( year , month , i)
+                if i == res.day: 
+                    mnth = month + 1
+                    test_date_last = datetime( year , mnth , 1)
+                else : test_date_last = datetime( year , month , i+1)
+
+                student_answers    = Studentanswer.objects.filter( student  = student , date__gte  = test_date , date__lte  = test_date_last)
+                student_answers_nb = student_answers.count()
+                average            = student_answers.aggregate( average_score=Avg('point'))
+
+                if not average["average_score"] : average["average_score"] = 0
+
+                datas["date"] = test_date
+                datas["hn"]   = 0
+                datas["h"]    = student_answers_nb
+                datas["a"]    = int(average["average_score"])
+                datas["n"]    = student_answers_nb
+                datas["l"]    = 9*step
+                if int(average["average_score"]) < 50 :
+                    datas["c"] = "red" 
+                elif int(average["average_score"]) < 70 :
+                    datas["c"] = "orange" 
+                elif int(average["average_score"]) < 85 :
+                    datas["c"] = "green"
+                else :
+                    datas["c"] = "darkgreen"
+                step +=1
+
+                dataset.append(datas)
+     
+                if max_student_answers_nb < student_answers_nb :
+                    max_student_answers_nb = student_answers_nb
             
-            today   = time_zone_user(request.user) 
-            date_start = today - timedelta(days=7)
-            aptitude = request.user.school.aptitude.last()
+            for d in dataset :
+                d["h"]  = int((d["h"]/max_student_answers_nb)*300)
+                d["hn"] = d["h"]+20
 
-            student_answers = Studentanswer.objects.filter( student  = student , date__gte = date_start  )
+            maxiset.append(dataset)
 
-
-            score_bool = False # Permet de ne pas afficher la grille de semaine si aucun exercice n'est fait durant cette semaine.
-            if student_answers.count() : score_bool = True
-
-            st0 = student_answers.filter(point__lt= aptitude.low).count()
-            st1 = student_answers.filter(point__lt= aptitude.medium).count()
-            st2 = student_answers.filter(point__lt= aptitude.up).count()
-            st3 = student_answers.filter(point__gte= aptitude.up).count()
-            score_str = str(st0)+"-"+str(st1)+"-"+str(st2) +"-"+str(st3)
-
-            datebar = "du "+str(date_start.strftime("%d/%m/%Y"))+" au "+str(today.strftime("%d/%m/%Y"))
-
-        context = {'exercises': exercises, 'knowledges': knowledges,  'parcourses': parcourses, 'std': std, 'themes': themes, 'communications' : [], 'group' : group ,  'today' : today  , 'teacher' : None , 'groups' : groups ,
-                   'student': student, 'parcours': None, 'sprev_id': None, 'snext_id': None, 'score_bool' : score_bool  ,'months':months , 'waitingsRadar' : waitingsRadar , 'scoreswRadar' : scoreswRadar  , 'score_str' : score_str  , 'datebar' : datebar ,   }
+            #datebar = "du "+str(date_start.strftime("%d/%m/%Y"))+" au "+str(today.strftime("%d/%m/%Y"))
+ 
+        context = {'exercises': exercises, 'knowledges': knowledges,   'themes': themes, 'communications' : [], 'group' : group ,  'today' : today  , 'teacher' : None , 'groups' : groups ,
+                   'student': student, 'parcours': None, 'sprev_id': None, 'snext_id': None, 'score_bool' : score_bool  ,  'maxiset' : maxiset  }
 
 
     return render(request, 'account/detail_student_all_views.html', context)

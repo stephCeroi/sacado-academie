@@ -12,9 +12,10 @@
 
     {% if request.user.is_in_academy or student.user.is_in_academy %}
     <script>
-        require(['script/charts-academy']);
+        // require(['script/charts']);
     </script>
     {% endif %}
+
 
 {% endblock %}
 
@@ -31,67 +32,7 @@
 {% if exercises|length > 0 %}
 <div class="row">
     <div class="col-sm-12 col-md-12">
-        <table class="table table-bordered table-hover">
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                        Dernière connexion : {{ student.user.last_login|date:"d N Y, H:i"  }}
-                    </td>
-                    <td colspan="2">
-                        
-                        {% if teacher %}
-                       <a href="{% if sacado_asso %}{% url 'print_statistiques' group.id  student.user.id %}{% else %}#{% endif %}" class="btn btn-default">Imprimer le bilan</a>
-             
 
-
-
-                        <small>
-                            <a href="#" data-toggle='modal' class="pull-right btn btn-danger"
-                                        data-target='#writer'  
-                                        class="send_message" {% if not student.user.email %} disabled {% endif %} >  
-                                Ecrire un message à {{ student.user }}
-                            </a>
-                        </small>
-                        {% endif %}
-
-
-
-                    </td>
-                </tr>    
-                <tr>
-                    <td>
-                        Exercices faits <span class="pull-right">{{ std.nb_exo  }}</span>
-                    </td>
-                    <td>
-                        Score moyen  <span class="pull-right">{{ std.average_score  }}%</span> 
-                    </td>
-                    <td>
-                        Score médian  <span class="pull-right">{{ std.median  }}%</span> 
-                    </td>
-                    <td> 
-                        Durée totale  <span class="pull-right">{{ std.duration|time_done  }}</span> 
-                    </td>
-                </tr> 
-                {% if not request.user.is_in_academy and request.user.school_id != 50 %} 
-                <tr>
-                    <td>
-                        Tâches à rendre <span class="pull-right">{{ std.nb  }}</span>
-                    </td>
-                    <td>
-                        Tâches remises   <span class="pull-right">{% if std.done  > 0 %} <span class="label label-success">{{ std.done  }}</span>{% else %}{{ std.done  }}{% endif %}</span> 
-                    </td>
-                    <td>
-                        Tâches non remises <span class="pull-right">{% if std.no_done  > 0 %} <span class="label label-danger">{{ std.no_done  }}</span>{% else %}{{ std.no_done  }}{% endif %}</span> 
-                    </td>
-                    <td> 
-                        Tâches remises en retard <span class="pull-right">{% if std.late  > 0 %} <span class="label label-warning">{{ std.late  }}</span>{% else %}{{ std.late }}{% endif %}</span> 
-                    </td>
-                </tr> 
-                {% endif %}   
-            </tbody>
-        </table>
-    </div>
-</div> 
 
     {% for group in groups %}
 
@@ -102,20 +43,8 @@
 
 
 
-            {% if student.user.is_in_academy  %}
+        {% if student.user.is_in_academy  %}
 
-            <div class="row bilan_div">
-                <div class="col-sm-12 col-md-12">
-                    <form action="{% url 'print_monthly_statistiques' %}" method="POST">{% csrf_token %}
-                        <img src="{% static 'img/pdf.png' %}" width="20px"/> Je veux imprimer le bilan pdf du <input type="date" id="date_start_id" name="date_start" /> au <input type="date" id="date_stop_id" name="date_stop" />
-                        <input type="hidden" name="group_id" id="group_id" value="{{ group.id }}" />
-                        <input type="hidden" name="student_id" id="student_id" value="{{ student.user.id }}" />
-
-                        <input type="submit"  value="Imprimer" class="btn btn-primary" />
-                    </form>
-                </div>
-            </div>
-            <hr/> 
 
             {% comment %}
             <!-- bilan des parents par mois -->
@@ -143,77 +72,168 @@
             {% endcomment %}
             {% endif %}
 
-
-            <div class="row bilan_div">
-                <div class="col-sm-12 col-md-12">
-                    <a href="#skills{{ forloop.counter }}" data-toggle="collapse"  class="bilan_title"><i class="fa fa-angle-right"></i> <i class="fa fa-angle-down"></i>  Bilan des compétences</a>
-                    <div id="skills{{ forloop.counter }}" class="collapse bilan_details">
-                        <table class="table  table-hover" style="min-width:70%">
-                            {% for sk in group.subject.skill.all %}
-                            {% get_bilan_skills student sk as bilan %}
-                            <tr>
-                                <td style="width:45px">   
-                                    {% if bilan %}
-                                        <span class="markdown  square
-                                            {% if bilan < 30 %}
-                                                red 
-                                            {% elif bilan < 60 %}
-                                                orange
-                                            {% elif bilan < 80 %}
-                                                green
-                                            {% else %}
-                                                darkgreen
-                                            {% endif %}" style="cursor: help" >
-                                            {{ bilan }}
-                                        </span>
-                                    {% endif %} 
-                                </td>
-                                <td>     
-                                    {{ sk }}
-                                </td>
-                            </tr>    
-                            {% endfor %}
-                        </table>
-                    </div>
-                </div>
-            </div>
-             
-            <div class="row bilan_div">
-                <div class="col-sm-12 col-md-12">
-                    <a href="#waitings{{ forloop.counter }}" data-toggle="collapse"  class="bilan_title"><i class="fa fa-angle-right"></i> <i class="fa fa-angle-down"></i>  Bilan des attendus</a>
-
-                    <div id="waitings{{ forloop.counter }}" class="collapse bilan_details">
-                        <table class="table  table-hover" >
-                            {% for waiting in group.waitings  %}
-                            {% get_result_waitings student waiting as data %}
+            {% comment %}
+                <div class="row bilan_div">
+                    <div class="col-sm-12 col-md-12">
+                        <a href="#skills{{ forloop.counter }}" data-toggle="collapse"  class="bilan_title"><i class="fa fa-angle-right"></i> <i class="fa fa-angle-down"></i>  Bilan des compétences</a>
+                        <div id="skills{{ forloop.counter }}" class="collapse bilan_details">
+                            <table class="table  table-hover" style="min-width:70%">
+                                {% for sk in group.subject.skill.all %}
+                                {% get_bilan_skills student sk as bilan %}
                                 <tr>
-                                    <td style="width:45px">
-                                        {% if data %}
-                                            <span class="markdown  square 
-                                                {% if data < 30 %}
+                                    <td style="width:45px">   
+                                        {% if bilan %}
+                                            <span class="markdown  square
+                                                {% if bilan < 30 %}
                                                     red 
-                                                {% elif data < 60 %}
+                                                {% elif bilan < 60 %}
                                                     orange
-                                                {% elif data < 80 %}
+                                                {% elif bilan < 80 %}
                                                     green
                                                 {% else %}
                                                     darkgreen
                                                 {% endif %}" style="cursor: help" >
-                                                {{ data }}
+                                                {{ bilan }}
                                             </span>
                                         {% endif %} 
                                     </td>
-                                    <td>{{ waiting.name }}</td> 
-                                </tr>
-                            {% endfor %}
-                        </table>
+                                    <td>     
+                                        {{ sk }}
+                                    </td>
+                                </tr>    
+                                {% endfor %}
+                            </table>
+                        </div>
                     </div>
                 </div>
+                <div class="row bilan_div">
+                    <div class="col-sm-12 col-md-12">
+                        <a href="#waitings{{ forloop.counter }}" data-toggle="collapse"  class="bilan_title"><i class="fa fa-angle-right"></i> <i class="fa fa-angle-down"></i>  Bilan des attendus</a>
+
+                        <div id="waitings{{ forloop.counter }}" class="collapse bilan_details">
+                            <table class="table  table-hover" >
+                                {% for waiting in group.waitings  %}
+                                {% get_result_waitings student waiting as data %}
+                                    <tr>
+                                        <td style="width:45px">
+                                            {% if data %}
+                                                <span class="markdown  square 
+                                                    {% if data < 30 %}
+                                                        red 
+                                                    {% elif data < 60 %}
+                                                        orange
+                                                    {% elif data < 80 %}
+                                                        green
+                                                    {% else %}
+                                                        darkgreen
+                                                    {% endif %}" style="cursor: help" >
+                                                    {{ data }}
+                                                </span>
+                                            {% endif %} 
+                                        </td>
+                                        <td>{{ waiting.name }}</td> 
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endcomment %}
+
+            <div class="row ">
+                <div class="col-sm-12 col-md-10">
+                    <h3>Nombre d'exercices faits et pourcentage moyen de réusite par jour <small class="pull-right">Dernière connexion : {{ student.user.last_login|date:"d N Y, H:i"  }}</small></h3>
+                </div>
             </div>
-             
+
+
+
+
+
+
+            <div class="row ">
+                <div class="col-sm-12 col-md-10">
+
+ 
+                {% for dataset in maxiset %}
+                    <div class="graph_container">
+                        {% for data in dataset %}
+                            {% if data.n %}
+                            <div class="container_bars" style="height:{{ data.hn }}px;left:{{ data.l }}%;"><label>{{ data.n }}</label>
+                                <div class="bars {{ data.c }}" style="height:{{ data.h }}px; ">
+                                       <div class="average">{{ data.a }}%</div>
+                                </div>
+                            </div>  
+                            {% endif %}
+                            <div class="legend_dates" style="left:{{ data.l }}%;">{{ data.date|date:"d F"}}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+
+
+
+                </div>
+                <div class="col-sm-12 col-md-2 bilan_div">
+ 
+                    <h3>En cumulé</h3>
+
+
+                        <table class="table table-bordered table-hover">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Exercices faits <span class="pull-right">{{ std.nb_exo  }}</span>
+                                    </td>
+                                </tr>    
+                                <tr>
+                                    <td>
+                                        Score moyen  <span class="pull-right">{{ std.average_score  }}%</span> 
+                                    </td>
+                                </tr>    
+                                <tr>
+                                    <td> 
+                                        Durée totale  <span class="pull-right">{{ std.duration|time_done  }}</span> 
+                                    </td>
+                                </tr> 
+                            </tbody>
+                        </table>
+
+
+
+                </div>
+
+
+
+
+            </div>
+
+
+
+
+            <hr/>
+
+            <div class="row bilan_div">
+                <div class="col-sm-12 col-md-12">
+                    <form action="{% url 'print_monthly_statistiques' %}" method="POST">{% csrf_token %}
+                        <img src="{% static 'img/pdf.png' %}" width="20px"/> Je veux imprimer le bilan pdf du <input type="date" id="date_start_id" name="date_start" /> au <input type="date" id="date_stop_id" name="date_stop" />
+                        <input type="hidden" name="group_id" id="group_id" value="{{ group.id }}" />
+                        <input type="hidden" name="student_id" id="student_id" value="{{ student.user.id }}" />
+
+                        <input type="submit"  value="Imprimer" class="btn btn-primary" />
+                    </form>
+                </div>
+            </div>
+     
+            <hr/>
+
+
+
+
+
             <div class="row bilan_div">
                     <div class="col-sm-12 col-md-12">
-                        <a href="#knowledges{{ forloop.counter }}" data-toggle="collapse"  class="bilan_title"><i class="fa fa-angle-right"></i> <i class="fa fa-angle-down"></i>  Bilan des savoir faire </a>
+                        <a href="#knowledges{{ forloop.counter }}" data-toggle="collapse"  class="bilan_title"><i class="fa fa-angle-right"></i> <i class="fa fa-angle-down"></i>  Bilan des compétences </a>
                         <div id="knowledges{{ forloop.counter }}" class="collapse bilan_details">
                             {% with student.resultknowledge_dict as results %}
                             <table class="table   table-hover"  >
@@ -254,7 +274,7 @@
 
             <div class="row bilan_div">
                 <div class="col-sm-12 col-md-12">
-                    <a href="#exercises{{ forloop.counter }}" data-toggle="collapse" class="bilan_title"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i>   Bilan des exercices </a>
+                    <a href="#exercises{{ forloop.counter }}" data-toggle="collapse" class="bilan_title"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i>   Bilan des exercices faits</a>
                     <div id="exercises{{ forloop.counter }}" class="collapse bilan_details">
                         {% regroup exercises by theme as theme_list %}
                         {% for thme in theme_list %}  
