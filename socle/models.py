@@ -191,7 +191,7 @@ class Level(models.Model):
         data      = {}
         today     = datetime.now()
         Adhesion  = apps.get_model('account', 'Adhesion')
-        adhesions = self.adhesions.filter(student__user__school_id=50 , start__lte= today , stop__gte= today ) 
+        adhesions = self.adhesions.filter(student__user__school_id=50 ,  stop__gte= today ) 
         adheses   = adhesions.aggregate(total_amount=Sum('amount')) 
 
         data["nba"] = adhesions.count()
@@ -215,11 +215,6 @@ class Vignette(models.Model):
 
     def __str__(self):
         return "Vignette {}".format(self.level.name)
-
-
-
-
-
 
 
 class Waiting(models.Model):

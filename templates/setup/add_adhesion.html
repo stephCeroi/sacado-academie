@@ -64,19 +64,26 @@
                         {{ form.email |add_class:"form-control email"}}
                         {{ form.email.errors }}
                     </div>
-                    {% if not forloop.first %}
                     <div class="form-group">
-                        <label>Niveau favori :</label>
+                        <label>Niveau souhaité :</label>
                         <select name="level" id="id_level" class="form-control select2">
                             {% for l in levels|dictsort:"ranking" %}
                                 <option value="{{ l.id }}">{{ l.name }}</option>
                             {% endfor %}
                         </select>
-                        <small>Le niveau favori est le niveau accessible depuis le tableau de bord.</small>
                     </div>
-                    {% else %}
-                        <input name="level" value="" type="hidden" />
-                    {% endif %}
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">                     
+                                <label>Formule souhaitée :</label>
+                                <select name="formule_id" id="formule_id" class="form-control select2">
+                                    {% for f in formules  %}
+                                        <option value="{{ f.id }}">{{ f.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row"> 
                         <div class="col-sm-12 col-md-12">
                             <div class="form-group">
@@ -104,7 +111,7 @@
                         </div>
                     </div> 
                 </div>
-      <a href="javascript:history.back()" data-dismiss="modal" ><input type="button" value="Annuler" class="btn btn-default"   /></a>
+
             </div> 
                
 
@@ -119,16 +126,15 @@
                     <div class="form-group not_allowed_display" id="div_email">
                         <label>Email : </label><span id="verif_email"></span>
                     </div>
-                    
-                    <div class="form-group not_allowed_display" id="div_level">
-                        <label>Niveau favori : </label><span id="verif_level"></span>
-                    </div>
- 
                     <div class="form-group not_allowed_display" id="div_username">
-                        <label>Choisir un identifiant : </label><span id="verif_username"></span>
+                        <label>Identifiant : </label><span id="verif_username"></span>
                     </div>
- 
- 
+                    <div class="form-group not_allowed_display" id="div_level">
+                        <label>Niveau Souhaité : </label><span id="verif_level"></span>
+                    </div>
+                    <div class="form-group not_allowed_display" id="div_formule">
+                        <label>Formule : </label><span id="verif_formule"></span>
+                    </div>
                 </div>
 
                 <div class="row not_allowed_display" id="id_save">
@@ -136,7 +142,7 @@
      
                         <button type="submit" class="btn btn-primary">Valider l'inscription gratuite, période d'essai </button>   
      
-                        <a href="javascript:history.back()" data-dismiss="modal" ><input type="button" value="Annuler" class="btn btn-default"   /></a>
+ 
                     </div>
                 </div> 
 
@@ -148,10 +154,17 @@
 
 
 
-
         </form>    
     </div>
 
  
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <a href="javascript:history.back()" data-dismiss="modal" ><input type="button" value="Annuler" class="btn btn-default"   /></a>
+        </div>    
+    </div>
+
+
+
 </section>            
 {% endblock %}

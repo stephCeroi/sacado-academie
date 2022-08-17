@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import  permission_required,user_passes_test
 from django.http import JsonResponse 
 from account.models import  Adhesion, Student, Resultknowledge , Parent
 from qcm.models import  Resultexercise, Studentanswer
-
+from association.models import   Activeyear
 from academy.models import  Autotest 
 from academy.forms import  AutotestForm
 from socle.models import  Level
@@ -219,7 +219,8 @@ def details_adhesion(request,level_id):
     if rq_user.is_board :
         today = time_zone_user(rq_user)
         level = Level.objects.get(pk=level_id)
-        adhesions = level.adhesions.filter( start__lte=today , stop__gte=today )
+        active_year = Activeyear.objects.get(is_active=1)
+        adhesions = level.adhesions.filter( start__lte=today , stop__gte=today , year = active_year)
 
         context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
 

@@ -1041,7 +1041,7 @@ def attribute_all_documents_to_student_by_level(level,student) :
 def add_adhesion(request) :
 
     form =  UserForm(request.POST or None)
-    formule = Formule.objects.get(pk = 1)
+    formules = Formule.objects.all()
     levels = Level.objects.order_by("ranking")
     today = time_zone_user(request.user)
 
@@ -1057,6 +1057,7 @@ def add_adhesion(request) :
             form_user.user_type = 0
             form_user.save()
             level_id = request.POST.get("level")
+            formule_id = request.POST.get("formule_id")
             student = Student.objects.create(user=form_user, level_id = level_id)
             level   = Level.objects.get(pk = level_id)
             u_parents = all_from_parent_user(request.user)
@@ -1069,7 +1070,7 @@ def add_adhesion(request) :
             chrono = create_chrono(Facture,"F")
             success = attribute_all_documents_to_student_by_level(level,student)
   
-            adhesion = Adhesion.objects.create(start = today, stop = end, student = student , level_id = level_id  , amount = 0  , formule_id = None ) 
+            adhesion = Adhesion.objects.create(start = today, stop = end, student = student , level_id = level_id  , amount = 0  , formule_id = formule_id ) 
             facture = Facture.objects.create(chrono = chrono, file = "" , user = request.user , date = today     ) 
             facture.adhesions.add(adhesion)
 
@@ -1100,7 +1101,7 @@ def add_adhesion(request) :
 
             return redirect("index")
  
-    context = {  "renewal" : True, "form" : form, "formule" : formule  ,   'levels' : levels , }
+    context = {  "renewal" : True, "form" : form, "formules" : formules  ,   'levels' : levels , }
     return render(request, 'setup/add_adhesion.html', context)   
  
         
@@ -1209,7 +1210,7 @@ def save_adhesion(request) :
             students_in.append(student) # pour associer les enfants aux parents 
 
  
-        adhesion = Adhesion.objects.create( student = student , level = level , start = today , amount = total_price , stop = date_end_dateformat , formule_id  = formule.id )
+        adhesion = Adhesion.objects.create( student = student , level = level , start = today , amount = total_price , stop = date_end_dateformat , formule_id  = formule.id , year  = today.year )
         adhesions_in.append(adhesion)
 
     i = 0

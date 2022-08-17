@@ -50,7 +50,7 @@ import json
 def get_active_year():
     """ renvoi d'un tuple sous forme 2021-2022  et d'un entier 2021 """
     try :
-        active_year = Activeyear.objects.get(pk=1)
+        active_year = Activeyear.objects.get(is_active=1)
         int_year = active_year.year
     except :
         today = datetime.now()
@@ -251,23 +251,52 @@ def association_index(request):
     return render(request, 'association/dashboard.html', context )
 
 
-@user_passes_test(user_is_board)
-def update_activeyear(request):
-    try :
-        a    = Activeyear.objects.get(pk=1)
-        form = ActiveyearForm(request.POST or None , instance = a )
-    except :
-        form = ActiveyearForm(request.POST or None )
 
+@user_passes_test(user_is_board)
+def create_activeyear(request):
+
+    form       = ActiveyearForm(request.POST or None)
     if request.method == "POST":
         if form.is_valid():
-            form.save()
+            nf = form.save()
+            if nf.is_active :
+                Activeyear.objects.exclude(pk=nf.id).update(is_active=0)
         else :
             print(form.errors)
         
-        return redirect('association_index')
+        return redirect('activeyears')
 
-    return render(request, 'association/form_activeyear.html', {'form': form   })
+    return render(request, 'association/form_activeyear.html', {'form': form     })
+
+
+
+@user_passes_test(user_is_board)
+def update_activeyear(request,id):
+
+    activeyear = Activeyear.objects.get(pk=id)
+    form       = ActiveyearForm(request.POST or None , instance = activeyear)
+ 
+
+    if request.method == "POST":
+        if form.is_valid():
+            nf = form.save()
+            if nf.is_active :
+                Activeyear.objects.exclude(pk=nf.id).update(is_active=0)
+
+        else :
+            print(form.errors)
+        
+        return redirect('activeyears')
+
+    return render(request, 'association/form_activeyear.html', {'form': form     })
+
+
+@user_passes_test(user_is_board)
+def activeyears(request):
+
+    years = Activeyear.objects.all()
+
+    return render(request, 'association/list_activeyear.html', { 'years' :years   })
 
 
 

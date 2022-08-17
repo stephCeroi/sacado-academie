@@ -641,6 +641,7 @@ class Adhesion(models.Model):
 
     level      = models.ForeignKey(Level, related_name="adhesions", on_delete=models.CASCADE, null=True,blank=True, editable= False)
     student    = models.ForeignKey(Student, related_name="adhesions", on_delete=models.CASCADE,  null=True, blank=True, editable= False)
+    year       = models.PositiveIntegerField( default=2021,  editable= False)
 
     def __str__(self):
         return "{} {} : {}€".format(self.student.user.last_name, self.student.user.first_name, self.amount)

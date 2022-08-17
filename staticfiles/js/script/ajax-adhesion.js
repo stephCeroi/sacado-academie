@@ -175,6 +175,20 @@ define(['jquery', 'bootstrap'], function ($) {
             });
 
 
+            $("#formule_id").on('change', function () {
+                $("#div_display").show() 
+                $("#div_formule").show();
+                if ( $("#formule_id").val() == 1) { f = "Autonomie"}
+                else if ( $("#formule_id").val() == 2) {f = "IA"}
+                else if ( $("#formule_id").val() == 3) {f = "Suivi"}
+                else  {f = "Personnalisé"}
+
+
+                $("#verif_formule").html( f );
+            });
+
+
+
 
 
  
@@ -212,24 +226,6 @@ define(['jquery', 'bootstrap'], function ($) {
             )
         }); 
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     });
 
 });
