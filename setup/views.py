@@ -533,7 +533,7 @@ def print_proformat_school(request):
 
 
 
-    my_texte_ = "Sous réserve du bon fonctionnement de son hébergeur LWS, l'association SACADO met l'ensemble des fonctionnalités du site https://sacado-academie.fr à disposition des enseignants de l'établissement "+school.name+"."
+    my_texte_ = "Sous réserve du bon fonctionnement de son hébergeur LWS, la SAS SANSPB met l'ensemble des fonctionnalités du site https://sacado-academie.fr à disposition des enseignants de l'établissement "+school.name+"."
     paragraph = Paragraph( my_texte_  , normal )
     elements.append(paragraph)
     elements.append(Spacer(0, 0.2*inch))
