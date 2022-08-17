@@ -365,7 +365,7 @@ def school_adhesion(request):
 
                     school_datas =  school_exists.name +"\n"+school_exists.code_acad +  " - " + str(school_exists.nbstudents) +  " élèves \n" + school_exists.address +  "\n"+school_exists.town+", "+school_exists.country.name
                     send_mail("Demande d'adhésion à la version établissement",
-                              "Bonjour l'équipe SACADO, \nl'établissement suivant demande la version établissement :\n"+ school_datas +"\n\nCotisation : "+str(school_exists.fee())+" €.\n\nEnregistrement de l'étalissement dans la base de données.\nEn attente de paiement. \nhttps://sacado.xyz. Ne pas répondre.",
+                              "Bonjour l'équipe SACADO, \nl'établissement suivant demande la version établissement :\n"+ school_datas +"\n\nCotisation : "+str(school_exists.fee())+" €.\n\nEnregistrement de l'étalissement dans la base de données.\nEn attente de paiement. \nhttps://sacado-academie.fr . Ne pas répondre.",
                               settings.DEFAULT_FROM_EMAIL,
                               ['sacado.asso@gmail.com'])
 
@@ -511,7 +511,7 @@ def print_proformat_school(request):
     normalr = ParagraphStyle(name='Normal',fontSize=12,alignment= TA_RIGHT)
  
     logo = Image('https://sacado.xyz/static/img/sacadoA1.png')  
-    logo_tab = [[logo, "ASSOCIATION SACADO.XYZ \n2B avenue de la pinède \n83400 La Capte Hyères \nFrance" ]]
+    logo_tab = [[logo, "SAS SANSPB \n2B avenue de la pinède \n83400 La Capte Hyères \nFrance" ]]
     logo_tab_tab = Table(logo_tab, hAlign='LEFT', colWidths=[0.7*inch,5*inch])
 
     elements.append(logo_tab_tab)
@@ -525,7 +525,7 @@ def print_proformat_school(request):
     demandeur =  school_datas+   "\n\nMontant de la cotisation : "+str(school.fee()+2)+"€ (frais de port inclus)" +"\n\nNom du demandeur : " + user.first_name + " "  + user.last_name + "\nCourriel : " + user.email  
 
 
-    demandeur_tab = [[demandeur, "ASSOCIATION SACADO.XYZ \n2B avenue de la pinède \n83400 La Capte Hyères \nFrance\n\n\n\n\n" ]]
+    demandeur_tab = [[demandeur, "SAS SANSPB \n2B avenue de la pinède \n83400 La Capte Hyères \nFrance\n\n\n\n\n" ]]
     demandeur_tab_tab = Table(demandeur_tab, hAlign='LEFT', colWidths=[5*inch,2*inch])
 
     elements.append(demandeur_tab_tab)
@@ -533,7 +533,7 @@ def print_proformat_school(request):
 
 
 
-    my_texte_ = "Sous réserve du bon fonctionnement de son hébergeur LWS, l'association SACADO met l'ensemble des fonctionnalités du site https://sacado.xyz à disposition des enseignants de l'établissement "+school.name+"."
+    my_texte_ = "Sous réserve du bon fonctionnement de son hébergeur LWS, l'association SACADO met l'ensemble des fonctionnalités du site https://sacado-academie.fr à disposition des enseignants de l'établissement "+school.name+"."
     paragraph = Paragraph( my_texte_  , normal )
     elements.append(paragraph)
     elements.append(Spacer(0, 0.2*inch))
@@ -1078,12 +1078,12 @@ def add_adhesion(request) :
             msg += "Votre référence d'adhésion est "+chrono+".\n\n"
             msg += "Vous avez inscrit : \n"
             msg += "- "+student.user.first_name+" "+student.user.last_name+", l'identifiant de connexion est : "+student.user.username +" \n"
-            msg += "\n\nRetrouvez ces détails à partir de votre tableau de bord après votre connexion à https://sacado.xyz/academy\n\n"
+            msg += "\n\nRetrouvez ces détails à partir de votre tableau de bord après votre connexion à https://sacado-academie.fr\n\n"
             msg += "L'équipe de SACADO Académie vous remercie de votre confiance.\n\n"
 
 
 
-            msg += "Voici quelques conseils pour votre enfant :\n\nConnecte toi sur https://sacado.xyz/academy\n\n"
+            msg += "Voici quelques conseils pour votre enfant :\n\nConnecte toi sur https://sacado-academie.fr\n\n"
             msg += "Indique ton Nom d’utilisateur et ton Mot de passe\n\n"
             msg += "Clique sur le bouton « connexion »   -> Tu arrives ensuite sur ton profil. \n\n"   
             msg += "Le menu est à gauche :\n\n"
@@ -1253,13 +1253,13 @@ def save_adhesion(request) :
         for s in students_of_adhesion :
             msg += "- "+s["first_name"]+" "+s["last_name"]+", l'identifiant de connexion est : "+s["username"]+", le mot de passe est "+s["password_no_crypted"]+" \n"
 
-        msg += "\n\nRetrouvez ces détails à partir de votre tableau de bord après votre connexion à https://sacado.xyz/academy\n\n"
+        msg += "\n\nRetrouvez ces détails à partir de votre tableau de bord après votre connexion à https://sacado-academie.fr\n\n"
 
         msg += "L'équipe de SACADO Académie vous remercie de votre confiance.\n\n"
 
         ###### Quelques recommandations pour les parents
 
-        msg += "Voici quelques conseils pour votre enfant :\n\nConnecte toi sur https://sacado.xyz/academy\n\n"
+        msg += "Voici quelques conseils pour votre enfant :\n\nConnecte toi sur https://sacado-academie.fr\n\n"
         msg += "Indique ton Nom d’utilisateur et ton Mot de passe\n\n"
         msg += "Clique sur le bouton « connexion »   -> Tu arrives ensuite sur ton profil. \n\n"   
         msg += "Le menu est à gauche :\n\n"
@@ -1297,7 +1297,7 @@ def save_adhesion(request) :
             smsg = "Bonjour "+s["first_name"]+" "+s["last_name"]+",\n\n vous venez de souscrire à une adhésion "+formule_adhesion +" à SACADO Académie avec le menu "+formule_name+". \n"
             smsg += "votre référence d'adhésion est "+chrono+".\n\n"
             smsg += "Votre identifiant est "+s["username"]+" et votre mot de passe est "+s["password_no_crypted"]+"\n\n"
-            smsg += "Il est possible de retrouver ces détails à partir de votre tableau de bord après votre connexion à https://sacado.xyz/academy"
+            smsg += "Il est possible de retrouver ces détails à partir de votre tableau de bord après votre connexion à https://sacado-academie.fr"
             smsg += "L'équipe SACADO vous remercie de votre confiance.\n\n"
 
             send_mail("Inscription SACADO académie", smsg, settings.DEFAULT_FROM_EMAIL, srcv)
