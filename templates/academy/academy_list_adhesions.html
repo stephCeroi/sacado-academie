@@ -40,6 +40,7 @@
                         <td>Parents </td>
                         <td>Elèves </td>
                         <td>Dates </td>
+                        <td>Niveau </td>
                         <td>Montant</td>
                         <td></td>
                     </tr>
@@ -49,7 +50,7 @@
                             <tr>
                                 <td>
                                     {% for p in adhesion.student.students_parent.all %}
-                                        <li>{{ p }}</li>
+                                        <li class="sanspuce">{{ p.user.first_name }} {{ p.user.last_name }}</li>
                                     {% endfor%}
                                 </td>
                                 <td>
@@ -59,10 +60,13 @@
                                     {{ adhesion.start|date:"d N Y" }} - {{ adhesion.stop|date:"d N Y" }}
                                 </td>
                                 <td>
+                                    {{ adhesion.level }}
+                                </td>
+                                <td>
                                     {{ adhesion.amount }}€
                                 </td>
                                 <td>
-                                    <a href="{% url 'delete_adhesion' adhesion.id %}">Supprimer cette adhésion</a> 
+                                    <a href="{% url 'delete_adhesion' adhesion.id %}"  onclick="return TestDelete('cette adhésion')">Supprimer cette adhésion</a> 
                                 </td>
                             </tr>
                         {% endfor %}
