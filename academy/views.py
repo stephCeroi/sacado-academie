@@ -219,7 +219,13 @@ def details_adhesion(request,level_id):
     if rq_user.is_board :
         today = time_zone_user(rq_user)
         level = Level.objects.get(pk=level_id)
-        active_year = Activeyear.objects.get(is_active=1)
+        try :
+            ay = Activeyear.objects.get(is_active=1)
+            active_year = ay.year
+        except :
+            active_year = 2022
+
+
         adhesions = level.adhesions.filter( start__lte=today , stop__gte=today , year = active_year)
 
         context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
