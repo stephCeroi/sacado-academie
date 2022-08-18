@@ -74,11 +74,10 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 
 
-
 def delete_and_erase():
-
-    User.objects.filter(user_type=2).exclude(is_superuser=1).delete()
-
+    
+    User.objects.filter(user_type=0).exclude(school_id=50).delete()
+    #User.objects.filter(user_type=2).exclude(is_superuser=1).delete()
 
 
 
