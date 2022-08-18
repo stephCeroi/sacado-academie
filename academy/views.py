@@ -159,12 +159,11 @@ def details_adhesion(request,level_id):
     rq_user = request.user 
 
     if rq_user.is_board :
-        today = time_zone_user(rq_user)
-        level = Level.objects.get(pk=level_id)
 
+        level = Level.objects.get(pk=level_id)
         ay = Activeyear.objects.get(is_active=1).year
 
-        adhesions = level.adhesions.filter( year = ay )
+        adhesions = Adhesion.objects.filter(level= level,  year = ay ).order_by("-start")
 
         context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
 
@@ -180,8 +179,7 @@ def historic_adhesions(request,level_id):
     rq_user = request.user 
     level = Level.objects.get(pk=level_id)
     if rq_user.is_board :
-        today = time_zone_user(rq_user)
-        adhesions = Adhesion.objects.filter(start__lte=today ,  level=level)
+        adhesions = Adhesion.objects.filter(level= level ).order_by("-start")
         context = { 'adhesions' : adhesions ,  'level' : level ,  'historic' : True   }
         return render(request, "academy/adhesions.html" , context)
 
