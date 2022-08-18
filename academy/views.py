@@ -156,14 +156,18 @@ def academy_index(request):
 
 def details_adhesion(request,level_id):
 
-    rq_user = request.user 
+    rq_user = request.user
+
+    print("ixi") 
 
     if rq_user.is_board :
 
         level = Level.objects.get(pk=level_id)
-        ay = Activeyear.objects.get(is_active=1).year
+        ay    = Activeyear.objects.get(is_active=1).year
 
         adhesions = Adhesion.objects.filter(level= level,  year = ay ).order_by("-start")
+
+        print(  adhesions  )
 
         context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
 
@@ -209,35 +213,6 @@ def academy_delete_parent(request,user_id):
     parent = Parent.objects.get(user_id = user_id) 
     parent.delete()
     return redirect("academy_list_parents")
-
-
-
-
-def details_adhesion(request,level_id):
-
-    rq_user = request.user 
-
-    if rq_user.is_board :
-        today = time_zone_user(rq_user)
-        level = Level.objects.get(pk=level_id)
-        try :
-            ay = Activeyear.objects.get(is_active=1)
-            active_year = ay.year
-        except :
-            active_year = 2022
-
-
-        adhesions = level.adhesions.filter( start__lte=today , stop__gte=today , year = active_year)
-
-        context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
-
-        return render(request, "academy/adhesions.html" , context)
-
-    else:
-        return redirect("index")
-
-
-
 
 
 
