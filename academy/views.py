@@ -250,8 +250,7 @@ def delete_adhesion(request,ida):
         adhesion.delete()
         today = time_zone_user(rq_user)
         adhesions = Adhesion.objects.filter(start__lte=today ,  level=level)
-        context = { 'adhesions' : adhesions ,  'level' : level ,  'historic' : False   }
-        return render(request, "academy/adhesions.html" , context)
+        return redirect("academy_list_adhesions" )
 
     else:
         return redirect("index")
