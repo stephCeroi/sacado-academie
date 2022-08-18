@@ -161,7 +161,9 @@ def details_adhesion(request,level_id):
 	if rq_user.is_board :
 		today = time_zone_user(rq_user)
 		level = Level.objects.get(pk=level_id)
-		adhesions = level.adhesions.filter( start__lte=today , stop__gte=today )
+        ay = Activeyear.objects.get(is_active=1).year
+
+		adhesions = level.adhesions.filter( year = ay )
 
 		context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
 
