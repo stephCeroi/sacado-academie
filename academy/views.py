@@ -156,21 +156,22 @@ def academy_index(request):
 
 def details_adhesion(request,level_id):
 
-	rq_user = request.user 
+    rq_user = request.user 
 
-	if rq_user.is_board :
-		today = time_zone_user(rq_user)
-		level = Level.objects.get(pk=level_id)
+    if rq_user.is_board :
+        today = time_zone_user(rq_user)
+        level = Level.objects.get(pk=level_id)
+
         ay = Activeyear.objects.get(is_active=1).year
 
-		adhesions = level.adhesions.filter( year = ay )
+        adhesions = level.adhesions.filter( year = ay )
 
-		context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
+        context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
 
-		return render(request, "academy/adhesions.html" , context)
+        return render(request, "academy/adhesions.html" , context)
 
-	else:
-		return redirect("index")
+    else:
+        return redirect("index")
 
 
 
