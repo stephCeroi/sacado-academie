@@ -79,9 +79,7 @@ def delete_and_erase():
     #User.objects.filter(user_type=0).exclude(Q(school_id=50)|Q(username__contains="_e-test")).delete()
     
     users = User.objects.filter(user_type=2).exclude(is_superuser=1)
-    Relationship.objects.filter(exercise__supportfile__author__user__in=users).delete()
-    Exercise.objects.filter(supportfile__author__user__in=users).delete()
-    Supportfile.objects.filter(author__user__in=users).delete()
+    Parcours.objects.filter(author__user__in=users).delete()
 
 
 def end_of_contract() :
