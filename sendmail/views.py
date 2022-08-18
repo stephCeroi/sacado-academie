@@ -52,10 +52,10 @@ def list_emails(request):
 
 			discussions = Discussion.objects.all().order_by("-date_created")
 			nb_discussions = discussions.count()
-			tweeters = Tweeter.objects.all().order_by("-date_created")
+ 
 			return render(request,
 			          'sendmail/list.html',
-			          {'tweeters': tweeters, 'emails': emails, 'sent_emails': sent_emails, 'form': form, 'users': users, 'groups': groups,  'today': today, 'communications': [], 
+			          { 'emails': emails, 'sent_emails': sent_emails, 'form': form, 'users': users, 'groups': groups,  'today': today, 'communications': [], 
 			           'discussions' : discussions, 'nb_discussions': nb_discussions ,  'studentanswers': studentanswers, 'tasks': tasks})
 
 		elif user.is_student:
