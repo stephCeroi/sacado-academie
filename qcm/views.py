@@ -34,7 +34,7 @@ import math
 import json
 import random
 from datetime import datetime , timedelta
-from django.db.models import Q
+from django.db.models import Q , Avg
 from django.core.mail import send_mail
 from group.decorators import user_is_group_teacher 
 from qcm.decorators import user_is_parcours_teacher, user_can_modify_this_course, student_can_show_this_course , user_is_relationship_teacher, user_is_customexercice_teacher , parcours_exists , folder_exists
@@ -2739,6 +2739,69 @@ def show_parcours(request, idf = 0, id=0):
 
 
 
+def open_section_to_read(student, parcours, listing_order):
+
+    bool_list , blocs = [] ,  [] 
+
+    if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
+        
+        for doc in listing_order :
+            dico = dict()
+            dico["doc"] = doc
+            dico["is_display"] = False 
+            if doc.type_id == 0 :
+                if doc.exercise.supportfile.is_title :  
+                    dico["is_display"] = True
+                    blocs.append([])
+                else :
+                    blocs[-1].append(doc.id)
+            else :
+                blocs[-1].append(doc.id)
+
+            bool_list.append(dico)            
+
+        bloc_average = []
+        i = 0
+        for bloc in blocs :
+            avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
+            dico = dict()
+            ok= (bool(avg_student['average']) and avg_student['average']>80) or (i == 0)
+            bloc_average.append(ok)
+            i +=1
+
+        step = 0
+        for doc_dico in bool_list :
+            print(doc_dico)
+            #dico["doc"] = Relationship.objects.get(pk=dl)
+            #dico["is_display"] = bloc_average[step] 
+
+            step +=1
+
+            # for doc_dico in bool_list :
+            #     if doc_dico["doc"] in all_exos :
+            #         doc_dico["is_display"] = ok 
+
+            #     print( doc_dico["doc"].id, doc_dico["doc"].id in all_exos , all_exos )
+
+
+            # for o in nob :
+            #     insert = False
+            #     if avg_student["average"] :
+            #         if avg_student["average"] > 80 : 
+            #             insert = True
+            #     open_to_read.append(insert)
+
+    else :
+        for doc in listing_order :
+            dico = dict()
+            dico["doc"] = doc
+            dico["is_display"] = True 
+            bool_list.append(dico) 
+
+    return bool_list 
+
+
+
 
 def ordering_number_for_student(parcours,student):
     """ créer une seule liste des exercices personnalisés et des exercices sacado coté eleve """
@@ -2746,35 +2809,37 @@ def ordering_number_for_student(parcours,student):
     listing_ordered = set()
 
     if parcours.is_sequence : 
-        listing_order = Relationship.objects.filter(parcours=parcours, students=student, is_publish=1).order_by("ranking")
+        listing_order = student.students_relationship.filter(parcours=parcours, is_publish=1).order_by("ranking")
     else :
-        relationships = Relationship.objects.filter(parcours=parcours, students=student, is_publish=1).prefetch_related('exercise__supportfile').order_by("ranking")
+        relationships = student.students_relationship.filter(parcours=parcours, is_publish=1).prefetch_related('exercise__supportfile').order_by("ranking")
         customexercises = Customexercise.objects.filter(parcourses=parcours, students=student, is_publish=1).order_by("ranking")
         listing_ordered.update(relationships)
         listing_ordered.update(customexercises)
         listing_order = sorted(listing_ordered, key=attrgetter('ranking')) #set trié par ranking
+    
 
-
+    list_order = open_section_to_read(student, parcours, listing_order)
 
     nb_exo_only, nb_exo_visible  = [] , []   
     i , j = 0, 0
 
-    for item in listing_order :
+    for item in list_order :
         try :
-            if not item.exercise.supportfile.is_title and not item.exercise.supportfile.is_subtitle:
+            if not item["doc"].exercise.supportfile.is_title and not item["doc"].exercise.supportfile.is_subtitle:
                 i += 1
             nb_exo_only.append(i)
-            if not item.exercise.supportfile.is_title and not item.exercise.supportfile.is_subtitle and item.is_publish != 0:
+            if not item["doc"].exercise.supportfile.is_title and not item["doc"].exercise.supportfile.is_subtitle and item["doc"].is_publish != 0:
                 j += 1
             nb_exo_visible.append(j)
         except :
             i += 1
             nb_exo_only.append(i)
-            if item.is_publish :
+            if item["doc"].is_publish :
                 j += 1
             nb_exo_visible.append(j)
 
-    return listing_order , nb_exo_only, nb_exo_visible
+    return list_order , nb_exo_only, nb_exo_visible
+
 
 
 def show_parcours_student(request, id):
@@ -2802,6 +2867,7 @@ def show_parcours_student(request, id):
 
         nb_courses = parcours.course.filter(Q(is_publish=1)|Q(publish_start__lte=today,publish_end__gte=today)).count()
         nb_quizzes = parcours.quizz.filter(Q(is_publish=1)|Q(start__lte=today,stop__gte=today)).count()
+
 
 
 

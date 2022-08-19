@@ -198,6 +198,57 @@
                         </table>
                     </div>
                 </div>
+                {% else %}
+                <div class="row ">
+                    <div class="col-sm-12 col-md-10">
+                        <div class="graph_container">
+                            {% for data in dataset.datas %}
+                                {% if data.n %}
+                                <div class="container_bars" style="height:{{ data.hn }}px;left:{{ data.l }}%;"><label>{{ data.n }}</label>
+                                    <div class="bars {{ data.c }}" style="height:{{ data.h }}px; ">
+                                        <div class="average">
+                                            {{ data.a }}% 
+                                        </div>
+                                        <div class="detail_bar_score">
+                                            <a href="#" data-toggle='modal' data-target='#detail_bar_score' data-student_id="{{ student.user.id}}" data-date="{{ data.date}}"  data-month="{{ data.m}}" class="get_details_bar white"><i class="bi bi-question-circle"></i></a> 
+                                        </div>
+                                    </div>
+                                </div>  
+                                {% endif %}
+                                <div class="legend_dates" style="left:{{ data.l }}%;">{{ data.date|date:"d F"}}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-2 bilan_div">
+                        <h3>Pour la période</h3>
+                        <table class="table table-bordered table-hover">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Exercices faits <span class="pull-right">0</span>
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td>
+                                        Compétences travaillées <span class="pull-right">0</span>
+                                    </td>
+                                </tr> 
+                                <tr>
+                                    <td>
+                                        Score moyen  <span class="pull-right">0%</span> 
+                                    </td>
+                                </tr>    
+                                <tr>
+                                    <td> 
+                                        Durée totale  <span class="pull-right">0</span> 
+                                    </td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
                 {% endif %}
             {% endfor %}
             </form>

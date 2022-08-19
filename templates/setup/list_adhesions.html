@@ -61,7 +61,11 @@
                                     <td>
                                         {% for adh in facture.adhesions.all %}
                                             <li class="sanspuce">
-                                                {{ adh.student }} - {{ adh.amount }}   
+                                                {{ adh.student }}  - 
+                                                {%  if adh.formule_id == 1 %} Autonomie
+                                                {%  elif adh.formule_id == 2 %} ELI
+                                                {%  elif adh.formule_id == 3 %} Suivi
+                                                {%  else %}  Personnalisée    {%  endif %}  - {{ adh.amount }}  
                                             </li>
                                         {% endfor %}
                                     </td>

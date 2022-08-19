@@ -5,7 +5,7 @@ from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
-from django.db.models import Q
+from django.db.models import  Q, Avg, Sum
 
 from socle.models import Level, Knowledge, Skill, Subject
 from school.models import School, Country
@@ -495,6 +495,27 @@ class Student(ModelWithCode):
     def this_exercise_is_locked(self,exercise, parcours , custom, today):
         
         tst = False 
+
+        # if parcours.is_sequence and self.adhesions.last().formule_id > 1 :
+
+        #     separation = "-"
+        #     relationships = self.students_relationship.filter(parcours = parcours).order_by("ranking")
+
+        #     for r in relationships :
+        #         if r.type_id == 0 :
+        #             if r.exercise.supportfile.is_title : separation += "*"
+        #             else : separation += str(r.id)+"-"
+
+
+        #     print(separation)
+
+
+        #     # student_answers = self.answers.filter( exercise__in = exercises , parcours=parcours ).aggregate(average=Avg('point'))
+
+        #     # if  student_answers and student_answers["average"]  < 80:
+        #     #     tst = True
+
+        # else:
 
         try :
             if parcours.stop < today :

@@ -156,7 +156,7 @@
                 {% get_parcours_available parcours student rc.exercise as parcours_available %}
 
                 {% if rc.exercise.supportfile.is_ggbfile %}    
-                    {% if is_blck %}
+                    {% if is_blck  %}
                         <div class="alert alert-danger" style="position: absolute; z-index:9; top:100px;font-size:12px;border-radius: 0px 4px 4px  0px;"> 
                               <i class="fa fa-lock"></i> <span class="hidden_lock"> {{ rc.lock|date:"d-m-Y à H:i" }}</span>
                         </div>
@@ -164,7 +164,7 @@
                             <img src="{{ rc.exercise.supportfile.imagefile.url }}"  class="image_parcours" {% if not rc.is_publish %} style="opacity:0.8" {% endif %}  >
                
                     {% else %}  
-                        {% if parcours_available.is_ok %} 
+                        {% if parcours_available.is_ok  %} 
 
                             {% if parcours.is_next and not available.is_ok %} 
                                 <div class="alert alert-danger" style="position: absolute; z-index:9; top:100px;font-size:12px;border-radius: 0px 4px 4px  0px;"> 
@@ -174,7 +174,7 @@
                                     <img src="{{ rc.exercise.supportfile.imagefile.url }}"  class="image_parcours" {% if not rc.is_publish %} style="opacity:0.8" {% endif %}  >
                     
                             {% else %}
-                                <a href="{% if not is_lock %}{% url 'execute_exercise'  rc.parcours.id  rc.exercise.id   %}{% endif %}">  
+                                <a href="{% if not is_lock  %}{% url 'execute_exercise'  rc.parcours.id  rc.exercise.id   %}{% endif %}">  
                                     <img src="{{ rc.exercise.supportfile.imagefile.url }}"  class="image_parcours" {% if not rc.is_publish %} style="opacity:0.8" {% endif %}>
                                 </a>
                             {% endif %}
@@ -234,7 +234,7 @@
                     <div  class="btn btn-danger"  style="position: absolute; right : 0px; top:120px;">   
                           Avant le {{rc.date_limit|date:"d N Y" }}
                     </div>
-           {% endif %}    
+                {% endif %}    
             {% endif %}   
             <div class="card-text" style="background-color:{{ parcours.color }};color:{{ parcours.color|contrast_color }}">
                 <i class="fa fa-fw fa-barcode"></i> {{ rc.exercise.supportfile.code }}
