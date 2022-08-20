@@ -397,6 +397,117 @@ def delete_message(request,idd, id):
  
  
 
+#######################################################################################################################################
+#######################################################################################################################################
+##### Message pour la formule 3 
+#######################################################################################################################################
+#######################################################################################################################################
+
+
+def list_discussion_lesson(request,idu):
+	user = User.objects.get(pk=idu)
+	form   = DiscussionForm(request.POST or  None)
+	discussions = user.user_discussion.order_by("-date_created")
+	context = {'form': form,  'discussions': discussions, 'user' : user  } 
+	return render(request, 'sendmail/list_discussions.html', context)
+
+
+
+def create_discussion_lesson(request):  
+	form   = DiscussionForm(request.POST or  None)
+	form_m = MessageForm(request.POST or  None)
+	if request.user.school :
+		if request.method == "POST":
+			if all((form.is_valid(),form_m.is_valid())):
+				new_f = form.save(commit=False)
+				new_f.user = request.user
+				new_f.save()
+
+				new_fm = form_m.save(commit=False)
+				new_fm.user = request.user
+				new_fm.discussion = new_f
+				new_fm.save()
+
+				try :
+					listing = []
+					for user in User.objects.filter(is_superuser=1):
+						listing.append(user.email)
+					send_mail("Message : " +new_f.discussion  , cleanhtml(unescape_html(new_f.texte)) +"\n Pour répondre connectez-vous à : https://sacado-academie.fr", settings.DEFAULT_FROM_EMAIL, listing )
+				except :
+					pass
+
+				return redirect('list_discussion_lesson', request.user.id)
+
+			else :
+				print(form.errors)
+
+	else :
+		messages.error(request,"Vous devez posséder la version Etablissement pour participer.")
+
+	return render(request,'sendmail/form_discussion.html', { 'form' : form , 'form_m': form_m, })
+
+ 
+
+
+def show_discussion_lesson(request,idd):
+	discussion = Discussion.objects.get(id = idd)
+	msgs = Message.objects.filter(discussion = discussion)
+	m = msgs.last()
+ 
+	form = MessageForm(request.POST or  None)
+
+	if request.user.school :	
+		if m.user == request.user :
+			last_user = True
+			form = MessageForm(request.POST or  None, instance = m)
+		else :
+			last_user = False
+			form = MessageForm(request.POST or  None)
+		if request.method == "POST":
+			if form.is_valid():
+				new_f = form.save(commit=False)
+				new_f.user = request.user
+				new_f.discussion = discussion
+				new_f.save()
+				try :				
+					dest = []
+					for e in discussion.discussion_message.values_list("user__email",flat=True).distinct():
+						dest.append(e)
+ 
+					send_mail("sacado Forum : " +new_f.discussion  , cleanhtml(unescape_html(new_f.texte)) +"\n Pour répondre connectez-vous à Sacado : https://sacado.xyz", settings.DEFAULT_FROM_EMAIL, dest )
+				except :
+					pass
+			else :
+				print(form.errors)
+
+	else :
+		messages.error(request,"Vous devez posséder la version Etablissement pour participer.")
+
+	context = { 'form': form ,  'msgs': msgs ,  'discussion': discussion,  'last_user': last_user  }
+
+	return render(request, 'sendmail/show_discussion.html', context)
+
+
+ 
+
+def delete_message_lesson(request,idd, id):
+	message = Message.objects.get(pk=id)
+
+	if message.user == request.user :
+		d = Discussion.objects.get(pk=idd)
+		if d.discussion_message.count() == 1 :
+			d.delete()
+			message.delete()
+			return redirect('emails')
+		else :
+			message.delete()
+			return redirect('show_discussion' , idd)
+
+	else :
+		messages.error(request,"Vous ne pouvez pas supprimer un message dont vous n'êtes pas l'auteur.")
+		return redirect('show_discussion' , idd)
+
+
 
 
 

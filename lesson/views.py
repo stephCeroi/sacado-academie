@@ -29,8 +29,6 @@ def get_hours():
     return hours
 
 
-
-
 def events_json(request):
 
     user =  request.user 
@@ -56,7 +54,6 @@ def events_json(request):
         return http.HttpResponse(json.dumps(event_list), content_type='application/json')
  
 
-
 def calendar_show(request,id=0):
     user  = request.user
     form = EventForm(user, request.POST or None)
@@ -66,7 +63,6 @@ def calendar_show(request,id=0):
 
     return render(request, "lesson/calendar_show.html" , context )
  
-
 
 def create_event(request):
 
@@ -104,10 +100,6 @@ def create_event(request):
     return redirect('calendar_show' , 0)
 
 
- 
- 
-
-
 def update_event(request,id):
     user = User.objects.get(pk=request.user.id)
     event = Event.objects.get(pk=id)
@@ -142,6 +134,7 @@ def shift_event(request):
     data = {} 
     return JsonResponse(data)
 
+
 def show_event(request):
     event_id = request.POST.get('event_id')
     event = Event.objects.get(pk=event_id)   
@@ -169,14 +162,11 @@ def show_event(request):
     return JsonResponse(data)
 
 
-
-
 def delete_event(request,id):
  
     event = Event.objects.get(pk=id)    
     event.delete()
     return redirect('calendar_show' , 0)
-
 
 
 def add_students_to_my_lesson_group(request):
@@ -197,16 +187,12 @@ def add_students_to_my_lesson_group(request):
     return render(request, "lesson/add_students_to_my_lesson_group.html" , context )
 
 
-
 def delete_student_to_my_lesson_group(request,id):
  
     user = request.user  
     s= Student.objects.get(user_id=id) 
     user.teacher.students.remove(s)
     return redirect('calendar_show' , 0)
-
-
-
 
 
 def dashboard_parent(request):
@@ -221,8 +207,6 @@ def dashboard_parent(request):
     return render(request, template , context )
 
 
-
-
 def detail_student_lesson(request,id):
  
     user = request.user
@@ -231,9 +215,6 @@ def detail_student_lesson(request,id):
     
     context = { 'user' : user , 'student' : student , 'lessons' : lessons   }   
     return render(request, "lesson/list_lessons.html" , context )
-
-
-
 
 
 def ask_lesson(request,id):

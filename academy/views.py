@@ -450,3 +450,10 @@ def diagBaton(data) :
     d.add(bc)
     return d
   
+
+
+def contact_academy(request):
+
+
+    context = {  }
+    return render(request, 'academy/contact.html', context)

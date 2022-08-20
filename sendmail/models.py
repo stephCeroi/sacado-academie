@@ -47,11 +47,11 @@ class Communication(models.Model):
 class Discussion(models.Model):
 
     CATEGORIES = (
-        ('Sacado', 'Sacado'),
+        ('Sacado', 'Sacado Académie'),
         ('Pédagogie et Didactique', 'Pédagogie et Didactique'),
         ('Geogebra', 'Geogebra'),
         ('Python', 'Python'),
-        ('Jeu et concours', 'Jeu et concours'),
+        ('Autres', 'Autres'),
 
     )
 
@@ -60,9 +60,10 @@ class Discussion(models.Model):
     subject      = models.ForeignKey(Subject, blank = True, on_delete=models.CASCADE,   related_name="subject_discussion")      
     topic        = models.CharField(max_length=255, blank=True, verbose_name="Objet")    
     date_created = models.DateTimeField( auto_now_add= True)
-    active       = models.BooleanField( default=1,    verbose_name="Afficher la communication ?") 
-    solve        = models.BooleanField( default=0,    verbose_name="Résolu ?") 
-    nb_display   = models.PositiveIntegerField( default=0, editable=False) 
+    is_active    = models.BooleanField( default=1,    verbose_name="Afficher la communication ?") 
+    is_solve     = models.BooleanField( default=0,    verbose_name="Résolu ?") 
+    nb_display   = models.PositiveIntegerField( default=0, editable=False)
+
 
     def __str__(self):
         return "{}".format(self.topic)

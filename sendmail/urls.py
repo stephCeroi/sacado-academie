@@ -31,5 +31,10 @@ urlpatterns = [
     path('ajax_notification_student', ajax_notification_student, name='ajax_notification_student'),
 
 
+    path('list_discussion_lesson/<int:idu>', list_discussion_lesson, name='list_discussion_lesson'),
+    path('create_discussion_lesson', create_discussion_lesson, name='create_discussion_lesson'),
+    path('show_discussion_lesson/<int:idd>/show', show_discussion_lesson, name='show_discussion_lesson'),
+    path('delete_message_lesson/<int:idd>/<int:id>/', delete_message_lesson, name='delete_message_lesson'),
+  
   
 ]

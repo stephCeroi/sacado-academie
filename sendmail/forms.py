@@ -1,6 +1,7 @@
 from django import forms
 from sendmail.models import Email, Communication , Discussion ,  Message
 from account.models import User
+from socle.models import Subject
 from django.forms import models
 from django.forms.fields import MultipleChoiceField
  
@@ -36,6 +37,10 @@ class CommunicationForm(forms.ModelForm):
 
 class DiscussionForm(forms.ModelForm):
 
+	def __init__(self, *args, **kwargs):
+		super(DiscussionForm, self).__init__(*args, **kwargs)
+		subjects = Subject.objects.filter(is_active=1)
+		self.fields['subject']  = forms.ModelChoiceField(queryset=subjects)
 	class Meta:
 		model = Discussion
 		fields = '__all__'

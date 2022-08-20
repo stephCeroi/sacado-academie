@@ -496,27 +496,6 @@ class Student(ModelWithCode):
         
         tst = False 
 
-        # if parcours.is_sequence and self.adhesions.last().formule_id > 1 :
-
-        #     separation = "-"
-        #     relationships = self.students_relationship.filter(parcours = parcours).order_by("ranking")
-
-        #     for r in relationships :
-        #         if r.type_id == 0 :
-        #             if r.exercise.supportfile.is_title : separation += "*"
-        #             else : separation += str(r.id)+"-"
-
-
-        #     print(separation)
-
-
-        #     # student_answers = self.answers.filter( exercise__in = exercises , parcours=parcours ).aggregate(average=Avg('point'))
-
-        #     # if  student_answers and student_answers["average"]  < 80:
-        #     #     tst = True
-
-        # else:
-
         try :
             if parcours.stop < today :
                 tst = True
@@ -562,8 +541,6 @@ class Student(ModelWithCode):
                         tst = True       
                 except :   
                     pass
-
-
         return tst
                 
 
@@ -648,6 +625,22 @@ class Student(ModelWithCode):
         data["nb_quizz"]        = nbq 
         data["a_new_cop"]       = a_new_cop 
         return data
+
+
+
+    def data_menu(self):
+        today    = time_zone_user(self.user)
+        adhesion = self.adhesions.filter(stop__gte=today).last()
+        data     = {}
+        Formule = apps.get_model('setup', 'Formule')
+        try :
+            formule      = Formule.objects.get(pk=adhesion.formule_id )
+            data["name"] = formule.name 
+            data["id"]   = adhesion.formule_id
+            return data
+        except :
+            return None
+
 
 
 

@@ -98,10 +98,10 @@
                                             {{ rc.exercise.supportfile.title|cleanhtml|capfirst }}
                                         {% endif %}
                                     </h3>
-                                {% else %}
+                                {% else %} 
                                     {% include 'details_document_student.html' %}
                                 {% endif %}  
-                            {% else %}
+                            {% else %}    
                                 {% include 'details_document_student.html' %}
                             {% endif %} 
                         {% endwith %}
@@ -112,8 +112,9 @@
     {% else %}
     <div class="row">
         <div class="col-lg-12 col-xs-12">
-            {% for rc in relationships_customexercises %}
+            {% for rdoc in relationships_customexercises %}
                 <!-- SECTION --> 
+                {% with rdoc.doc as rc %}
                 {% if rc.exercise.supportfile.is_title %}       
                     <h2 class="listing thin" style="width:100%; clear:both"> 
                         {% if rc.is_header_of_section  %}
@@ -593,7 +594,8 @@
                             </div>
                         </div>
                     </div> 
-                {% endif %}             
+                {% endif %} 
+                {% endwith %}            
             {% endfor %}
         </div>
     </div>
