@@ -323,8 +323,8 @@
         {% endif %}
 
 
-          {% include 'qcm/signal_exercise_peda_live.html' %}
-        
+        {% include 'qcm/signal_exercise_peda_live.html' %}
+
 
     </div> 
 
@@ -342,9 +342,9 @@
       {% endif %} 
 
 
-   <script type="text/javascript" src="{% static 'js/lib/geogebra.js' %}"></script>
+ <!--   <script type="text/javascript" src="{% static 'js/lib/geogebra.js' %}"></script>-->
                   <!-- Additional Javascript for Geogebra exercises -->
-<!--          <script type="text/javascript" src="https://cdn.geogebra.org/apps/deployggb.js"></script> -->
+         <script type="text/javascript" src="https://cdn.geogebra.org/apps/deployggb.js"></script> 
     <script type="text/javascript">
           // parameters of the geogebra app
 
@@ -402,75 +402,230 @@
           //----------------------------------------------------
           //----------------------------------------------------
           //              socket pour channel
- //     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
- //     var ws_path = ws_scheme + '://' + window.location.host + "/qcm/tableau/";
- //     window.socket = new WebSocket(ws_path); // window pour rendre globale la variable
- //      socket.onopen = function () {
-	//   console.log("exo:{{ exercise.id }}");
- //        socket.send(JSON.stringify({
- //            "command":"connexionEleve",
- //            "dest":"c",
- //            "parcours":"{{ relation.parcours.id }}",
- //            "ide":"{{ exercise.id }}",
- //            "user":"{{user.id}}",
- //            "typexo":"ggb"}));
- //            };        
- //           // Handle incoming messages
- //     socket.onmessage = function (message) {
-	//    console.log(message);
- //       var data = JSON.parse(message.data);
- //       if (data.error) {alert(data.error);
- //       return;
+     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+     var ws_path = ws_scheme + '://' + window.location.host + "/qcm/tableau/";
+     window.socket = new WebSocket(ws_path); // window pour rendre globale la variable
+      socket.onopen = function () {
+	  console.log("exo:{{ exercise.id }}");
+        socket.send(JSON.stringify({
+            "command":"connexionEleve",
+            "dest":"c",
+            "parcours":"{{ relation.parcours.id }}",
+            "ide":"{{ exercise.id }}",
+            "user":"{{user.id}}",
+            "typexo":"ggb"}));
+            };        
+           // Handle incoming messages
+     socket.onmessage = function (message) {
+	   console.log(message);
+       var data = JSON.parse(message.data);
+       if (data.error) {alert(data.error);
+       return;
       
- //     }
- //   if (data.type=='messageProf' || data.type=='messageProfGeneral'){
- //       console.log("message recu : ", data.payload);
- //     var t=document.getElementById("chat");
- //           t.innerHTML = t.innerHTML + "<div class='this_chat_block'># "+data.from+"<br/>"+ data.payload+"</div>";
- //   }; 
+     }
+   if (data.type=='messageProf' || data.type=='messageProfGeneral'){
+       console.log("message recu : ", data.payload);
+     var t=document.getElementById("chat");
+           t.innerHTML = t.innerHTML + "<div class='this_chat_block'># "+data.from+"<br/>"+ data.payload+"</div>";
+   }; 
      
- //      if (data.type=='connexionProf'){
-	//   console.log("connexion prof");
-	//   $('#peda_set_live').removeClass("pull-right btn btn-default");
- // 	  $('#peda_set_live').addClass("pull-right btn btn-danger");
-	//   $('#form_peda_set_live').removeClass("hidden");
+      if (data.type=='connexionProf'){
+	  console.log("connexion prof");
+	  $('#peda_set_live').removeClass("pull-right btn btn-default");
+ 	  $('#peda_set_live').addClass("pull-right btn btn-danger");
+	  $('#form_peda_set_live').removeClass("hidden");
 	  
- //      };
- //      if (data.type=="deconnexionProf")
-	//  {console.log("deconnexion prof");
-	// $('#peda_set_live').removeClass("pull-right btn btn-danger");  
-	//   $('#peda_set_live').addClass("pull-right btn btn-default");
-	//   $('#form_peda_set_live').addClass("hidden");
- //      };
- //     }
- //   function PostMessage(text){
- //   console.log("entree dans PostMessage"); 
- //   window.socket.send(JSON.stringify(
- //      {"command":"messageEleve",
- //       "payload": text}
- //   ));
- //       console.log("message envoyé :"+text);
- //   };
+      };
+      if (data.type=="deconnexionProf")
+	 {console.log("deconnexion prof");
+	$('#peda_set_live').removeClass("pull-right btn btn-danger");  
+	  $('#peda_set_live').addClass("pull-right btn btn-default");
+	  $('#form_peda_set_live').addClass("hidden");
+      };
+     }
+   function PostMessage(text){
+   console.log("entree dans PostMessage"); 
+   window.socket.send(JSON.stringify(
+      {"command":"messageEleve",
+       "payload": text}
+   ));
+       console.log("message envoyé :"+text);
+   };
 
- //   chat=document.getElementById("entreechat");
- //      chat.addEventListener("change",function () {
- //    console.log("message à envoyer :"+chat.value);
- //    PostMessage(chat.value);
- //    chat.value="";}
- //     );
- //      window.onbeforeunload=function(){
-	//   console.log("deconnexion");
-	//   window.socket.close();
- //      };
+   chat=document.getElementById("entreechat");
+      chat.addEventListener("change",function () {
+    console.log("message à envoyer :"+chat.value);
+    PostMessage(chat.value);
+    chat.value="";}
+     );
+      window.onbeforeunload=function(){
+	  console.log("deconnexion");
+	  window.socket.close();
+      };
       
- //          //----------------------------------------------------
- //          //----------------------------------------------------
- //          //              fin de socket pour channel
- //          //----------------------------------------------------
- //          //----------------------------------------------------
+          //----------------------------------------------------
+          //----------------------------------------------------
+          //              fin de socket pour channel
+          //----------------------------------------------------
+          //----------------------------------------------------
 
 </script>
+ {% if  relation.parcours.is_evaluation %}
+<script type="text/javascript">
+  function updateListener(objName) {  
+      var applet     =  ggbApplet; 
+      var exercise_id=  "{{ exercise.id }}"; 
+      var grade      = applet.getValue("grade");
+      var numexo     = applet.getValue("numexo");
+      var situation  = parseInt("{{ relation.situation }}") ; 
+      var start_time = "{{ start_time}}" ;
+      var relation_id= "{{ relation.id}}" ;
+      var p_available= "{{ parcours_available.nbleft}}" ;
+      var available  = "{{ available.nbleft}}" ;
+      var ide = "{{ide}}" ;
+      if (objName=="score" || objName=="ok" || objName=="grade" || objName=="numexo" || objName=="valider" ){	
+  	  console.log("RT objName:",objName,"valeur : ",applet.getValue(objName));
+  	  console.log("valider=",applet.getValue("valider"));
+  	  console.log("test=",applet.getValue("test"));
+  	  console.log("grade=",applet.getValue("grade"));
+  	  console.log("numexo=",applet.getValue("numexo"));
+      }
+      if (p_available != "") 
+           {var nb_attempt = parseInt(p_available) ;}
+      else if ( available != "") 
+           {var nb_attempt = parseInt(available) ;}
+      else 
+           {var nb_attempt = 0 ;}
+      numexo = parseInt(numexo) ;
+      if (situation !=0) { score = grade/situation ;} else {score=-1;}
+      if (objName=="ok" && applet.getValue("ok")==0 && applet.getValue("init")==1){
+	  console.log("debut exo");
+          window.socket.send(JSON.stringify({
+	      "command":"ExoDebut",
+	      "ide"  : exercise_id,
+	      "typexo" : "ggb"  
+               }));
+      }
+      if (applet.getValue("ok") && objName=="ok"){
+          //if (applet.getValue("ok")==1) 
+          console.log("situationFinie, grade=",grade,"ide=",exercise_id, "situation",situation,
+		      "numexo:",numexo, "resultat:",applet.getValue("ok"));
+ 
+              window.socket.send(JSON.stringify({
+		  "command":"SituationFinie",
+		  "ide"  : exercise_id,
+                  "payload" : {
+		      "resultat" :applet.getValue("test"),
+                      "grade" : grade,
+                      "situation" : situation,
+                      "numexo" : numexo-1}
+                          }));
+      
+      };
 
+     
+          if ( applet.getValue("demarrer")  &&  objName == "demarrer"  &&  applet.getValue("init")   ){
+              // Modification du nombre de tentatives
+              nb_left = nb_attempt-1;
+              if ( nb_left < 0){
+                  nb_left = 0;
+              }
+              $("#attempt").html(nb_left); 
+    	  // ========= AJAX ================
+              use_ajax( 1 , start_time, score, relation_id, "ok" , true )
+          }
+          if ( applet.getValue("demarrer") && numexo > situation && objName == "numexo"   ){
+              use_ajax( numexo, start_time, score, relation_id, "ok" , false )
+          }
+          if ( applet.getValue("fini")  ==  1 ) {
+              alert("Vous êtes en évaluation. L'exercice est fini. Passer à l'exercice suivant.") ;
+              applet.setValue("fini", 0) ; 
+          }
+
+          function use_ajax( numexo, start_time, score, relation_id, is_ajax , init ){
+                if (init) 
+                        {dataset = {'numexo': numexo, 'start_time' : start_time ,
+                  'score': score,  'relation_id': relation_id,
+                  'is_ajax': is_ajax, 'init' : init } 
+                                   }
+                      else 
+                        {dataset = {'numexo'     : numexo, 'start_time' : start_time ,
+                  'score': score,  'relation_id': relation_id, 'is_ajax'    : is_ajax   }
+                  }
+               $.ajax({
+                  url: '../../store_the_score_relation_ajax/',
+                  data: dataset ,
+                  type: "POST",
+                  dataType: "json",
+                  success: function (data) {
+                     $('#is_storage').show();
+                     $('#is_storage').html(data.html);
+                     setTimeout(function(){ $('#is_storage').hide() }, 3000);
+                    if (situation == data.numexo)
+                    { 
+                      $('#submit_button_evaluation').show(); }
+                     }
+                  });
+            }
+
+    
+   }
+</script>  
+{% else %} 
+<script type="text/javascript">
+  function updateListener(objName) {  
+      var applet     =  ggbApplet; 
+      var exercise_id=  "{{ exercise.id }}"; 
+      var grade      = applet.getValue("grade");
+      var numexo     = applet.getValue("numexo");
+      var situation  = parseInt("{{ relation.situation }}") ; 
+      var start_time = "{{ start_time}}" ;
+      var relation_id= "{{ relation.id}}" ;
+      var p_available= "{{ parcours_available.nbleft}}" ;
+      var available  = "{{ available.nbleft}}" ;
+      var ide = "{{ide}}" ;
+      if (objName=="score" || objName=="ok" || objName=="grade" || objName=="numexo" || objName=="valider" ){ 
+      console.log("RT objName:",objName,"valeur : ",applet.getValue(objName));
+      console.log("valider=",applet.getValue("valider"));
+      console.log("test=",applet.getValue("test"));
+      console.log("grade=",applet.getValue("grade"));
+      console.log("numexo=",applet.getValue("numexo"));
+      }
+      if (p_available != "") 
+           {var nb_attempt = parseInt(p_available) ;}
+      else if ( available != "") 
+           {var nb_attempt = parseInt(available) ;}
+      else 
+           {var nb_attempt = 0 ;}
+      numexo = parseInt(numexo) ;
+      if (situation !=0) { score = grade/situation ;} else {score=-1;}
+      if (objName=="ok" && applet.getValue("ok")==0 && applet.getValue("init")==1){
+    console.log("debut exo");
+          window.socket.send(JSON.stringify({
+        "command":"ExoDebut",
+        "ide"  : exercise_id,
+        "typexo" : "ggb"  
+               }));
+      }
+      if (applet.getValue("ok") && objName=="ok"){
+          //if (applet.getValue("ok")==1) 
+          console.log("situationFinie, grade=",grade,"ide=",exercise_id, "situation",situation,
+          "numexo:",numexo, "resultat:",applet.getValue("ok"));
+ 
+              window.socket.send(JSON.stringify({
+      "command":"SituationFinie",
+      "ide"  : exercise_id,
+                  "payload" : {
+          "resultat" :applet.getValue("test"),
+                      "grade" : grade,
+                      "situation" : situation,
+                      "numexo" : numexo-1}
+                          }));
+      
+      };
+   }
+</script>  
+{% endif %} 
 
 
 
