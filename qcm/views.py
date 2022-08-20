@@ -2785,7 +2785,7 @@ def open_section_to_read(student, parcours, listing_order):
             bool_list.append(dico)   
 
 
-        return bool_list
+    return bool_list
 
 
 
@@ -2827,6 +2827,8 @@ def ordering_number_for_student(parcours,student):
             if item["doc"].is_publish :
                 j += 1
             nb_exo_visible.append(j)
+
+    print(list_order)
 
     return list_order , nb_exo_only, nb_exo_visible
 
