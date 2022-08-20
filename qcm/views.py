@@ -2775,6 +2775,16 @@ def open_section_to_read(student, parcours, listing_order):
         #         for i in range(len(bloc[nb])) :
         #             bool_list[nelement+i]['is_display']=True
         #     nelement+=len(bloc[nb])
+
+    else :
+        for doc in listing_order :
+            dico = dict()
+            dico["doc"] = doc
+            dico["is_display"] = True 
+
+            bool_list.append(dico)   
+
+
         return bool_list
 
 
