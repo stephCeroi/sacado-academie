@@ -399,75 +399,75 @@
         applet.inject('ggb_applet_container', 'preferHTML5');
  
           
-          //----------------------------------------------------
-          //----------------------------------------------------
-          //              socket pour channel
-     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-     var ws_path = ws_scheme + '://' + window.location.host + "/qcm/tableau/";
-     window.socket = new WebSocket(ws_path); // window pour rendre globale la variable
-      socket.onopen = function () {
-	  console.log("exo:{{ exercise.id }}");
-        socket.send(JSON.stringify({
-            "command":"connexionEleve",
-            "dest":"c",
-            "parcours":"{{ relation.parcours.id }}",
-            "ide":"{{ exercise.id }}",
-            "user":"{{user.id}}",
-            "typexo":"ggb"}));
-            };        
-           // Handle incoming messages
-     socket.onmessage = function (message) {
-	   console.log(message);
-       var data = JSON.parse(message.data);
-       if (data.error) {alert(data.error);
-       return;
+ //          //----------------------------------------------------
+ //          //----------------------------------------------------
+ //          //              socket pour channel
+ //     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+ //     var ws_path = ws_scheme + '://' + window.location.host + "/qcm/tableau/";
+ //     window.socket = new WebSocket(ws_path); // window pour rendre globale la variable
+ //      socket.onopen = function () {
+	//   console.log("exo:{{ exercise.id }}");
+ //        socket.send(JSON.stringify({
+ //            "command":"connexionEleve",
+ //            "dest":"c",
+ //            "parcours":"{{ relation.parcours.id }}",
+ //            "ide":"{{ exercise.id }}",
+ //            "user":"{{user.id}}",
+ //            "typexo":"ggb"}));
+ //            };        
+ //           // Handle incoming messages
+ //     socket.onmessage = function (message) {
+	//    console.log(message);
+ //       var data = JSON.parse(message.data);
+ //       if (data.error) {alert(data.error);
+ //       return;
       
-     }
-   if (data.type=='messageProf' || data.type=='messageProfGeneral'){
-       console.log("message recu : ", data.payload);
-     var t=document.getElementById("chat");
-           t.innerHTML = t.innerHTML + "<div class='this_chat_block'># "+data.from+"<br/>"+ data.payload+"</div>";
-   }; 
+ //     }
+ //   if (data.type=='messageProf' || data.type=='messageProfGeneral'){
+ //       console.log("message recu : ", data.payload);
+ //     var t=document.getElementById("chat");
+ //           t.innerHTML = t.innerHTML + "<div class='this_chat_block'># "+data.from+"<br/>"+ data.payload+"</div>";
+ //   }; 
      
-      if (data.type=='connexionProf'){
-	  console.log("connexion prof");
-	  $('#peda_set_live').removeClass("pull-right btn btn-default");
- 	  $('#peda_set_live').addClass("pull-right btn btn-danger");
-	  $('#form_peda_set_live').removeClass("hidden");
+ //      if (data.type=='connexionProf'){
+	//   console.log("connexion prof");
+	//   $('#peda_set_live').removeClass("pull-right btn btn-default");
+ // 	  $('#peda_set_live').addClass("pull-right btn btn-danger");
+	//   $('#form_peda_set_live').removeClass("hidden");
 	  
-      };
-      if (data.type=="deconnexionProf")
-	 {console.log("deconnexion prof");
-	$('#peda_set_live').removeClass("pull-right btn btn-danger");  
-	  $('#peda_set_live').addClass("pull-right btn btn-default");
-	  $('#form_peda_set_live').addClass("hidden");
-      };
-     }
-   function PostMessage(text){
-   console.log("entree dans PostMessage"); 
-   window.socket.send(JSON.stringify(
-      {"command":"messageEleve",
-       "payload": text}
-   ));
-       console.log("message envoyé :"+text);
-   };
+ //      };
+ //      if (data.type=="deconnexionProf")
+	//  {console.log("deconnexion prof");
+	// $('#peda_set_live').removeClass("pull-right btn btn-danger");  
+	//   $('#peda_set_live').addClass("pull-right btn btn-default");
+	//   $('#form_peda_set_live').addClass("hidden");
+ //      };
+ //     }
+ //   function PostMessage(text){
+ //   console.log("entree dans PostMessage"); 
+ //   window.socket.send(JSON.stringify(
+ //      {"command":"messageEleve",
+ //       "payload": text}
+ //   ));
+ //       console.log("message envoyé :"+text);
+ //   };
 
-   chat=document.getElementById("entreechat");
-      chat.addEventListener("change",function () {
-    console.log("message à envoyer :"+chat.value);
-    PostMessage(chat.value);
-    chat.value="";}
-     );
-      window.onbeforeunload=function(){
-	  console.log("deconnexion");
-	  window.socket.close();
-      };
+ //   chat=document.getElementById("entreechat");
+ //      chat.addEventListener("change",function () {
+ //    console.log("message à envoyer :"+chat.value);
+ //    PostMessage(chat.value);
+ //    chat.value="";}
+ //     );
+ //      window.onbeforeunload=function(){
+	//   console.log("deconnexion");
+	//   window.socket.close();
+ //      };
       
-          //----------------------------------------------------
-          //----------------------------------------------------
-          //              fin de socket pour channel
-          //----------------------------------------------------
-          //----------------------------------------------------
+ //          //----------------------------------------------------
+ //          //----------------------------------------------------
+ //          //              fin de socket pour channel
+ //          //----------------------------------------------------
+ //          //----------------------------------------------------
 
 </script>
  {% if  relation.parcours.is_evaluation %}
