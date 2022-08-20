@@ -81,6 +81,7 @@ def delete_and_erase():
     users = User.objects.filter(user_type=2).exclude(is_superuser=1)
     Group.objects.filter(teacher__user__in=users).delete()
     Parcours.objects.filter(author__user__in=users).delete()
+    User.objects.filter(user_type=2).exclude(is_superuser=1).delete()
 
 
 def end_of_contract() :

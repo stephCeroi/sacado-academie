@@ -2759,46 +2759,26 @@ def open_section_to_read(student, parcours, listing_order):
                 blocs[-1].append(doc.id)
 
             bool_list.append(dico)            
-
+        #---------- pour chaque bloc, on calcule si l'elève a reussi.
         bloc_average = []
-        i = 0
         for bloc in blocs :
             avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
             dico = dict()
-            ok= (bool(avg_student['average']) and avg_student['average']>80) or (i == 0)
+            ok= (bool(avg_student['average']) and avg_student['average']>80) 
             bloc_average.append(ok)
-            i +=1
-
-        step = 0
-        for doc_dico in bool_list :
-            print(doc_dico)
-            #dico["doc"] = Relationship.objects.get(pk=dl)
-            #dico["is_display"] = bloc_average[step] 
-
-            step +=1
-
-            # for doc_dico in bool_list :
-            #     if doc_dico["doc"] in all_exos :
-            #         doc_dico["is_display"] = ok 
-
-            #     print( doc_dico["doc"].id, doc_dico["doc"].id in all_exos , all_exos )
+    
+        #---------- pour chaque exercice de chaque bloc, on met l'affichage à True
+        # si : c'est le premier bloc, ou si le bloc precédent a été reussi.
+        nelement=0                         #pour parcourir bool_list
+        for nb,bloc in enumerate(blocs) :  #nb = numero du bloc
+            if nb==0 or bloc_average[nb-1] :
+                for i in range(len(bloc[nb])) :
+                    bool_list[nelement+i]['is_display']=True
+            nelement+=len(bloc[nb])
+        return bool_list
 
 
-            # for o in nob :
-            #     insert = False
-            #     if avg_student["average"] :
-            #         if avg_student["average"] > 80 : 
-            #             insert = True
-            #     open_to_read.append(insert)
 
-    else :
-        for doc in listing_order :
-            dico = dict()
-            dico["doc"] = doc
-            dico["is_display"] = True 
-            bool_list.append(dico) 
-
-    return bool_list 
 
 
 
