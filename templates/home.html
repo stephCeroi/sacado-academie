@@ -97,12 +97,12 @@ Intro Section -
                             <img src="{% static 'img/menu_ia.png' %}"  width="60px">
                         </div>
                         <div class="col-sm-8 col-md-9">
-                         Menu<div class="sub_header">Adaptif</div> 
+                         Menu<div class="sub_header">Adaptatif</div> 
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> <span class="currency">10 €</span>/mois</div>
+                    <div class="this_price"> <span class="currency">9 €</span>/mois</div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#IA'  class="detail_index"><i class="bi bi-cursor"></i>  Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -123,7 +123,7 @@ Intro Section -
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> <span class="currency">??? €</span>/mois</div>
+                    <div class="this_price"> <span class="currency">15 €</span>/mois</div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#Suivi'  class="detail_index"><i class="bi bi-cursor"></i> Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -144,7 +144,7 @@ Intro Section -
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> <span class="currency">??? €</span>/mois</div>
+                    <div class="this_price"> Dès <span class="currency">15 €</span>/mois</div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#accompagnement'  class="detail_index"><i class="bi bi-cursor"></i>  Plus en détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -192,15 +192,14 @@ Intro Section -
     <div class="modal-dialog" role="document" style="width:70%">
         <div class="modal-content" >
             <div class="modal-header">
-                <h2 > <img src="{% static 'img/menu_autonomie.png' %}"  width="60px"> Menu Autonomie </h2>
+                <h2 > <img src="{% static 'img/menu_autonomie.png' %}"  width="60px"/> Menu Autonomie </h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> 
 
             </div>
             <div class="modal-body" >
- Votre enfant a accès à tous les cours et exercices du niveau choisi dès son inscription. Il choisit les exercices dans les chapitres proposés selon ses besoins. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits.
-
+ Votre enfant a accès à tous les cours, exercices et activités du niveau choisi dès son inscription. Il choisit les exercices dans les chapitres proposés selon ses besoins. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits.
             </div>
         </div>
     </div>
@@ -212,13 +211,13 @@ Intro Section -
     <div class="modal-dialog" role="document" style="width:70%">
         <div class="modal-content" >
             <div class="modal-header">
-                <h2 > <img src="{% static 'img/menu_ia.png' %}"  width="60px"> Menu Adaptif </h2>
+                <h2 > <img src="{% static 'img/menu_ia.png' %}"  width="60px"/> Menu Adaptatif </h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> 
             </div>
             <div class="modal-body" id="indiv_this_exercise">
- Les séquences d’exercices sont organisées par un programme d’intelligence artificielle qui ouvre une section de cours et d'exercices en fonction du résultat de votre enfant à la section précédente. Votre enfant doit réussir une section pour accéder à la section suivante. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits. 
+ Les séquences d’exercices sont organisées par un programme d’intelligence artificielle qui ouvre une section de cours et d'activité en fonction du résultat de votre enfant. Votre enfant doit réussir une section pour accéder à la section suivante. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits. 
             </div>
         </div>
     </div>
@@ -229,15 +228,19 @@ Intro Section -
     <div class="modal-dialog" role="document" style="width:70%">
         <div class="modal-content" >
             <div class="modal-header">
-                <h2 > <img src="{% static 'img/menu_suivi.png' %}"  width="60px"> Menu Suivi </h2>
+                <h2 > <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/> Menu Suivi </h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> 
             </div>
-            <div class="modal-body" id="indiv_this_exercise">  
+            <div class="modal-body" id="indiv_this_exercise" >  
             
- Les séquences d’exercices sont organisées par un programme d’intelligence artificielle qui ouvre une section de cours et d'exercices en fonction du résultat de votre enfant à la section précédente. Votre enfant doit réussir une section pour accéder à la section suivante. Votre enfant échange par message (réponse sous 24h) avec un enseignant sur les difficultés rencontrées.  Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits.
+                <div class="alert alert-sacado"  align="center">
+                    <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>  Menu Adaptatif
+                </div>
+                <h2  align="center"><i class="bi bi-plus"></i></h2>
 
+ Votre enfant échange par message (réponse sous 24h) avec un enseignant sur les difficultés rencontrées.  
             </div>
         </div>
     </div>
@@ -257,7 +260,10 @@ Intro Section -
 
             </div>
             <div class="modal-body" id="indiv_this_exercise">
-Les séquences d’exercices sont organisées par un programme d’intelligence artificielle qui ouvre une section de cours et d'exercices en fonction du résultat de votre enfant à la section précédente. Votre enfant doit réussir une section pour accéder à la section suivante. Votre enfant est accompagné et suivi par un enseignant par <b>visioconférence en temps réel</b>. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits ainsi qu’un commentaire bilan de l'enseignant.
+                <div class="alert alert-sacado"  align="center">
+                   <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/>  Menu Suivi 
+                </div>
+                <h2  align="center"><i class="bi bi-plus"></i></h2>Votre enfant est accompagné et suivi par un enseignant par <b>visioconférence en temps réel</b>. 
 
 
 
