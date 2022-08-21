@@ -1919,11 +1919,11 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                 let relationship_id = $(this).attr("data-relationship_id");  
 
                 if (custom==1) {
-                    if (alert("Pour coller dans une page, sélectionner et copier (CTRL+C) :                    https://sacado.xyz/qcm/write_custom_exercise/"+exercise_id+"/"+parcours_id)) ;
+                    if (alert("Pour coller dans une page, sélectionner et copier (CTRL+C) :                    https://sacado-academie.fr/qcm/write_custom_exercise/"+exercise_id+"/"+parcours_id)) ;
                         $("#custom_share"+exercise_id).hide();
                     }
                     else {
-                    if (alert("Pour coller dans une page, sélectionner et copier (CTRL+C) :                    https://sacado.xyz/qcm/"+parcours_id+"/"+exercise_id+"/")) ;
+                    if (alert("Pour coller dans une page, sélectionner et copier (CTRL+C) :                    https://sacado-academie.fr/qcm/"+parcours_id+"/"+exercise_id+"/")) ;
                         $("#share"+relationship_id).hide();
                     }
                 }
