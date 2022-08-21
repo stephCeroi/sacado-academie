@@ -2743,11 +2743,11 @@ def show_parcours(request, idf = 0, id=0):
 def open_section_to_read(student, parcours, listing_order):
  
     bool_list , blocs = [] ,  [] 
-    # f=open("/var/www/sacado-academie/logs/debug.log","w")
-    # print("student :",student, file=f)
-    # print("parcours : ",parcours,file=f)
-    # print("sequence ? ", parcours.is_sequence,file=f)
-    # print("**************\nlisting_order ",file=f)
+    f=open("/var/www/sacado-academie/logs/debug.log","w")
+    print("student :",student, file=f)
+    print("parcours : ",parcours,file=f)
+    print("sequence ? ", parcours.is_sequence,file=f)
+    print("**************\nlisting_order ",file=f)
     for doc in listing_order :
         print(doc,"|",doc.type_id,"|",doc.exercise, "|",doc.exercise.supportfile.is_title, file=f)
     if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
@@ -2792,8 +2792,8 @@ def open_section_to_read(student, parcours, listing_order):
             bool_list.append(dico)   
 
     
-    # print(bool_list,file=f)
-    # f.close()
+    print(bool_list,file=f)
+    f.close()
     return bool_list
 
 
