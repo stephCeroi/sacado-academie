@@ -76,9 +76,12 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 def delete_and_erase():
 
-    users = User.objects.filter(user_type=2).exclude(Q(is_superuser=1)|Q(school_id=50))[:100]
+    users = User.objects.filter(user_type=2).exclude(Q(is_superuser=1)|Q(school_id=50))[:1000]
     for u in users :
-        u.delete()
+        try :
+            u.delete()
+        except :
+            pass
     
     #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
  
