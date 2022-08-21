@@ -2739,51 +2739,63 @@ def show_parcours(request, idf = 0, id=0):
 
 
 
+
 def open_section_to_read(student, parcours, listing_order):
-
+ 
     bool_list , blocs = [] ,  [] 
-
-    # if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
-        
-    #     for doc in listing_order :
-    #         dico = dict()
-    #         dico["doc"] = doc
-    #         dico["is_display"] = False 
-    #         if doc.type_id == 0 :
-    #             if doc.exercise.supportfile.is_title :  
-    #                 dico["is_display"] = True
-    #                 blocs.append([])
-    #             else :
-    #                 blocs[-1].append(doc.id)
-    #         else :
-    #             blocs[-1].append(doc.id)
-
-    #         bool_list.append(dico)            
-    #     #---------- pour chaque bloc, on calcule si l'elève a reussi.
-    #     bloc_average = []
-    #     for bloc in blocs :
-    #         avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
-    #         dico = dict()
-    #         ok= (bool(avg_student['average']) and avg_student['average']>80) 
-    #         bloc_average.append(ok)
-    
-    #     #---------- pour chaque exercice de chaque bloc, on met l'affichage à True
-    #     # si : c'est le premier bloc, ou si le bloc precédent a été reussi.
-    #     nelement=0                         #pour parcourir bool_list
-    #     for nb,bloc in enumerate(blocs) :  #nb = numero du bloc
-    #         if nb==0 or bloc_average[nb-1] :
-    #             for i in range(len(bloc[nb])) :
-    #                 bool_list[nelement+i]['is_display']=True
-    #         nelement+=len(bloc[nb])
-    
-    # else :
+    # f=open("/var/www/sacado-academie/logs/debug.log","w")
+    # print("student :",student, file=f)
+    # print("parcours : ",parcours,file=f)
+    # print("sequence ? ", parcours.is_sequence,file=f)
+    # print("**************\nlisting_order ",file=f)
     for doc in listing_order :
-        dico = dict()
-        dico["doc"] = doc
-        dico["is_display"] = True 
-        bool_list.append(dico)  
+        print(doc,"|",doc.type_id,"|",doc.exercise, "|",doc.exercise.supportfile.is_title, file=f)
+    if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
+        print("c'est une sequence",file=f)
+        for doc in listing_order :
+            dico = dict()
+            dico["doc"] = doc
+            dico["is_display"] = True 
+            if doc.type_id == 0 :
+                 if doc.exercise.supportfile.is_title :  
+                     dico["is_display"] = True
+                     blocs.append([])
+                 else :
+                     blocs[-1].append(doc.id)
+            else :
+                 blocs[-1].append(doc.id)
 
+            bool_list.append(dico)            
+        #---------- pour chaque bloc, on calcule si l'elÃ¨ve a reussi.
+        bloc_average = []
+        for bloc in blocs :
+            avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
+            dico = dict()
+            ok= (bool(avg_student['average']) and avg_student['average']>80) 
+            bloc_average.append(ok)
+    
+        #---------- pour chaque exercice de chaque bloc, on met l'affichage Ã  True
+        # si : c'est le premier bloc, ou si le bloc precÃ©dent a Ã©tÃ© reussi.
+        nelement=0                         #pour parcourir bool_list
+        for nb,bloc in enumerate(blocs) :  #nb = numero du bloc
+            if nb==0 or bloc_average[nb-1] :
+                for i in range(len(bloc[nb])) :
+                    bool_list[nelement+i]['is_display']=True
+            nelement+=len(bloc[nb])
+
+    else :
+        for doc in listing_order :
+            dico = dict()
+            dico["doc"] = doc
+            dico["is_display"] = True 
+
+            bool_list.append(dico)   
+
+    
+    # print(bool_list,file=f)
+    # f.close()
     return bool_list
+
 
 
 
