@@ -42,6 +42,11 @@ h6 {
   font-size:32px;
 }
 
+.rose{
+  color:#e00a72;
+}
+
+
 #display_rgpd{
   position: fixed;
   background-color: #0056B3 ; /*#5d4391; */
