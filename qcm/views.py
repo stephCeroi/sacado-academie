@@ -2743,55 +2743,40 @@ def show_parcours(request, idf = 0, id=0):
 def open_section_to_read(student, parcours, listing_order):
  
     bool_list , blocs = [] ,  [] 
+
     if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
-        for doc in listing_order :
-            dico = dict()
-            dico["doc"] = doc
-            dico["is_display"] = False 
-            if doc.type_id == 0 :
-                if doc.exercise.supportfile.is_title :  
-                    dico["is_display"] = True
-                    blocs.append([])
-                else :
-                    blocs[-1].append(doc.id)
+        # calcul des indices exercices des blocs dans la liste listing_order des document
+        # le premier element du bloc est l'indice du titre du bloc
+        blocs=[]
+        for i,doc in enumerate(listing_order) :
+            if doc.type_id==0 and doc.exercise.supportfile.is_title and not(doc.exercise.supportfile.is_subtitle):
+                    blocs.append([i])
             else :
-                blocs[-1].append(doc.id)
+                if doc.type_id==0 and not(doc.exercise.supportfile.is_title):
+                    blocs[-1].append(i)
+                
 
-            bool_list.append(dico)            
-        #---------- pour chaque bloc, on calcule si l'elÃ¨ve a reussi.
-        bloc_average = []
-        for bloc in blocs :
-            avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
-            dico = dict()
-            ok= (bool(avg_student['average']) and avg_student['average']>80) 
-            bloc_average.append(ok)
+        #---------- calcul du premier bloc qui n'a jamais ete traitÃ© par l'Ã©lÃ¨ve,
+        # et tel que le bloc prÃ©cÃ©dent n'ait pas ete traitÃ© ou ait ete mal rÃ©ussi
+        reussi=[]
+        for i in range(len(blocs)):
+            avg_student = student.answers.filter(exercise__in = [listing_order[j].id for j in blocs[i][1:]] , parcours = parcours).aggregate(average=Avg("point"))
+            traite = avg_student['average']!=None
+            reussi.append(traite and avg_student['average']>80) 
+            if i!=0 and not(traite) and not(reussi[i-1]) :
+                break
+        # i-1 : numero du dernier bloc Ã  afficher
+        # constitution du dictionnaire pour chaque element de listing_order,
+        # on calcule un dictionnaire contenant son id et un boolÃ©en pour l'affichage
+        if i-1<len(blocs) : #il existe un bloc Ã  ne pas afficher
+            limite=blocs[i][0]
+        else :
+            limite=len(listing_order)
+        list_bool=[]
+        for i in range(len(listing_order)):
+            list_bool.append({"doc":listing_order[i],"is_display":i<limite})
 
-
-    
-        #---------- pour chaque exercice de chaque bloc, on met l'affichage Ã  True
-        # si : c'est le premier bloc, ou si le bloc precÃ©dent a Ã©tÃ© reussi.
-        nelement=0                         #pour parcourir bool_list
-        for nb,bloc in enumerate(blocs) :  #nb = numero du bloc
-            if nb==0 or bloc_average[nb-1] :
-                for i in range(len(bloc)) :
-                    bool_list[nelement+i]['is_display']=True
-            nelement+=len(bloc)
-
-    else :
-        for doc in listing_order :
-            dico = dict()
-            dico["doc"] = doc
-            dico["is_display"] = True 
-
-            bool_list.append(dico) 
-
-    print(bool_list)  
-
-    return bool_list
-
-
-
-
+    return list_bool
 
 
 
