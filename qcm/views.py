@@ -2748,42 +2748,40 @@ def open_section_to_read(student, parcours, listing_order):
         for doc in listing_order :
             dico = dict()
             dico["doc"] = doc
-            dico["is_display"] = True 
-        #     if doc.type_id == 0 :
-        #         if doc.exercise.supportfile.is_title :  
-        #             dico["is_display"] = True
-        #             blocs.append([])
-        #         else :
-        #             blocs[-1].append(doc.id)
-        #     else :
-        #         blocs[-1].append(doc.id)
+            dico["is_display"] = False 
+            if doc.type_id == 0 :
+                if doc.exercise.supportfile.is_title :  
+                    dico["is_display"] = True
+                    blocs.append([])
+                else :
+                    blocs[-1].append(doc.id)
+            else :
+                blocs[-1].append(doc.id)
 
             bool_list.append(dico)            
-        # #---------- pour chaque bloc, on calcule si l'elève a reussi.
-        # bloc_average = []
-        # for bloc in blocs :
-        #     avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
-        #     dico = dict()
-        #     ok= (bool(avg_student['average']) and avg_student['average']>80) 
-        #     bloc_average.append(ok)
+        #---------- pour chaque bloc, on calcule si l'elève a reussi.
+        bloc_average = []
+        for bloc in blocs :
+            avg_student = student.answers.filter(exercise__in = bloc , parcours = parcours).aggregate(average=Avg("point"))
+            dico = dict()
+            ok= (bool(avg_student['average']) and avg_student['average']>80) 
+            bloc_average.append(ok)
     
-        # #---------- pour chaque exercice de chaque bloc, on met l'affichage à True
-        # # si : c'est le premier bloc, ou si le bloc precédent a été reussi.
-        # nelement=0                         #pour parcourir bool_list
-        # for nb,bloc in enumerate(blocs) :  #nb = numero du bloc
-        #     if nb==0 or bloc_average[nb-1] :
-        #         for i in range(len(bloc[nb])) :
-        #             bool_list[nelement+i]['is_display']=True
-        #     nelement+=len(bloc[nb])
-
+        #---------- pour chaque exercice de chaque bloc, on met l'affichage à True
+        # si : c'est le premier bloc, ou si le bloc precédent a été reussi.
+        nelement=0                         #pour parcourir bool_list
+        for nb,bloc in enumerate(blocs) :  #nb = numero du bloc
+            if nb==0 or bloc_average[nb-1] :
+                for i in range(len(bloc[nb])) :
+                    bool_list[nelement+i]['is_display']=True
+            nelement+=len(bloc[nb])
+    
     else :
         for doc in listing_order :
             dico = dict()
             dico["doc"] = doc
             dico["is_display"] = True 
-
-            bool_list.append(dico)   
-
+            bool_list.append(dico)  
 
     return bool_list
 
@@ -2827,8 +2825,6 @@ def ordering_number_for_student(parcours,student):
             if item["doc"].is_publish :
                 j += 1
             nb_exo_visible.append(j)
-
-    print(list_order)
 
     return list_order , nb_exo_only, nb_exo_visible
 

@@ -4,9 +4,6 @@ $(document).ready(function () {
         console.log("---- NEW test accueil_accueil.js ---") ;  
 
 
-   
-
-                
         if ( $("#id_form-0-password1").length ) {   
                 $("#id_form-0-password2").on('blur', function () {
                     let f2 = $(this).val();
@@ -677,6 +674,24 @@ $(document).ready(function () {
               }, 1000 );
 
             }
+
+
+
+        $("#show_detail_display_suivi").hide();
+        $("#show_detail_display_perso").hide();
+
+
+        $("#detail_display_suivi").click(function(){
+
+                $('#show_detail_display_suivi').toggle(500);
+            });
+
+
+        $("#detail_display_perso").click(function(){
+
+                $('#show_detail_display_perso').toggle(500);
+            });
+
 
 
 

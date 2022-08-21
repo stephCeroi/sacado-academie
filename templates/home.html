@@ -189,17 +189,40 @@ Intro Section -
  
 
 <div class="modal fade" id="Autonomie" tabindex="-1" role="dialog" aria-labelledby="Autonomie">
-    <div class="modal-dialog" role="document" style="width:70%">
+    <div class="modal-dialog" role="document">
         <div class="modal-content" >
             <div class="modal-header">
-                <h2 > <img src="{% static 'img/menu_autonomie.png' %}"  width="60px"/> Menu Autonomie </h2>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button> 
-
+                <div class="row">
+                        <div class="col-sm-3 col-md-2">
+                            <img src="{% static 'img/menu_autonomie.png' %}"  width="60px"/>
+                        </div>
+                        <div class="col-sm-8 col-md-9">
+                            <div style="font-size:30px;">  Menu Autonomie </div>
+                            <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
+                        </div>
+                        <div class="col-sm-1 col-md-1">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button> 
+                        </div>
+                </div>
             </div>
-            <div class="modal-body" >
- Votre enfant a accès à tous les cours, exercices et activités du niveau choisi dès son inscription. Il choisit les exercices dans les chapitres proposés selon ses besoins. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits.
+            <div class="modal-body" style="font-size:14px;" >
+ 
+                <b style="color:#e00a72">Interface Enfant </b>
+
+                <li>Tous les cours.</li>
+                <li>Tous les exercices</li>
+                <li>Tableau de bord</li>
+                <li>Suivi détaillé de sa progression jour par jour.</li>
+               <br/>
+                <b style="color:#e00a72">Interface Parent</b>
+
+                <li>Visualisation des résultats de chacun de vos enfants sur votre tableau de bord</li>
+                <li>Choix de la réception d’un mail à chaque exercice fait (fréquence à choisir)</li>
+                <li>Choix de la réception d’un rapport d’activité (nombre et % de réussite des exercices effectués)</li>
+                <li>Génération d’un bilan (format pdf).</li>
+
             </div>
         </div>
     </div>
@@ -211,13 +234,37 @@ Intro Section -
     <div class="modal-dialog" role="document" style="width:70%">
         <div class="modal-content" >
             <div class="modal-header">
-                <h2 > <img src="{% static 'img/menu_ia.png' %}"  width="60px"/> Menu Adaptatif </h2>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button> 
+                <div class="row">
+                    <div class="col-sm-3 col-md-2">
+                        <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>
+                    </div>
+                    <div class="col-sm-8 col-md-9">
+                        <div style="font-size:30px;">  Menu Adaptatif </div>
+                        <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
+                    </div>
+                    <div class="col-sm-1 col-md-1">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> 
+                    </div>
+                </div>
             </div>
-            <div class="modal-body" id="indiv_this_exercise">
- Les séquences d’exercices sont organisées par un programme d’intelligence artificielle qui ouvre une section de cours et d'activité en fonction du résultat de votre enfant. Votre enfant doit réussir une section pour accéder à la section suivante. Les parents peuvent contrôler l'activité de chaque enfant et reçoivent avec une fréquence choisie un rapport d'activité contenant les résultats des exercices faits. 
+            <div class="modal-body" style="font-size:14px;" >
+   
+                <b style="color:#e00a72">Interface Enfant </b>
+
+                <li>Séquences d’exercices organisés par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
+                <li>Niveaux structurés en fonction de ses réussites (il saute des paliers) ou de ses lacunes (il s’entraine  jusqu’à sa réussite !)</li>
+                <li>Tableau de bord</li>
+                <li>Suivi détaillé de sa progression jour par jour.</li>
+               <br/>
+                <b style="color:#e00a72">Interface Parent</b>
+
+                <li>Visualisation des résultats de chacun de vos enfants sur votre tableau de bord</li>
+                <li>Choix de la réception d’un mail à chaque exercice fait (fréquence à choisir)</li>
+                <li>Choix de la réception d’un rapport d’activité (nombre et % de réussite des exercices effectués)</li>
+                <li>Génération d’un bilan (format pdf).</li>
+
             </div>
         </div>
     </div>
@@ -228,19 +275,46 @@ Intro Section -
     <div class="modal-dialog" role="document" style="width:70%">
         <div class="modal-content" >
             <div class="modal-header">
-                <h2 > <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/> Menu Suivi </h2>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button> 
+                <div class="row">
+                    <div class="col-sm-3 col-md-2">
+                        <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/>
+                    </div>
+                    <div class="col-sm-8 col-md-9">
+                        <span style="font-size:30px">  Menu Suivi    </span>
+                        <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
+                    </div>
+                    <div class="col-sm-1 col-md-1">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> 
+                    </div>
+                </div>
             </div>
             <div class="modal-body" id="indiv_this_exercise" >  
             
                 <div class="alert alert-sacado"  align="center">
-                    <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>  Menu Adaptatif
+                    <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>  Menu Adaptatif <i class="bi bi-question-circle" id="detail_display_suivi" style="cursor:pointer"></i>
                 </div>
+
+                <div id="show_detail_display_suivi" style="font-size:12px;">
+                    <b style="color:#e00a72">Interface Enfant </b>
+
+                    <li>Séquences d’exercices organisés par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
+                    <li>Niveaux structurés en fonction de ses réussites (il saute des paliers) ou de ses lacunes (il s’entraine  jusqu’à sa réussite !)</li>
+                    <li>Tableau de bord</li>
+                    <li>Suivi détaillé de sa progression jour par jour.</li>
+                   <br/>
+                    <b style="color:#e00a72">Interface Parent</b>
+
+                    <li>Visualisation des résultats de chacun de vos enfants sur votre tableau de bord</li>
+                    <li>Choix de la réception d’un mail à chaque exercice fait (fréquence à choisir)</li>
+                    <li>Choix de la réception d’un rapport d’activité (nombre et % de réussite des exercices effectués)</li>
+                    <li>Génération d’un bilan (format pdf).</li>
+                </div>
+
                 <h2  align="center"><i class="bi bi-plus"></i></h2>
 
- Votre enfant échange par message (réponse sous 24h) avec un enseignant sur les difficultés rencontrées.  
+                    Votre enfant échange par <b  style="color:#e00a72">Chat</b> (en direct) ou <b  style="color:#e00a72">message</b> (réponse sous 24h) avec un <b  style="color:#e00a72">enseignant</b> sur les difficultés rencontrées. <br/><em><small>Chat du lundi au vendredi 16h à 00h.</small> </em> 
             </div>
         </div>
     </div>
@@ -253,17 +327,48 @@ Intro Section -
         <div class="modal-content" >
             <div class="modal-header">
 
-                <h2 > <img src="{% static 'img/menu_accompagnement.png' %}"  width="60px"> Menu Personnalisé </h2>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button> 
-
+                <div class="row">
+                    <div class="col-sm-3 col-md-2">
+                        <img src="{% static 'img/menu_accompagnement.png' %}"  width="60px"/>
+                    </div>
+                    <div class="col-sm-8 col-md-9">
+                        <div style="font-size:30px;">  Menu Personnalisé </div>
+                        <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
+                    </div>
+                    <div class="col-sm-1 col-md-1">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> 
+                    </div>
+                </div>
             </div>
             <div class="modal-body" id="indiv_this_exercise">
                 <div class="alert alert-sacado"  align="center">
-                    <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/>  Menu Suivi
+                    <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/>  Menu Suivi <i class="bi bi-question-circle" id="detail_display_perso" style="cursor:pointer"></i>
                 </div>
-                <h2  align="center"><i class="bi bi-plus"></i></h2>Votre enfant est accompagné et suivi par un enseignant par <b>visioconférence en temps réel</b>. <br/>Vous pouvez choisir l'enseignant parmi les enseignants proposés par la Sacado Académie. Paiement à la prestation.
+                <div id="show_detail_display_perso"  style="font-size:12px;">
+                    <b style="color:#e00a72">Interface Enfant </b>
+
+                    <li>Séquences d’exercices organisés par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
+                    <li>Niveaux structurés en fonction de ses réussites (il saute des paliers) ou de ses lacunes (il s’entraine  jusqu’à sa réussite !)</li>
+                    <li>Tableau de bord</li>
+                    <li>Suivi détaillé de sa progression jour par jour.</li>
+                   <br/>
+                    <b style="color:#e00a72">Interface Parent</b>
+
+                    <li>Visualisation des résultats de chacun de vos enfants sur votre tableau de bord</li>
+                    <li>Choix de la réception d’un mail à chaque exercice fait (fréquence à choisir)</li>
+                    <li>Choix de la réception d’un rapport d’activité (nombre et % de réussite des exercices effectués)</li>
+                    <li>Génération d’un bilan (format pdf).</li>
+                    <h2  align="center"><i class="bi bi-plus"></i></h2>
+
+                    Votre enfant échange par <b  style="color:#e00a72">Chat</b> (en direct) ou <b  style="color:#e00a72">message</b> (réponse sous 24h) avec un <b  style="color:#e00a72">enseignant</b> sur les difficultés rencontrées. <br/><em><small>Chat du lundi au vendredi 16h à 00h.</small> </em> 
+
+                </div>
+
+
+
+                <h2  align="center"><i class="bi bi-plus"></i></h2>Votre enfant est accompagné par un <b  style="color:#e00a72">enseignant</b> par <b  style="color:#e00a72">visioconférence</b> selon les créneaux choisis. <br/><em><small>Choix de l'enseignant parmi les enseignants proposés par la Sacado Académie. Paiement à la prestation.</small></em>
             </div>
         </div>
     </div>
