@@ -155,8 +155,8 @@
                 {% get_available rc student  as available %} 
                 {% get_parcours_available parcours student rc.exercise as parcours_available %}
 
-                {% if rc.exercise.supportfile.is_ggbfile %}    
-                    {% if is_blck   %}
+                {% if rc.exercise.supportfile.is_ggbfile %}   
+                    {% if is_blck and rdoc.is_display  %}
                         <div class="alert alert-danger" style="position: absolute; z-index:9; top:100px;font-size:12px;border-radius: 0px 4px 4px  0px;"> 
                               <i class="fa fa-lock"></i> <span class="hidden_lock"> {{ rc.lock|date:"d-m-Y à H:i" }}</span>
                         </div>
@@ -164,9 +164,16 @@
                             <img src="{{ rc.exercise.supportfile.imagefile.url }}"  class="image_parcours" {% if not rc.is_publish %} style="opacity:0.8" {% endif %}  >
                
                     {% else %}  
-                        {% if parcours_available.is_ok  %} 
+                        {% if parcours_available.is_ok  %}
 
-                            {% if parcours.is_next and not available.is_ok %} 
+                            {% if not rdoc.is_display   %} 
+                                <div class="alert alert-danger" style="position: absolute; z-index:9; top:100px;font-size:12px;border-radius: 0px 4px 4px  0px;"> 
+                                      <i class="fa fa-lock"></i> Vous devez obtenir 80% de réussite au bloc précédent  
+                                </div>
+                     
+                                    <img src="{{ rc.exercise.supportfile.imagefile.url }}"  class="image_parcours"   style="opacity:0.8"    >
+                    
+                            {% elif parcours.is_next and not available.is_ok %} 
                                 <div class="alert alert-danger" style="position: absolute; z-index:9; top:100px;font-size:12px;border-radius: 0px 4px 4px  0px;"> 
                                       <i class="fa fa-lock"></i>  Vous devez passer à un autre exercice  
                                 </div>
