@@ -971,7 +971,9 @@ class Parcours(ModelWithCode):
         except :
             data["nb_total"] = 0
             data["color"]    = "text_gray"
- 
+
+        data["value"]    = str(nb_answers) +" "+ str(nb_answers_q) +" "+ str(nb_exercises) +" "+  str(nb_q)
+
         return data
 
 
