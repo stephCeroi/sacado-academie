@@ -937,7 +937,7 @@ class Parcours(ModelWithCode):
             nb_q = 0
             for quizz in quizzes :
                 nb_q += quizz.questions.filter( students = student).values_list("id",flat=True).distinct().count() 
-                
+
         nb_answers   = self.answers.filter(student = student).values_list("id",flat=True).distinct().count() 
         nb_answers_q = student.questions_player.values_list("question",flat=True).distinct().count() 
 
@@ -958,19 +958,19 @@ class Parcours(ModelWithCode):
 
             if score :
                 if score > up :
-                    data["colored"] = "darkgreen"
+                    data["colored"] = "text_darkgreen"
                 elif score >  med :
-                    data["colored"] = "green"
+                    data["colored"] = "text_green"
                 elif score > low :
-                    data["colored"] = "orange"
+                    data["colored"] = "text_orange"
                 else :
-                    data["colored"] = "red"
+                    data["colored"] = "text_red"
             else :
-                data["colored"] = "gray"
+                data["colored"] = "text_gray"
 
         except :
             data["nb_total"] = 0
-            data["color"]    = "gray"
+            data["color"]    = "text_gray"
  
         return data
 

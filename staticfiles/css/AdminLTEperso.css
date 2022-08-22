@@ -3464,6 +3464,35 @@ width:100%;
 .markup:hover .details_exos{
     display:block;
 } 
+
+
+.text_darkgreen {
+  color: #1d6718!important;
+}
+.text_green {
+  color: #62d85a!important;
+}
+
+.text_orange {
+  color: #b5a32b!important;
+}
+ 
+.text_red {
+  color: #b5322b!important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .darkgreen {
   background-color: #1d6718;
   color: #1d6718!important;
