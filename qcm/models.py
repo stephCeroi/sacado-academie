@@ -924,7 +924,7 @@ class Parcours(ModelWithCode):
         today = timezone.now()
         if self.is_sequence :
             nb_exercises  = self.parcours_relationship.filter(type_id=0, students = student,is_publish = 1).values_list("document_id",flat=True).distinct().count() 
-            quizzes       = self.parcours_relationship.filter(type_id=3, students = student,is_publish = 1).values_list("document_id",flat=True).distinct() 
+            quizzes       = self.parcours_relationship.filter(type_id=3, students = student,is_publish = 1)
             nb_q = 0
             for quizz in quizzes :
                 nb_q += quizz.questions.filter( students = student).values_list("id",flat=True).distinct().count() 
@@ -933,12 +933,12 @@ class Parcours(ModelWithCode):
 
         else :
             nb_exercises  = self.parcours_relationship.filter( exercise__supportfile__is_title=0 , students = student,is_publish = 1).values_list("id",flat=True).distinct().count()  
-            quizzes       = self.quizz.filter( students = student).values_list("id",flat=True).distinct() 
+            quizzes       = self.quizz.filter( students = student)
             nb_q = 0
             for quizz in quizzes :
                 nb_q += quizz.questions.filter( students = student).values_list("id",flat=True).distinct().count() 
 
-        nb_answers   = self.answers.filter(student = student).values_list("id",flat=True).distinct().count() 
+        nb_answers   = self.answers.filter(student = student).values_list("exercise",flat=True).distinct().count() 
         nb_answers_q = student.questions_player.values_list("question",flat=True).distinct().count() 
 
         try :
