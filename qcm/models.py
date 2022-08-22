@@ -427,13 +427,13 @@ class Parcours(ModelWithCode):
  
         try :
             if self.coteachers.count() > 0 and flds != "" :
-                return "{} > {} [CoA]".format(flds, self.title)
+                return "{} > {}-{} [CoA]".format(flds, self.title, self.is_sequence)
             elif self.coteachers.count() > 0 and flds == "" :
-                return "{} [CoA]".format(self.title)
+                return "{}-{} [CoA]".format(self.title, self.is_sequence)
             else :
-                return "{}".format(self.title)
+                return "{}-{}".format(self.title, self.is_sequence)
         except :
-            return "{}".format(self.title)
+            return "{}-{}".format(self.title, self.is_sequence)
 
  
     def contains_exercises(self):
