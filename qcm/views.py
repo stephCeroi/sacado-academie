@@ -2743,15 +2743,8 @@ def show_parcours(request, idf = 0, id=0):
 def open_section_to_read(student, parcours, listing_order):
  
     bool_list , blocs = [] ,  [] 
-    f=open("/var/www/sacado-academie/logs/debug.log","w")
-    print("student :",student, file=f)
-    print("parcours : ",parcours,file=f)
-    print("sequence ? ", parcours.is_sequence,file=f)
-    print("**************\nlisting_order ",file=f)
-    for i,doc in enumerate(listing_order) :
-        print("document ",i,":\n",doc,"| type=",doc.type_id,"\n",doc.exercise, "| titre ?",doc.exercise.supportfile.is_title, file=f)
+
     if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
-        print("c'est une sequence",file=f)
         # calcul des indices exercices des blocs dans la liste listing_order des document
         # le premier element du bloc est l'indice du titre du bloc
         blocs=[]
@@ -2767,12 +2760,11 @@ def open_section_to_read(student, parcours, listing_order):
         # et tel que le bloc prÃ©cÃ©dent n'ait pas ete traitÃ© ou ait ete mal rÃ©ussi
         reussi=[]
         for i in range(len(blocs)):
-            avg_student = student.answers.filter(exercise__in = [listing_order[j].id for j in blocs[i][1:]] , parcours = parcours).aggregate(average=Avg("point"))
+            avg_student = student.answers.filter(exercise__in = [listing_order[j].exercise.id for j in blocs[i][1:]] , parcours = parcours).aggregate(average=Avg("point"))
             traite = avg_student['average']!=None
             reussi.append(traite and avg_student['average']>80) 
             if i!=0 and not(traite) and not(reussi[i-1]) :
                 break
-        print("indice du dernier bloc Ã  afficher ",i-1,file=f)
         # i-1 : numero du dernier bloc Ã  afficher
         # constitution du dictionnaire pour chaque element de listing_order,
         # on calcule un dictionnaire contenant son id et un boolÃ©en pour l'affichage
@@ -2783,9 +2775,7 @@ def open_section_to_read(student, parcours, listing_order):
         list_bool=[]
         for i in range(len(listing_order)):
             list_bool.append({"doc":listing_order[i],"is_display":i<limite})
-    for i,dic in enumerate(list_bool):
-        print(i,dic,file=f)
-    f.close()
+
     return list_bool
 
 
