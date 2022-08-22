@@ -25,9 +25,10 @@
             </div> 
         {% endif  %}
         <div class="box_title_vignette"> 
- 
+            <a href="{% url 'list_sub_parcours_group_student'   group.id   folder.id %}">
             <span class="helper_tip" style="color:{{ folder.color|contrast_color }};font-size:20px;font-weight: 100;cursor:help">{{ folder.title|truncatechars:"30" }}
             <div class="helper_tip_text_right">{{ folder.title }}</div></span>
+            </a>
 
         </div>
     </div>
@@ -36,11 +37,11 @@
 
 
 
-                <div style="margin-bottom: 15px"><br/>
-                    {% for p in folder.parcours.all %}
-                    <li class="sanspuce"><i class="bi bi-caret-right-fill" style="font-size:10px"></i><a href="{% url 'show_parcours_student' p.id %}">{{ p.title|truncatechars:40 }}</a></li>
-                    {% endfor %}
-                </div>
+        <div style="margin-bottom: 15px"><br/>
+            {% for p in folder.parcours.all %}
+            <li class="sanspuce"><i class="bi bi-caret-right-fill" style="font-size:10px"></i><a href="{% url 'show_parcours_student' p.id %}">{{ p.title|truncatechars:40 }}</a></li>
+            {% endfor %}
+        </div>
 
 
 
