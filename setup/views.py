@@ -643,6 +643,13 @@ def faq(request):
     return render(request, 'setup/faq.html', context)
 
 
+def who_is(request):
+    form = AuthenticationForm()
+    np_form = NewpasswordForm()
+    context = { 'form' : form  , 'np_form' : np_form }
+    return render(request, 'setup/who_is.html', context)
+
+
 @is_manager_of_this_school
 def admin_tdb(request):
 

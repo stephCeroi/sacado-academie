@@ -8,54 +8,34 @@
 
 {% block body %}
 
-<section class="section-bg wow fadeIn">
-    <div class="footer-top" style="padding-top:40px">
-      <div class="container">
+<section  id="faq"  class="bandeau_accueil"><br/>
+      <div class="container bg_white">
         <div class="row">
+               
+          <div class="col-sm-12 col-md-12">
 
-          <div class="col-sm-12 col-md-6">
+              <h3 class="color_sacado title_bloc_index">CONTACT</h3>
+          </div>
+        </div>
+        <div class="row">
+               
+            <div class="col-sm-12 col-md-6">
 
-            <div class="row">
 
-                <div  class="col-sm-12 col-md-6">
-                  <div class="footer-info">
-                    <h3 class="color_sacado">SACADO Académie</h3>
                     <p>Nos supports d’exercices sont interactifs et conformes aux  nouveaux programmes scolaires de l’Éducation Nationale, ils sont disponibles en ligne 24h/24 et 7j/7.
 
                     <br><br>Les exercices sont accessibles sur téléphones, tablettes et ordinateurs.
 
-                    <br><br>Nos Professeurs (du primaire à la prépa) sont toujours en poste et connaissent la réalité du terrain.  </p>
-                  </div>
-                </div>
-
-                <div class="col-sm-12 col-md-6">
-                    <h3 class="color_sacado">Contacts</h3>
-                    <b class="color_sacado">Maternelle et élémentaire </b><br/>
-                    Sandrine Rébéna<br/><br>             
-                    <b class="color_sacado">Collège - Lycée</b><br>
-                    Audrey Ledoux  <br>
-                    Bruno Serres   <br>
-                    Nicolas Villemain  <br> 
-                    Philippe Demaria<br/> <br>
-                    <b class="color_sacado">Classe Prépa</b><br>
-                    Stéphan Ceroi    
-
-                    <br><br>
-                    <p> <a href="{% url 'rgpd' %}"  class="color_sacado">RGPD</a> - <a href="{% url 'cgv' %}"  class="color_sacado">CGV</a><br>
-
-                      <a href="{% url 'mentions_academy' %}"  class="color_sacado" >Mentions Légales</a> </p>
+                    </p>
+              </div>
 
 
-                </div>
-            </div>
-
-          </div>
+ 
 
           <div class="col-sm-12 col-md-6">
 
             <div class="form">
 
-              <h3 class="color_sacado">Envoyez un message</h3>
               <p>Vous souhaitez obtenir des infos sur SACADO Académie, laissez-nous un message. Réponse rapide.</p>
               <form action="{% url 'send_message' %}" method="post" >
                   {% csrf_token %}
@@ -88,7 +68,6 @@
 
 
       </div>
-    </div>
 </section>
 
 {% endblock %} 

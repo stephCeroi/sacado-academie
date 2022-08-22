@@ -48,7 +48,7 @@ urlpatterns = [
     path('contact', contact, name='contact'),
     path('advises_index', advises_index, name='advises_index'),
     path('faq', faq, name='faq'),
-
+    path('who_is', who_is, name='who_is'),
 ]
 
 

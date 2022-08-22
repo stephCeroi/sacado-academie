@@ -9,7 +9,7 @@
 
 {% block body %}
 
-
+<br/><br/>
 <section id="get_detail">
     <div class="container">
 
@@ -21,7 +21,7 @@
 
 
                     L'adhésion est souscrite  
-                    pour <b>{{ data_post.children }}</b> enfant{{ data_post.children|pluralize }} <b>GRATUITEMENT pour une période d'essai de 15 jours.</b>
+                    pour <b>{{ data_post.children }}</b> enfant{{ data_post.children|pluralize }} <b>GRATUITEMENT pour une période d'essai d'une semaine.</b>
 
                 <small class="title_page">Pour prolonger l'adhésion, un formulaire sera accessible depuis votre tableau de bord.</small>
 
@@ -206,7 +206,7 @@
 <section id="footer_asso">  
     <div class="row" style="padding-top:30px">
         <div class="col-sm-12" align="center">
-            <a href="{% url 'academy' %}">SACADO Académie</a> 
+            <a href="{% url 'academy' %}" class="font_sacado">SACADO Académie</a> 
         </div>
     </div>
 </section>

@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,600,700,300italic,400italic,600italic);
 @import url(https://fonts.googleapis.com/css?family=Pacifico);
 @import url('https://fonts.googleapis.com/css2?family=Amatic+SC&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Annie+Use+Your+Telescope&family=Grandstander&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 /********************************************* bleu :  #005e74 ************************************/
@@ -23,16 +22,12 @@
 --------------------------------------------------------------*/
 
 .font_sacado{
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Bebas Neue', cursive;
   font-size: 24px;
   font-weight: 100;
   color: #5d4391;
 }
-
-.grandstander{
-  font-family: "Grandstander", sans-serif;
-}
-
+ 
 .vspace{
   margin-top:40px;
 }
@@ -63,14 +58,11 @@
   color :  #5d4391 ;
 }
 
-.icon_index{
-  font-size:36px;
-  color :  #5d4391 ;
-}
+
 
 body {
   color: #444;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 18px;   
 }
 
@@ -209,7 +201,7 @@ h6 {
 /* Peronnalisation SacAdo */
 
 .sacado{
-  font-family:'Montserrat';
+  font-family: 'Bebas Neue', cursive;
   color: #5d4391;
 }
 
@@ -218,7 +210,7 @@ h6 {
 }
 
 a.sacado, a.sacado:active, a.sacado:visited{
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Bebas Neue', cursive;
   font-size: 20px;
   color: #5d4391;
   text-decoration: none;
@@ -601,6 +593,12 @@ table.table-bordered.dataTable {
   font-family: 'Bebas Neue', cursive;
 }
 
+.bg_white{
+  background-color: white;
+  opacity: 0.95;  
+  color :  #5d4391 ;
+}
+
 .main_body {
     margin-top: 80px;
     width: 98%;
@@ -635,7 +633,6 @@ table.table-bordered.dataTable {
 
 .icon_index{
   font-size:56px;
-  color :  #5d4391 ;
 }
 
 .p_index{
@@ -660,6 +657,18 @@ table.table-bordered.dataTable {
 .justify-content-center{
   text-align: center;
 }
+
+a.icon_link_index{
+  color: #5d4391;
+  text-decoration: none;
+}
+
+a.icon_link_index:hover .sub_icon_link_index{
+  color:#e00a72;
+  border-radius: 40px;
+  text-decoration: none;
+}
+
 
 
 /*--------------------------------------------------------------
@@ -736,7 +745,7 @@ table.table-bordered.dataTable {
   padding: 10px 15px;
   transition: 0.3s;
   font-size: 14px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   text-transform: uppercase;
 }
 
@@ -977,7 +986,7 @@ table.table-bordered.dataTable {
 --------------------------------*/
 
 .section-bg {
-  background: #f5f8fd;
+  background: #f1eef7;
   padding: 20px;
 }
 
@@ -1561,10 +1570,14 @@ table.table-bordered.dataTable {
 --------------------------------*/
 
 #pricing{
-  margin-top: 90px;
+  padding: 20px;
+  margin-top: 70px;
   padding-top: 60px;
   background-color: #f1eef7 ;
   padding-bottom: 100px;
+  opacity: 0.95;
+  font-family: "Roboto";
+  color :#5d4391;
   }
  
 
@@ -1575,13 +1588,16 @@ table.table-bordered.dataTable {
 
 #pricing .container {
   margin-right: auto;
-  margin-left: auto;
+  margin-left: auto;  
+  font-family: "Roboto";
   }
 
 
 #faq .container{
   margin-right: auto;
   margin-left: auto;
+  padding: 0px 30px 30px 30px;  
+  font-family: "Roboto";
   }
 
  
@@ -1730,6 +1746,15 @@ table.table-bordered.dataTable {
   margin : 20px 0px ;
 }
 
+a.detail_index:hover{
+  font-size:18px;
+  margin : 20px 0px ;
+  color:#e00a72;
+  text-decoration: none;
+}
+
+
+
 
 .btn-inscription {
   text-transform: uppercase;
@@ -1872,7 +1897,10 @@ table.table-bordered.dataTable {
   margin-top: 90px;
   padding-top: 30px;
   background-color: #f1eef7 ;
-  padding-bottom: 100px;
+  padding-bottom: 100px;  
+  opacity: 0.95;
+  font-family: "Roboto";
+  color :#5d4391;
   }
  
 #get_detail .title_page{

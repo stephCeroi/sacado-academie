@@ -40,11 +40,11 @@
 
 <body>
 
-<div  {% if '/academy' in request.path %} class="index_academy"{% else %}class="container" {% endif %}>
+<div  class="bandeau_accueil" >
     <header id="header">
         <div class="header_bar">
             <div class="logo float-left">
-                <a class="navbar-brand sacado" href="{% url 'academy' %}"><img src="{% static 'img/sacadoA1.png' %}"/>
+                <a class="navbar-brand sacado" href="{% url 'index' %}"><img src="{% static 'img/sacadoA1.png' %}"/>
                    SACADO ACADÉMIE </a>
             </div>
 
@@ -71,7 +71,7 @@
 
         </div>
     </header><!-- #header -->
-    <div class="main_body">
+    <div class="container">
         {% block body %}
         {% endblock %} 
     </div>

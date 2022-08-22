@@ -4,21 +4,13 @@
         <i class="fa fa-times closer_tab"></i>
     </a>
  
-
-    {% if request.user.is_in_academy %}
-    <a href="{% url 'logout_academy' %}"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
-        <div class="captionmenu sacado_menu">
-         SACADO
-        </div>
-    </a>
-    {% else %}
+ 
     <a href="{% url 'logout' %}"><img src="{% static 'img/sacadoLogo.png' %}" style="vertical-align: text-bottom;" width="35px"/>
         <div class="captionmenu sacado_menu">
-         SACADO
+         ACADÉMIE
         </div>
     </a>
-    {% endif %}
-</li>
+ </li>
 
 <li class="dropdown 
 {% if '/myaccount' in request.path %}
