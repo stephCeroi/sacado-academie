@@ -91,7 +91,7 @@ def delete_and_erase():
     
     #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
     '''
-    parcourses = Parcours.objects.filter(is_superuser=1,is_trash=0,is_sequence = 0)
+    parcourses = Parcours.objects.filter(author__user__is_superuser=1,is_trash=0,is_sequence = 0)
     for parcours in parcourses :
         teacher = parcours.teacher
         students = parcours.students.all()  
