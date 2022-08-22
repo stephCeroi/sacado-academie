@@ -76,14 +76,61 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 def delete_and_erase():
 
-    users = User.objects.filter(user_type=2).exclude(Q(is_superuser=1)|Q(school_id=50))[:1000]
-    for u in users :
-        try :
-            u.delete()
-        except :
-            pass
+    users = User.objects.filter(user_type=2,is_superuser=1)
+
+    parcours = Parcours.objects.exclude(teacher__user__in=users)[:100]
+
+    for p in parcours :
+        p.delete()
+
+
     
     #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
+    '''
+    parcourses = Parcours.objects.filter(teacher_id=2480,is_trash=0,is_sequence = 0)
+    for parcours in parcourses :
+        teacher = parcours.teacher
+        students = parcours.students.all()  
+        # clone      
+        parcours.pk = None
+        parcours.teacher = teacher
+        parcours.is_publish = 1
+        parcours.is_archive = 0
+        parcours.is_share = 0
+        parcours.is_favorite = 1
+        parcours.code = str(uuid.uuid4())[:8]
+        parcours.is_sequence = 1
+        pn = parcours.save()
+        # fin du clone
+
+        customexercises  = parcours.parcours_customexercises.all()
+        for c  in customexercises : 
+            relationc = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = c.id  , type_id = 2 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+            relationc.students.set(students)
+
+
+        courses    = parcours.course.all()
+        for course in courses : 
+            relation = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  200 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
+            relation.students.set(students)
+        
+        quizzes    = parcours.quizz.all()
+        for quizz in quizzes : 
+            relationq = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  200 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
+            relationq.students.set(students)
+
+        flashpacks  = parcours.flashpacks.all()
+        for flashpack in flashpacks : 
+            relationf = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  200 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+            relationf.students.set(students)
+
+        bibliotexs = parcours.bibliotexs.all()
+        for bibliotex in bibliotexs : 
+            relationb = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  200 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+            relationb.students.set(students)
+
+    '''
+ 
  
 
 
@@ -102,7 +149,7 @@ def end_of_contract() :
 
 def index(request):
 
-    #delete_and_erase()
+    delete_and_erase()
 
     if request.user.is_authenticated :
         index_tdb = True  # Permet l'affichage des tutos Youtube dans le dashboard
