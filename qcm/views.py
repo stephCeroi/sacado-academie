@@ -2772,7 +2772,7 @@ def open_section_to_read(student, parcours, listing_order):
             reussi.append(traite and avg_student['average']>80) 
             if i!=0 and not(traite) and not(reussi[i-1]) :
                 break
-            print(avg_student['average'])   
+            print(avg_student['average'],file=f) 
         print("indice du dernier bloc Ã  afficher ",i-1,file=f)
         # i-1 : numero du dernier bloc Ã  afficher
         # constitution du dictionnaire pour chaque element de listing_order,
