@@ -107,6 +107,17 @@ def delete_and_erase():
         pn = parcours.save()
         # fin du clone
 
+        folders = parcours.folders.all()
+        for f  in folders :
+            groups = f.groups.all() 
+            f.pk = None
+            f.save()
+            f.parcours.add(parcours)
+            f.groups.set(groups)
+            f.students.set(students)
+
+
+
         customexercises  = parcours.parcours_customexercises.all()
         for c  in customexercises : 
             relationc = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = c.id  , type_id = 2 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
