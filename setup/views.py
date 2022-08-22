@@ -81,7 +81,10 @@ def delete_and_erase():
     parcours = Parcours.objects.exclude(teacher__user__in=users)[:100]
 
     for p in parcours :
-        p.delete()
+        try :
+            p.delete()
+        except :
+            pass
 
 
     
