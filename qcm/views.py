@@ -2742,7 +2742,7 @@ def show_parcours(request, idf = 0, id=0):
 
 def open_section_to_read(student, parcours, listing_order):
  
-    bool_list , blocs = [] ,  [] 
+    list_bool , blocs = [] ,  [] 
 
     if student.adhesions.last().formule_id > 1 and parcours.is_sequence :
         # calcul des indices exercices des blocs dans la liste listing_order des document
@@ -2772,9 +2772,12 @@ def open_section_to_read(student, parcours, listing_order):
             limite=blocs[i][0]
         else :
             limite=len(listing_order)
-        list_bool=[]
         for i in range(len(listing_order)):
             list_bool.append({"doc":listing_order[i],"is_display":i<limite})
+
+    else : 
+        for i in range(len(listing_order)):
+            list_bool.append({"doc":listing_order[i],"is_display":True})
 
     return list_bool
 
