@@ -917,6 +917,63 @@ class Parcours(ModelWithCode):
         return data
 
 
+ 
+    def is_percent_to_parcours(self,student):
+
+        data = {}
+        today = timezone.now()
+        if self.is_sequence :
+            nb_exercises  = self.parcours_relationship.filter(type_id=0, students = student,is_publish = 1).values_list("document_id",flat=True).distinct().count() 
+            quizzes       = self.parcours_relationship.filter(type_id=3, students = student,is_publish = 1).values_list("document_id",flat=True).distinct() 
+            nb_q = 0
+            for quizz in quizzes :
+                nb_q += quizz.questions.filter( students = student).values_list("id",flat=True).distinct().count() 
+
+
+
+        else :
+            nb_exercises  = self.parcours_relationship.filter( exercise__supportfile__is_title=0 , students = student,is_publish = 1).values_list("id",flat=True).distinct().count()  
+            quizzes       = self.quizz.filter( students = student).values_list("id",flat=True).distinct() 
+            nb_q = 0
+            for quizz in quizzes :
+                nb_q += quizz.questions.filter( students = student).values_list("id",flat=True).distinct().count() 
+                
+        nb_answers   = self.answers.filter(student = student).values_list("id",flat=True).distinct().count() 
+        nb_answers_q = student.questions_player.values_list("question",flat=True).distinct().count() 
+
+        try :
+            score = int( (nb_answers + nb_answers_q) / (nb_exercises + nb_q) ) * 100
+            data["nb_total"] = score
+
+
+            try :
+                stage =  student.user.school.aptitude.first()
+                up = stage.up
+                med = stage.medium
+                low = stage.low
+            except :
+                up = 85
+                med = 65
+                low = 35
+
+            if score :
+                if score > up :
+                    data["colored"] = "darkgreen"
+                elif score >  med :
+                    data["colored"] = "green"
+                elif score > low :
+                    data["colored"] = "orange"
+                else :
+                    data["colored"] = "red"
+            else :
+                data["colored"] = "gray"
+
+        except :
+            data["nb_total"] = 0
+            data["color"]    = "gray"
+ 
+        return data
+
 
 class Folder(models.Model):
 

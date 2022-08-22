@@ -1033,3 +1033,9 @@ def is_inside_my_lesson(obj,student):
     """
     return obj.student_in_my_lesson(student) 
 
+@register.simple_tag
+def get_percent_to_parcours(obj,student): 
+    """
+    retourne  le pourcentage des réponses pour un quizz et des exercices GGB d'un parcours.
+    """
+    return obj.is_percent_to_parcours(student) 
