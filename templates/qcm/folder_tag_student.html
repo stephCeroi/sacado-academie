@@ -39,7 +39,9 @@
 
         <div style="margin-bottom: 15px"><br/>
             {% for p in folder.parcours.all %}
-            <li class="sanspuce"><i class="bi bi-caret-right-fill" style="font-size:10px"></i><a href="{% url 'show_parcours_student' p.id %}">{{ p.title|truncatechars:40 }}</a></li>
+                <li class="sanspuce">
+                    <i class="bi bi-check" ></i><a href="{% url 'show_parcours_student' p.id %}">{{ p.title|truncatechars:40 }} <span class="pull-right">0%</span></a>
+                </li>
             {% endfor %}
         </div>
 
