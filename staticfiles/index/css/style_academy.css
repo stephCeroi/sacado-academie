@@ -68,14 +68,13 @@ body {
 
 a {
   color: #5d4391;
-  transition: 0.5s;
 }
 
 a:hover,
 a:active,
 a:focus {  
-  color: #5d4391;
-  text-decoration: underline;
+  color: #e00a72;
+  text-decoration: none;
 }
 
 a.listing{
@@ -614,6 +613,16 @@ table.table-bordered.dataTable {
   position: relative;
 }
 
+.bandeau_accueil_no_text{
+  font-family: 'Bebas Neue', cursive;
+  background-image: url('/static/img/image_accueil00_no_text.jpg');
+  background-size: cover;
+  color:white; 
+  height:98vh;
+  position: relative;
+}
+
+
 .bandeau_title{
   font-size:90px;
   font-weight:600;
@@ -970,7 +979,7 @@ a.icon_link_index:hover .sub_icon_link_index{
   text-align: center;
   font-weight: 700;
   position: relative;
-  font-family: "Montserrat", sans-serif;
+  font-family: "bebas", sans-serif;
 }
 
 .section-header p {
@@ -988,6 +997,7 @@ a.icon_link_index:hover .sub_icon_link_index{
 .section-bg {
   background: #f1eef7;
   padding: 20px;
+  font-family: "Roboto", sans-serif;
 }
 
 /* About Us Section
@@ -1752,6 +1762,25 @@ a.detail_index:hover{
   color:#e00a72;
   text-decoration: none;
 }
+
+
+
+.main-nav a.detail_index_menu{
+  font-size:16px;
+}
+
+.main-nav a.detail_index_menu_active{
+  font-size:16px;
+  color:#e00a72;
+}
+
+.main-nav a.detail_index_menu:hover{
+  font-size:16px;
+  color:#e00a72;
+  text-decoration: none;
+}
+
+
 
 
 

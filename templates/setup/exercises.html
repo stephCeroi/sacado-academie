@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'academy.html' %}
 
 {% load widget_tweaks %}
 {% load static %}
@@ -9,161 +9,160 @@
 {% block body %}
 
 
+<section id="faq">
+    <div class="container bg_white">
+        <div class="row">
+            <div class="col-xs-12 col-md-12" >
+                <h1 class="title_bloc_index">Quelques exercices </h1>
+            </div>
+        </div>
 
+        <!--maternelle -->
+        <div class="row vspace">
+            <div class="col-xs-12 col-md-8">
+                <h2 class="color_sacado bebas thin">MATERNELLE</h2>
+                    <a href="{% url 'academy_level'  14  %}" >
+                        <div class="imagebox">
+                            <div> Petite Section</div>
+                            <img src="../../static/img/levels/level14_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level'  14  %}">
+                        <div class="imagebox">
+                            <div> Moyenne Section</div>
+                            <img src="../../static/img/levels/level14_1_.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 14  %}" >
+                        <div class="imagebox">
+                            <div > Grande Section</div>
+                            <img src="../../static/img/levels/level14_1__.png" width="200" />
+                        </div>
+                    </a>
+            </div>
+            <div class="col-xs-12 col-md-4 label_exercise_mater">
+                <li class="sanspuce color_sacado">Découvrir les nombres</li>
+                <li class="sanspuce color_sacado">Explorer des formes</li>
+                <li class="sanspuce color_sacado">Explorer des grandeurs</li>
+                <li class="sanspuce color_sacado">Explorer des suites organisées</li>
+            </div>
+        </div>
+     
+        <!--élémentaire -->
+        <div class="row vspace">
+            <div class="col-xs-12 col-md-4 label_exercise">
+            
+                <li class="sanspuce color_sacado">Nombres et Calculs</li>
+                <li class="sanspuce color_sacado">Espace et Géométrie</li>
+                <li class="sanspuce color_sacado">Grandeurs et Mesures</li>
+                <li class="sanspuce color_sacado">Problèmes</li>
+            </div>
+            <div class="col-xs-12 col-md-8 hspace" > 
+                <h2 class="color_sacado bebas thin">ÉLÉMENTAIRE</h2>
+                    <a href="{% url 'academy_level'  1  %}">
+                        <div class="imagebox">
+                            <div> Cours préparatoire</div>
+                            <img src="../../static/img/levels/level1_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 2  %}">
+                        <div class="imagebox">
+                            <div> Cours élémentaire 1</div>
+                            <img src="../../static/img/levels/level2_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 3  %}">
+                        <div class="imagebox">
+                            <div > Cours élémentaire 2</div>
+                            <img src="../../static/img/levels/level3_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 4  %}" style="padding-left:100px">
+                        <div class="imagebox">
+                            <div> Cours Moyen 1</div>
+                            <img src="../../static/img/levels/level4_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 5  %}" >
+                        <div class="imagebox">
+                            <div > Cours Moyen 2</div>
+                            <img src="../../static/img/levels/level5_1.png" width="200" />
+                        </div>
+                    </a>
+            </div>
+        </div>
 
-<section class="container tests"  id="exercise">
-    <div class="row">
-        <div class="col-xs-12 col-md-12" >
-            <h1 class="title_bloc_index">Quelques exercices </h1>
+        <!--collège -->
+        <div class="row vspace">
+            <div class="col-xs-12 col-md-6">
+                    <h2 class="color_sacado bebas thin">COLLÈGE</h2>
+                    <a href="{% url 'academy_level'  6  %}" >
+                        <div class="imagebox">
+                            <div> Sixième</div>
+                            <img src="../../static/img/levels/level6_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level'  7  %}" >
+                        <div class="imagebox">
+                            <div> Cinquième</div>
+                            <img src="../../static/img/levels/level7_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 8  %}" >
+                        <div class="imagebox">
+                            <div> Quatrième</div>
+                            <img src="../../static/img/levels/level8_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 9  %}" >
+                        <div class="imagebox">
+                            <div> Troisième</div>
+                            <img src="../../static/img/levels/level9_1.png" width="200" />
+                        </div>
+                    </a>
+            </div>
+            <div class="col-xs-12 col-md-4 label_exercise">
+                <li class="sanspuce color_sacado">Nombres et Calculs</li>
+                <li class="sanspuce color_sacado">Organisation et Gestion de données</li>
+                <li class="sanspuce color_sacado">Espace et Géométrie</li>
+                <li class="sanspuce color_sacado">Grandeurs et Mesures</li>
+            </div>
         </div>
-    </div>
 
-    <!--maternelle -->
-    <div class="row vspace">
-        <div class="col-xs-12 col-md-8">
-            <h2 class="color_sacado bebas thin">MATERNELLE</h2>
-                <a href="{% url 'academy_level'  14  %}" >
-                    <div class="imagebox">
-                        <div> Petite Section</div>
-                        <img src="../../static/img/levels/level14_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level'  14  %}">
-                    <div class="imagebox">
-                        <div> Moyenne Section</div>
-                        <img src="../../static/img/levels/level14_1_.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 14  %}" >
-                    <div class="imagebox">
-                        <div > Grande Section</div>
-                        <img src="../../static/img/levels/level14_1__.png" width="200" />
-                    </div>
-                </a>
-        </div>
-        <div class="col-xs-12 col-md-4 label_exercise_mater">
-            <li class="sanspuce color_sacado">Découvrir les nombres</li>
-            <li class="sanspuce color_sacado">Explorer des formes</li>
-            <li class="sanspuce color_sacado">Explorer des grandeurs</li>
-            <li class="sanspuce color_sacado">Explorer des suites organisées</li>
-        </div>
-    </div>
- 
-    <!--élémentaire -->
-    <div class="row vspace">
-        <div class="col-xs-12 col-md-4 label_exercise">
-        
-            <li class="sanspuce color_sacado">Nombres et Calculs</li>
-            <li class="sanspuce color_sacado">Espace et Géométrie</li>
-            <li class="sanspuce color_sacado">Grandeurs et Mesures</li>
-            <li class="sanspuce color_sacado">Problèmes</li>
-        </div>
-        <div class="col-xs-12 col-md-8 hspace" > 
-            <h2 class="color_sacado bebas thin">ÉLÉMENTAIRE</h2>
-                <a href="{% url 'academy_level'  1  %}">
-                    <div class="imagebox">
-                        <div> Cours préparatoire</div>
-                        <img src="../../static/img/levels/level1_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 2  %}">
-                    <div class="imagebox">
-                        <div> Cours élémentaire 1</div>
-                        <img src="../../static/img/levels/level2_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 3  %}">
-                    <div class="imagebox">
-                        <div > Cours élémentaire 2</div>
-                        <img src="../../static/img/levels/level3_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 4  %}" style="padding-left:100px">
-                    <div class="imagebox">
-                        <div> Cours Moyen 1</div>
-                        <img src="../../static/img/levels/level4_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 5  %}" >
-                    <div class="imagebox">
-                        <div > Cours Moyen 2</div>
-                        <img src="../../static/img/levels/level5_1.png" width="200" />
-                    </div>
-                </a>
-        </div>
-    </div>
-
-    <!--collège -->
-    <div class="row vspace">
-        <div class="col-xs-12 col-md-6">
-                <h2 class="color_sacado bebas thin">COLLÈGE</h2>
-                <a href="{% url 'academy_level'  6  %}" >
-                    <div class="imagebox">
-                        <div> Sixième</div>
-                        <img src="../../static/img/levels/level6_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level'  7  %}" >
-                    <div class="imagebox">
-                        <div> Cinquième</div>
-                        <img src="../../static/img/levels/level7_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 8  %}" >
-                    <div class="imagebox">
-                        <div> Quatrième</div>
-                        <img src="../../static/img/levels/level8_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 9  %}" >
-                    <div class="imagebox">
-                        <div> Troisième</div>
-                        <img src="../../static/img/levels/level9_1.png" width="200" />
-                    </div>
-                </a>
-        </div>
-        <div class="col-xs-12 col-md-4 label_exercise">
-            <li class="sanspuce color_sacado">Nombres et Calculs</li>
-            <li class="sanspuce color_sacado">Organisation et Gestion de données</li>
-            <li class="sanspuce color_sacado">Espace et Géométrie</li>
-            <li class="sanspuce color_sacado">Grandeurs et Mesures</li>
-        </div>
-    </div>
-
-    <!-- lycée -->
-    <div class="row vspace">
-        <div class="col-xs-12 col-md-4 label_exercise_lycee" style="padding-top:20px;" >
-            <li class="sanspuce color_sacado">Algèbre et analyse, fonctions</li>
-            <li class="sanspuce color_sacado">Algorithmique et programmation</li>
-            <li class="sanspuce color_sacado">Géométrie</li>
-            <li class="sanspuce color_sacado">Probabilités et statistiques</li>
-            <li class="sanspuce color_sacado">Combinatoire et dénombrement</li>
-            <li class="sanspuce color_sacado">Maths expertes : Graphes, matrices, arithmétique</li>
-        </div>
-        <div class="col-xs-12 col-md-8 hspace">
-                <h2 class="color_sacado bebas thin">LYCÉE</h2>
-                <a href="{% url 'academy_level'  10  %}" >
-                    <div class="imagebox">
-                        <div > Seconde</div>
-                        <img src="../../static/img/levels/level10_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 11  %}" >
-                    <div class="imagebox">
-                        <div> Première</div>
-                        <img src="../../static/img/levels/level11_1.png" width="200" />
-                    </div>
-                </a>
-                <a href="{% url 'academy_level' 12  %}" >
-                    <div class="imagebox">
-                        <div > Terminale</div>
-                        <img src="../../static/img/levels/level12_1.png" width="200" />
-                    </div>
-                </a>
- 
+        <!-- lycée -->
+        <div class="row vspace">
+            <div class="col-xs-12 col-md-4 label_exercise_lycee" style="padding-top:20px;" >
+                <li class="sanspuce color_sacado">Algèbre et analyse, fonctions</li>
+                <li class="sanspuce color_sacado">Algorithmique et programmation</li>
+                <li class="sanspuce color_sacado">Géométrie</li>
+                <li class="sanspuce color_sacado">Probabilités et statistiques</li>
+                <li class="sanspuce color_sacado">Combinatoire et dénombrement</li>
+                <li class="sanspuce color_sacado">Maths expertes : Graphes, matrices, arithmétique</li>
+            </div>
+            <div class="col-xs-12 col-md-8 hspace">
+                    <h2 class="color_sacado bebas thin">LYCÉE</h2>
+                    <a href="{% url 'academy_level'  10  %}" >
+                        <div class="imagebox">
+                            <div > Seconde</div>
+                            <img src="../../static/img/levels/level10_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 11  %}" >
+                        <div class="imagebox">
+                            <div> Première</div>
+                            <img src="../../static/img/levels/level11_1.png" width="200" />
+                        </div>
+                    </a>
+                    <a href="{% url 'academy_level' 12  %}" >
+                        <div class="imagebox">
+                            <div > Terminale</div>
+                            <img src="../../static/img/levels/level12_1.png" width="200" />
+                        </div>
+                    </a>
+     
+            </div>
         </div>
     </div>
 </section>
-
 
 {% endblock %} 
