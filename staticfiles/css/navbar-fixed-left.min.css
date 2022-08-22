@@ -30,7 +30,7 @@
  
 .nav > li > a.main:hover, .nav > li > a.main:focus {
     text-decoration: none;
-    color:#e00a72;  /*#5d4391;*/
+    color: #ffb914 ; /*#5d4391;*/
     background-color:  #FFF ;  
 }
 
