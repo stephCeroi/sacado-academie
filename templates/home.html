@@ -78,7 +78,7 @@ Intro Section -
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-6 col-md-3"  align="center">
+        <div class="col-xs-12 col-md-4"  align="center">
             <div class="card" >             
                 <div class="card-header">              
                     <div class="row">
@@ -91,7 +91,7 @@ Intro Section -
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> <span class="currency">5 €</span>/mois</div>
+                    <div class="this_price"> <span class="currency">5 €</span>/mois<br/><small style="font-size:12px">Sans engagement</small></div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#Autonomie'  class="detail_index"><i class="bi bi-cursor"></i>  Plus de détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -99,7 +99,7 @@ Intro Section -
                 </div>
             </div>
         </div>
-        <div class="col-xs-6 col-md-3"  align="center">
+        <div class="col-xs-12 col-md-4"  align="center">
             <div class="card" >             
                 <div class="card-header">              
                     <div class="row">
@@ -112,7 +112,7 @@ Intro Section -
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> <span class="currency">9 €</span>/mois</div>
+                    <div class="this_price"> <span class="currency">9 €</span>/mois<br/><small style="font-size:12px">Sans engagement</small></div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#IA'  class="detail_index"><i class="bi bi-cursor"></i>  Plus de détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -120,7 +120,9 @@ Intro Section -
                 </div>
             </div>
         </div>
-        <div class="col-xs-6 col-md-3"  align="center">
+
+        {% comment %}
+        <div class="col-xs-6 col-md-4"  align="center">
             <div class="card" >             
                 <div class="card-header">              
                     <div class="row">
@@ -133,7 +135,7 @@ Intro Section -
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> <span class="currency">15 €</span>/mois</div>
+                    <div class="this_price"> <span class="currency">15 €</span>/mois<br/><small style="font-size:12px">Sans engagement</small></div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#Suivi'  class="detail_index"><i class="bi bi-cursor"></i> Plus de détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -141,7 +143,11 @@ Intro Section -
                 </div>
             </div>
         </div>
-        <div class="col-xs-6 col-md-3"  align="center">
+        {% endcomment %}
+
+
+
+        <div class="col-xs-12 col-md-4"  align="center">
             <div class="card" >             
                 <div class="card-header">              
                     <div class="row">
@@ -154,7 +160,7 @@ Intro Section -
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="this_price"> Dès <span class="currency">15 €</span>/mois</div>
+                    <div class="this_price"> Dès <span class="currency">19 €</span>/mois<br/><small style="font-size:12px">Sans engagement</small></div>
                     <div class="card-block plus">
                         <p class="card-text">  <a href="#" data-toggle='modal' data-target='#accompagnement'  class="detail_index"><i class="bi bi-cursor"></i>  Plus de détails <i class="bi bi-question-circle"></i></a>  </p>
                     </div>
@@ -224,7 +230,7 @@ Intro Section -
                             <img src="{% static 'img/menu_autonomie.png' %}"  width="60px"/>
                         </div>
                         <div class="col-sm-8 col-md-9">
-                            <div style="font-size:30px;">  Menu <span class="bebas sub_header">Autonomie</span> </div>
+                            <div style="font-size:30px;">  Menu <span class="sub_header bebas">Autonomie</span> </div>
                             <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
                         </div>
                         <div class="col-sm-1 col-md-1">
@@ -266,7 +272,7 @@ Intro Section -
                         <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>
                     </div>
                     <div class="col-sm-8 col-md-9">
-                        <span style="font-size:30px;">  Menu <span class="bebas sub_header">Adaptatif</span> </span>
+                        <span style="font-size:30px;">  Menu <span class="sub_header bebas">Adaptatif</span> </span>
                         <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -280,7 +286,7 @@ Intro Section -
    
                 <b class="rose">Interface Enfant </b>
 
-                <li>Séquences d’exercices organisés par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
+                <li>Séquences d’exercices organisées par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
                 <li>Niveaux structurés en fonction de ses réussites (il saute des paliers) ou de ses lacunes (il s’entraine  jusqu’à sa réussite !)</li>
                 <li>Tableau de bord</li>
                 <li>Suivi détaillé de sa progression jour par jour</li>
@@ -307,7 +313,7 @@ Intro Section -
                         <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/>
                     </div>
                     <div class="col-sm-8 col-md-9">
-                        <span style="font-size:30px">  Menu <span class="bebas sub_header">Suivi</span>    </span>
+                        <span style="font-size:30px">  Menu <span class="sub_header bebas">Suivi</span>    </span>
                         <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -320,7 +326,8 @@ Intro Section -
             <div class="modal-body" id="indiv_this_exercise" >  
             
                 <div class="alert alert-sacado"  align="center">
-                    <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>  Menu Adaptatif <i class="bi bi-question-circle" id="detail_display_suivi" style="cursor:pointer"></i>
+                    <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>  Menu <span class="bebas">Adaptatif</span> 
+                    <a href="#" id="detail_display_suivi"  class="detail_index" style="font-size:12px;"><i class="bi bi-cursor"></i>  Plus de détails <i class="bi bi-question-circle"></i></a><br/> 
                 </div>
 
                 <div id="show_detail_display_suivi" style="font-size:12px;">
@@ -359,7 +366,7 @@ Intro Section -
                         <img src="{% static 'img/menu_accompagnement.png' %}"  width="60px"/>
                     </div>
                     <div class="col-sm-8 col-md-9">
-                        <div style="font-size:30px;">  Menu <span class="bebas sub_header">Personnalisé</span> </div>
+                        <div style="font-size:30px;">  Menu <span class="sub_header bebas">Personnalisé</span> </div>
                         <em style="font-size:12px;text-align: center" > en illimité (24h/24 et 7j/7) </em>
                     </div>
                     <div class="col-sm-1 col-md-1">
@@ -371,31 +378,33 @@ Intro Section -
             </div>
             <div class="modal-body" id="indiv_this_exercise">
                 <div class="alert alert-sacado"  align="center">
-                    <img src="{% static 'img/menu_suivi.png' %}"  width="60px"/>  Menu Suivi <i class="bi bi-question-circle" id="detail_display_perso" style="cursor:pointer"></i>
+                    <img src="{% static 'img/menu_ia.png' %}"  width="60px"/>  Menu <span class="bebas">Adaptatif</span> 
+                    <a href="#" id="detail_display_perso"  class="detail_index" style="font-size:12px;"><i class="bi bi-cursor"></i>  Plus de détails <i class="bi bi-question-circle"></i></a><br/>
                 </div>
                 <div id="show_detail_display_perso"  style="font-size:12px;">
-                    <b class="rose">Interface Enfant </b>
+   
+                <b class="rose">Interface Enfant </b>
 
-                    <li>Séquences d’exercices organisés par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
+                    <li>Séquences d’exercices organisées par un programme d’intelligence artificiel, qui adapte une section de cours et d’activités en fonction de ses résultats.</li>
                     <li>Niveaux structurés en fonction de ses réussites (il saute des paliers) ou de ses lacunes (il s’entraine  jusqu’à sa réussite !)</li>
                     <li>Tableau de bord</li>
-                    <li>Suivi détaillé de sa progression jour par jour.</li>
+                    <li>Suivi détaillé de sa progression jour par jour</li>
                    <br/>
                     <b class="rose">Interface Parent</b>
 
                     <li>Visualisation des résultats de chacun de vos enfants sur votre tableau de bord</li>
                     <li>Choix de la réception d’un mail à chaque exercice fait (fréquence à choisir)</li>
                     <li>Choix de la réception d’un rapport d’activité (nombre et % de réussite des exercices effectués)</li>
-                    <li>Génération d’un bilan (format pdf).</li>
-                    <h2  align="center"><i class="bi bi-plus"></i></h2>
+                    <li>Génération d’un bilan (format pdf)</li>
 
-                    Votre enfant échange par <b  class="rose">Chat</b> (en direct) ou <b  class="rose">message</b> (réponse sous 24h) avec un <b  class="rose">enseignant</b> sur les difficultés rencontrées. <br/><em><small>Chat du lundi au vendredi 16h à 00h.</small> </em> 
+
+
 
                 </div>
+                <h2  align="center"><i class="bi bi-plus"></i></h2>
+                    Votre enfant échange par <b  class="rose">Chat</b> (en direct) ou <b  class="rose">message</b> (réponse sous 24h) avec un <b  class="rose">enseignant</b> pour débloquer les difficultés rencontrées. <br/><em><small>Chat du lundi au vendredi 16h à 00h.</small> </em> 
 
-
-
-                <h2  align="center"><i class="bi bi-plus"></i></h2>Votre enfant est accompagné par un <b  class="rose">enseignant</b> par <b class="rose">visioconférence</b> selon les créneaux choisis. <br/><em><small>Choix de l'enseignant parmi les enseignants proposés par la Sacado Académie. Paiement à la prestation.</small></em>
+                <h2  align="center"><i class="bi bi-plus"></i></h2>Votre enfant est accompagné par un <b  class="rose">enseignant</b> par <b class="rose">visioconférence</b> selon les créneaux choisis. <br/><em><small>Choix de l'enseignant parmi les enseignants proposés par la Sacado Académie. <b class="rose">2 visios  de 45 min. comprises</b> puis paiement à la prestation supplémentaire.</small></em>
             </div>
         </div>
     </div>
