@@ -942,7 +942,7 @@ class Parcours(ModelWithCode):
         nb_answers_q = student.questions_player.values_list("question",flat=True).distinct().count() 
 
         try :
-            score = int( (nb_answers + nb_answers_q) / (nb_exercises + nb_q) ) * 100
+            score = int( (nb_answers + nb_answers_q) / (nb_exercises + nb_q) * 100 )
             data["nb_total"] = score
 
 
