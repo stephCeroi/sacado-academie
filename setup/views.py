@@ -78,7 +78,7 @@ def delete_and_erase():
 
     users = User.objects.filter(user_type=2,is_superuser=1)
 
-    parcours = Parcours.objects.exclude(teacher__user__in=users)[:100]
+    parcours = Parcours.objects.exclude(teacher__user__in=users)[:500]
 
     for p in parcours :
         try :
