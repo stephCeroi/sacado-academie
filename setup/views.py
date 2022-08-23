@@ -86,12 +86,18 @@ def delete_and_erase():
             p.delete()
         except :
             pass
+    '''
+    parcourses = Parcours.objects.filter(is_sequence = 1).delete()
+
+
+
+
 
 
     
     #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
     '''
-    parcourses = Parcours.objects.filter(author__user__is_superuser=1,is_trash=0,is_sequence = 0)
+    parcourses = Parcours.objects.filter(author__user__is_superuser=1,is_trash=0,is_sequence = 1)
     for parcours in parcourses :
         teacher = parcours.teacher
         students = parcours.students.all()  
@@ -144,7 +150,7 @@ def delete_and_erase():
             relationb = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  200 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
             relationb.students.set(students)
 
- 
+    '''
  
 
 
