@@ -143,7 +143,7 @@ def this_parcours_to_sequences(request,idp):
         relationr.students.set(students)
 
     for c  in customexercises : 
-        relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 2 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+        relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
         relationc.students.set(students)
 
     for course in courses : 
