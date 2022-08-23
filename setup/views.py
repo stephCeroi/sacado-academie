@@ -1101,17 +1101,14 @@ def accept_renewal_adhesion(request) :
 
 
 def attribute_all_documents_to_student_by_level(level,student) :
-    try :
-        teacher_ids = ["0" ,89513,89507,89508,89510, 89511, 46245  , 46242 , 46246  , 46247, 46222, 46243, 46244,"", 130243]
-        teacher_id = teacher_ids[level.id]
 
-        group = Group.objects.filter(level = level, school_id = 50, teacher_id=teacher_id).first()
-        group.students.add(student)
-        groups = [group]
-        test = attribute_all_documents_of_groups_to_a_new_student(groups, student)
-        success = True
-    except :
-        success = False
+    teacher_ids = ["0" ,89513,89507,89508,89510, 89511, 46245  , 46242 , 46246  , 46247, 46222, 46243, 46244,"", 130243]
+    teacher_id = teacher_ids[level.id]
+    group = Group.objects.filter(level = level, school_id = 50, teacher_id=teacher_id).first()
+    group.students.add(student)
+    groups = [group]
+    test = attribute_all_documents_of_groups_to_a_new_student(groups, student)
+    success = True
     return success
 
 
@@ -1147,11 +1144,11 @@ def add_adhesion(request) :
                 u_p_mails.append(u_p.email)
 
             chrono = create_chrono(Facture,"F")
-            success = attribute_all_documents_to_student_by_level(level,student)
-  
+
             adhesion = Adhesion.objects.create(start = today, stop = end, student = student , level_id = level_id  , amount = 0  , formule_id = formule_id ) 
             facture = Facture.objects.create(chrono = chrono, file = "" , user = request.user , date = today     ) 
             facture.adhesions.add(adhesion)
+            success = attribute_all_documents_to_student_by_level(level,student)
 
             msg = "Bonjour,\n\nVous venez de souscrire à une adhésion à la SACADO Académie. \n"
             msg += "Votre référence d'adhésion est "+chrono+".\n\n"
@@ -1279,7 +1276,7 @@ def save_adhesion(request) :
         level = Level.objects.get(name = level)    
         user, created = User.objects.update_or_create(username = username, password = password , user_type = 0 , defaults = { "last_name" : last_name , "first_name" : first_name  , "email" : email , "country_id" : 4 ,  "school_id" : 50 , "closure" : date_end_dateformat })
         student,created_s = Student.objects.update_or_create(user = user, defaults = { "task_post" : 1 , "level" : level })
-        success = attribute_all_documents_to_student_by_level(level,student)
+
 
         folders = Folder.objects.filter(level = level, teacher_id = 2480 , is_trash=0) # 2480 est SacAdoProf
         for f in folders :
@@ -1291,7 +1288,7 @@ def save_adhesion(request) :
  
         adhesion = Adhesion.objects.create( student = student , level = level , start = today , amount = total_price , stop = date_end_dateformat , formule_id  = formule.id , year  = today.year )
         adhesions_in.append(adhesion)
-
+        success = attribute_all_documents_to_student_by_level(level,student)
     i = 0
 
     for p in parents_of_adhesion :
