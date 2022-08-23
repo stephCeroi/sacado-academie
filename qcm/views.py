@@ -116,7 +116,9 @@ def this_parcours_to_sequences(request,idp):
 
     parcours = Parcours.objects.get(pk=idp)
     students = parcours.students.all()
-    teacher = parcours.teacher
+    teacher  = parcours.teacher
+
+    folder   = parcours.folders.get(teacher = teacher , level = parcours.level , subject = parcours.subject)
 
     customexercises = parcours.parcours_customexercises.all()
     courses         = parcours.course.all()  
@@ -134,6 +136,7 @@ def this_parcours_to_sequences(request,idp):
     parcours.code = str(uuid.uuid4())[:8]
     parcours.is_sequence = 1
     parcours.save()
+    folder.parcours.add(parcours)    
     # fin du clone
     for r  in relationships : 
         relationr = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.id  , type_id = 0 , ranking =  200 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
@@ -158,6 +161,8 @@ def this_parcours_to_sequences(request,idp):
     for bibliotex in bibliotexs : 
         relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  200 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationb.students.set(students)
+
+
 
     return redirect('show_parcours' , 0 , idp  ) 
 
