@@ -76,30 +76,8 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 def delete_and_erase():
 
-    Exercise.objects.exclude(supportfile__author__user__is_superuser=1).delete()
-    Supportfile.objects.exclude(author__user__is_superuser=1).delete()
 
-    User.objects.exclude(is_superuser=1).delete()
-
-    '''
-    parcours = Parcours.objects.exclude(teacher__user__in=users)[:500]
-
-    for p in parcours :
-        try :
-            p.delete()
-        except :
-            pass
-
-    parcourses = Parcours.objects.filter(is_sequence = 1)
-    for p in parcourses :
-        try :
-            p.delete()
-        except:
-            pass
-
-    #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
-
-    folders = Folder.objects.filter(author_id=2480,subject_id=1, level_id=6)
+    folders = Folder.objects.filter(author_id=2480,subject_id=1)
 
     for folder in folders :
         groups     = folder.groups.all()
@@ -156,7 +134,7 @@ def delete_and_erase():
                 relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  6 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
                 relationb.students.set(students)
 
-    '''
+
 
 
 
