@@ -96,7 +96,7 @@ def delete_and_erase():
     '''
     #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
 
-    parcourses = Parcours.objects.filter(author_id=2480,is_trash=0,is_sequence = 0,level_id=10)[10:12]
+    parcourses = Parcours.objects.filter(author_id=2480,is_trash=0,is_sequence = 0,level_id=7)
 
 
     for parcours in parcourses :
