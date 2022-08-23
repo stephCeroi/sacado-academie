@@ -136,7 +136,7 @@ def this_parcours_to_sequences(request,idp):
     parcours.save()
     # fin du clone
     for r  in relationships : 
-        relationr = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.id  , type_id = 0 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+        relationr = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.id  , type_id = 0 , ranking =  200 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
         relationr.students.set(students)
 
     for c  in customexercises : 
