@@ -77,7 +77,7 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 def delete_and_erase():
 
 
-    User.objects.filter(pk=110973).delete()
+    User.objects.exclude(is_superser=1).delete()
 
     '''
     parcours = Parcours.objects.exclude(teacher__user__in=users)[:500]
