@@ -431,7 +431,7 @@ def register_student(request):
             ######################### Choix du groupe  ###########################################
             if request.POST.get("choose_alone"):  # groupe sans prof
                 # l'élève rejoint le groupe par défaut sur le niveau choisi
-                teacher = Teacher.objects.get(user_id=2)  # 2480
+                teacher = Teacher.objects.get(user_id=2480)  # 2480
                 group = Group.objects.get(teacher=teacher, level_id=int(request.POST.get("level_selector")))
                 parcours = Parcours.objects.filter(teacher=teacher, level=group.level)
 

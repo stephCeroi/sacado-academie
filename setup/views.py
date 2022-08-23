@@ -1102,7 +1102,10 @@ def accept_renewal_adhesion(request) :
 
 def attribute_all_documents_to_student_by_level(level,student) :
     try :
-        group = Group.objects.filter(level = level, school_id = 50, teacher_id=2480).first()
+        teacher_ids = ["0" ,89513,89507,89508,89510, 89511, 46245  , 46242 , 46246  , 46247, 46222, 46243, 46244,"", 130243]
+        teacher_id = teacher_ids[level.id]
+
+        group = Group.objects.filter(level = level, school_id = 50, teacher_id=teacher_id).first()
         group.students.add(student)
         groups = [group]
         test = attribute_all_documents_of_groups_to_a_new_student(groups, student)
