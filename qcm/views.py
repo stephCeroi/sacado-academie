@@ -116,14 +116,14 @@ def this_parcours_to_sequences(request,idp):
 
     parcours = Parcours.objects.get(pk=idp)
     students = parcours.students.all()
-    parcours.teacher = teacher
-    
+    teacher = parcours.teacher
+
     customexercises = parcours.parcours_customexercises.all()
     courses         = parcours.course.all()  
     quizzes         = parcours.quizz.all()
     flashpacks      = parcours.flashpacks.all()
     bibliotexs      = parcours.bibliotexs.all()
-
+    relationships   = parcours.parcours_relationship.all()
     # clone      
     parcours.pk = None
     parcours.teacher = teacher
@@ -135,6 +135,10 @@ def this_parcours_to_sequences(request,idp):
     parcours.is_sequence = 1
     parcours.save()
     # fin du clone
+    for r  in relationships : 
+        relationr = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.id  , type_id = 0 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+        relationr.students.set(students)
+
     for c  in customexercises : 
         relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 2 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
         relationc.students.set(students)
