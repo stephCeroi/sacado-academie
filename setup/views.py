@@ -86,24 +86,28 @@ def delete_and_erase():
             p.delete()
         except :
             pass
-    '''
+
     parcourses = Parcours.objects.filter(is_sequence = 1)
     for p in parcourses :
         try :
             p.delete()
         except:
             pass
-
-
-
-
-
-
-    
-    #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
     '''
-    parcourses = Parcours.objects.filter(author__user__is_superuser=1,is_trash=0,is_sequence = 1)
+    #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
+
+    parcourses = Parcours.objects.filter(author_id=2480,is_trash=0,is_sequence = 0,level_id=10)[10:12]
+
+
     for parcours in parcourses :
+        folders = parcours.folders.all()
+        relationships  = parcours.parcours_relationship.all()
+        customexercises  = parcours.parcours_customexercises.all()
+        courses    = parcours.course.all()        
+        quizzes    = parcours.quizz.all()
+        flashpacks  = parcours.flashpacks.all()
+        bibliotexs = parcours.bibliotexs.all()
+
         teacher = parcours.teacher
         students = parcours.students.all()  
         # clone      
@@ -115,10 +119,10 @@ def delete_and_erase():
         parcours.is_favorite = 1
         parcours.code = str(uuid.uuid4())[:8]
         parcours.is_sequence = 1
-        pn = parcours.save()
+        parcours.save()
         # fin du clone
 
-        folders = parcours.folders.all()
+
         for f  in folders :
             groups = f.groups.all() 
             f.pk = None
@@ -127,35 +131,36 @@ def delete_and_erase():
             f.groups.set(groups)
             f.students.set(students)
 
+        for r  in relationships : 
+            relations = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.exercise.id  , type_id = 0 , ranking =  2 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
+            relations.students.set(students)
 
 
-        customexercises  = parcours.parcours_customexercises.all()
         for c  in customexercises : 
-            relationc = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = c.id  , type_id = 2 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+            relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  3 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
             relationc.students.set(students)
 
 
-        courses    = parcours.course.all()
+
         for course in courses : 
-            relation = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  200 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
+            relation = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  1 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
             relation.students.set(students)
         
-        quizzes    = parcours.quizz.all()
+
         for quizz in quizzes : 
-            relationq = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  200 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
+            relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  4 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
             relationq.students.set(students)
 
-        flashpacks  = parcours.flashpacks.all()
+
         for flashpack in flashpacks : 
-            relationf = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  200 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+            relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  5 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
             relationf.students.set(students)
 
-        bibliotexs = parcours.bibliotexs.all()
+
         for bibliotex in bibliotexs : 
-            relationb = Relationship.objects.create(parcours = pn , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  200 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+            relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  6 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
             relationb.students.set(students)
 
-    '''
  
 
 
