@@ -77,7 +77,7 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 def delete_and_erase():
 
 
-    folders = Folder.objects.filter(author_id=2480,subject_id=1,level_id=12)
+    folders = Folder.objects.filter(author_id=2480,subject_id=1,level_id=11)
 
     for folder in folders :
         groups     = folder.groups.all()
@@ -152,7 +152,7 @@ def end_of_contract() :
 
 def index(request):
 
-    delete_and_erase()
+    #delete_and_erase()
 
     if request.user.is_authenticated :
         index_tdb = True  # Permet l'affichage des tutos Youtube dans le dashboard
