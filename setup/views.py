@@ -77,7 +77,7 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 def delete_and_erase():
 
 
-    folders = Folder.objects.filter(author_id=2480,subject_id=1)
+    folders = Folder.objects.filter(author_id=2480,subject_id=1,level_id=12)
 
     for folder in folders :
         groups     = folder.groups.all()
