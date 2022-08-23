@@ -164,7 +164,7 @@ def this_parcours_to_sequences(request,idp):
 
 
 
-    return redirect('show_parcours' , 0 , idp  ) 
+    return redirect('list_sub_parcours_group' , 0 , folder.id  ) 
 
 
 
