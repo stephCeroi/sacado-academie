@@ -116,36 +116,44 @@ def this_parcours_to_sequences(request,idp):
 
     parcours = Parcours.objects.get(pk=idp)
     students = parcours.students.all()
+    parcours.teacher = teacher
+    
+    customexercises = parcours.parcours_customexercises.all()
+    courses         = parcours.course.all()  
+    quizzes         = parcours.quizz.all()
+    flashpacks      = parcours.flashpacks.all()
+    bibliotexs      = parcours.bibliotexs.all()
 
-    customexercises    = parcours.parcours_customexercises.all()
+    # clone      
+    parcours.pk = None
+    parcours.teacher = teacher
+    parcours.is_publish = 1
+    parcours.is_archive = 0
+    parcours.is_share = 0
+    parcours.is_favorite = 1
+    parcours.code = str(uuid.uuid4())[:8]
+    parcours.is_sequence = 1
+    parcours.save()
+    # fin du clone
     for c  in customexercises : 
         relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 2 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
         relationc.students.set(students)
-
-    courses    = parcours.course.all()    
 
     for course in courses : 
         relation = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  200 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
         relation.students.set(students)
     
-    quizzes    = parcours.quizz.all()
     for quizz in quizzes : 
         relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  200 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationq.students.set(students)
 
-    flashpacks  = parcours.flashpacks.all()
     for flashpack in flashpacks : 
         relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  200 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationf.students.set(students)
 
-    bibliotexs = parcours.bibliotexs.all()
     for bibliotex in bibliotexs : 
         relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  200 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationb.students.set(students)
-
-
-    Parcours.objects.filter(pk=idp).update(is_sequence=1)
-
 
     return redirect('show_parcours' , 0 , idp  ) 
 
