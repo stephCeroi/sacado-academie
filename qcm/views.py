@@ -118,29 +118,26 @@ def this_parcours_to_sequences(request,idp):
     students = parcours.students.all()
     teacher  = parcours.teacher
 
-    folder   = parcours.folders.get(teacher = teacher , level = parcours.level , subject = parcours.subject)
+    # folder   = parcours.folders.get(teacher = teacher , level = parcours.level , subject = parcours.subject)
 
     customexercises = parcours.parcours_customexercises.all()
     courses         = parcours.course.all()  
     quizzes         = parcours.quizz.all()
     flashpacks      = parcours.flashpacks.all()
     bibliotexs      = parcours.bibliotexs.all()
-    relationships   = parcours.parcours_relationship.all()
+
     # clone      
-    parcours.pk = None
-    parcours.teacher = teacher
-    parcours.is_publish = 1
-    parcours.is_archive = 0
-    parcours.is_share = 0
-    parcours.is_favorite = 1
-    parcours.code = str(uuid.uuid4())[:8]
+    # parcours.pk = None
+    # parcours.teacher = teacher
+    # parcours.is_publish = 1
+    # parcours.is_archive = 0
+    # parcours.is_share = 0
+    # parcours.is_favorite = 1
+    # parcours.code = str(uuid.uuid4())[:8]
     parcours.is_sequence = 1
     parcours.save()
-    folder.parcours.add(parcours)    
+    # folder.parcours.add(parcours)    
     # fin du clone
-    for r  in relationships : 
-        relationr = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.id  , type_id = 0 , ranking =  200 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
-        relationr.students.set(students)
 
     for c  in customexercises : 
         relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
@@ -164,7 +161,7 @@ def this_parcours_to_sequences(request,idp):
 
 
 
-    return redirect('list_sub_parcours_group' , 0 , folder.id  ) 
+    return redirect('show_parcours' , 0 , parcours.id  ) 
 
 
 
