@@ -76,8 +76,32 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 def delete_and_erase():
 
+    groups = Group.objects.filter(subject_id=1,teacher__user__is_superuser=1)
+    for g in groups :
 
-    folders = Folder.objects.filter(author_id=2480,subject_id=1,level_id=11)
+        password = make_password("sacado2020") 
+        user = User.objects.create(first_name= "Equipe " ,  last_name="Academie " + g.level_id , username= "profil_e-test_" + str(g.level_id)+"_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
+        student = student.objects.create(user=user, level=g.level)
+        g.students.add(student)
+ 
+ 
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+    """
+    folders = Folder.objects.filter(subject_id=1,author__user_id=2480)
+
+
 
     for folder in folders :
         groups     = folder.groups.all()
@@ -136,7 +160,7 @@ def delete_and_erase():
 
 
 
-
+    """
 
 def end_of_contract() :
 
