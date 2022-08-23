@@ -76,9 +76,10 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 def delete_and_erase():
 
-    '''
-    users = User.objects.filter(user_type=2,is_superuser=1)
 
+    User.objects.filter(pk=110973).delete()
+
+    '''
     parcours = Parcours.objects.exclude(teacher__user__in=users)[:500]
 
     for p in parcours :
@@ -93,73 +94,65 @@ def delete_and_erase():
             p.delete()
         except:
             pass
-    '''
+
     #users = User.objects.filter(user_type=2).exclude(is_superuser=1)
 
-    parcourses = Parcours.objects.filter(author_id=2480,is_trash=0,is_sequence = 0,level_id=7)
-    '''
+    folders = Folder.objects.filter(author_id=2480,subject_id=1, level_id=6)
 
-    for parcours in parcourses :
-        folders = parcours.folders.all()
-        relationships  = parcours.parcours_relationship.all()
-        customexercises  = parcours.parcours_customexercises.all()
-        courses    = parcours.course.all()        
-        quizzes    = parcours.quizz.all()
-        flashpacks  = parcours.flashpacks.all()
-        bibliotexs = parcours.bibliotexs.all()
+    for folder in folders :
+        groups     = folder.groups.all()
+        students   = folder.students.all()  
+        parcourses = folder.parcours.all()
+        for parcours in parcourses :
 
-        teacher = parcours.teacher
-        students = parcours.students.all()  
-        # clone      
-        parcours.pk = None
-        parcours.teacher = teacher
-        parcours.is_publish = 1
-        parcours.is_archive = 0
-        parcours.is_share = 0
-        parcours.is_favorite = 1
-        parcours.code = str(uuid.uuid4())[:8]
-        parcours.is_sequence = 1
-        parcours.save()
-        # fin du clone
+            groups   = parcours.groups.all()
+            students = parcours.students.all() 
+            teacher  = parcours.teacher
 
+            relationships   = parcours.parcours_relationship.all()
+            customexercises = parcours.parcours_customexercises.all()
+            courses         = parcours.course.all()        
+            quizzes         = parcours.quizz.all()
+            flashpacks      = parcours.flashpacks.all()
+            bibliotexs      = parcours.bibliotexs.all()
 
-        for f  in folders :
-            groups = f.groups.all() 
-            f.pk = None
-            f.save()
-            f.parcours.add(parcours)
-            f.groups.set(groups)
-            f.students.set(students)
+            # clone      
+            parcours.pk = None
+            parcours.teacher = teacher
+            parcours.is_publish = 1
+            parcours.is_archive = 0
+            parcours.is_share = 0
+            parcours.is_favorite = 1
+            parcours.code = str(uuid.uuid4())[:8]
+            parcours.is_sequence = 1
+            parcours.save()
+            # fin du clone
 
-        for r  in relationships : 
-            relations = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.exercise.id  , type_id = 0 , ranking =  2 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
-            relations.students.set(students)
+            for r  in relationships : 
+                relations = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.exercise.id  , type_id = 0 , ranking =  2 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
+                relations.students.set(students)
 
+            for c  in customexercises : 
+                relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  3 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+                relationc.students.set(students)
 
-        for c  in customexercises : 
-            relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  3 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
-            relationc.students.set(students)
+            for course in courses : 
+                relation = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  1 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
+                relation.students.set(students)
+            
 
-
-
-        for course in courses : 
-            relation = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  1 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
-            relation.students.set(students)
-        
-
-        for quizz in quizzes : 
-            relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  4 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
-            relationq.students.set(students)
+            for quizz in quizzes : 
+                relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  4 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
+                relationq.students.set(students)
 
 
-        for flashpack in flashpacks : 
-            relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  5 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
-            relationf.students.set(students)
+            for flashpack in flashpacks : 
+                relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  5 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+                relationf.students.set(students)
 
-
-        for bibliotex in bibliotexs : 
-            relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  6 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
-            relationb.students.set(students)
+            for bibliotex in bibliotexs : 
+                relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  6 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+                relationb.students.set(students)
 
     '''
 
@@ -1033,8 +1026,6 @@ def save_renewal_adhesion(request) :
 
         except :	
             pass
-
-    print(students)
 
     somme = "{:.2f}".format(somme).replace(".",",")
     context = { 'somme' : somme , 'students' : students }
