@@ -87,7 +87,12 @@ def delete_and_erase():
         except :
             pass
     '''
-    parcourses = Parcours.objects.filter(is_sequence = 1).delete()
+    parcourses = Parcours.objects.filter(is_sequence = 1)
+    for p in parcourses :
+        try :
+            p.delete()
+        except:
+            pass
 
 
 
