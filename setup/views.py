@@ -80,7 +80,7 @@ def delete_and_erase():
     for g in groups :
 
         password = make_password("sacado2020") 
-        user     = User.objects.create(first_name= "Equipe " ,  last_name="Academie " + g.level_id , username= "profil_e-test_" + str(g.level_id)+"_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
+        user     = User.objects.create(first_name= "Equipe " ,  last_name="Academie " + str(g.level_id) , username= "profil_e-test_" + str(g.level_id)+"_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
         student  = student.objects.create(user=user, level=g.level)
         g.students.add(student)
  
