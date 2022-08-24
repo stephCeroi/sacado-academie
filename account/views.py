@@ -431,13 +431,13 @@ def register_student(request):
             ######################### Choix du groupe  ###########################################
             if request.POST.get("choose_alone"):  # groupe sans prof
                 # l'élève rejoint le groupe par défaut sur le niveau choisi
-                teacher = Teacher.objects.get(user_id=2480)  # 2480
-                group = Group.objects.get(teacher=teacher, level_id=int(request.POST.get("level_selector")))
+                teacher = request.user.teacher  
+                group = Group.objects.get(teacher=teacher, level_id=int(request.POST.get("level_selector")), lock = 0 , formule_id=1)
                 parcours = Parcours.objects.filter(teacher=teacher, level=group.level)
 
             else:  # groupe du prof  de l'élève
                 code_group = request.POST.get("group")
-                if Group.objects.filter(code=code_group, lock = 0 ).exists():
+                if Group.objects.filter(teacher=teacher, code=code_group, lock = 0 ).exists():
                     group = Group.objects.get(code=code_group)
                     parcours = Parcours.objects.filter(teacher=group.teacher, level=group.level,is_trash=0)
                 else :
@@ -1899,6 +1899,7 @@ def init_password_teacher(request, id ):
     teacher = Teacher.objects.get(pk=id)
     password =  str(uuid.uuid4())[:8]
     teacher.user.password = make_password(password)
+    User.objects.filter(pk= teacher.user_id).update(password = password)
  
     msg = "Bonjour, \n\n Votre nouveau mot de passe : " + password + "\nest attribué. Il est généré automatiquement.\n\n Vous pouvez le modifer via votre profil. Ceci est un mail automatique, ne pas répondre.\n\nL'équipe SACADO."
     
