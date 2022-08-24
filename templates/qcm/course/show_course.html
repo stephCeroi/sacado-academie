@@ -93,8 +93,7 @@
  
                          
                    
-              
-                    <a href="{% url 'delete_course' course.id  parcours.id %}"  style="font-size: 14px;" class="pull-right"  onclick="return TestDelete('ce cours')">Supprimer</a> 
+    
            | <a href="{% url 'update_course' course.id parcours.id %}" style="font-size: 14px; margin-right:10px;" class="pull-right">Modifier</a> 
 
                     <a href="#"  data-toggle='modal' data-target='#view_course'  data-course_id="{{ course.id }}" data-parcours_id="{{ parcours.id }}"   style="font-size: 14px; margin-right:10px;" class="pull-right course_viewer">Vidéoprojeter ce cours</a>
