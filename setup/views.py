@@ -74,81 +74,6 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 
 
-def delete_and_erase():
-
-    groups = Group.objects.filter(subject_id=1,teacher__user__is_superuser=1)
-    for g in groups :
-
-        password = make_password("sacado2020") 
-        user     = User.objects.create(first_name= "Equipe " ,  last_name="Academie " + str(g.level_id) , username= "profil_e-test_" + str(g.level_id)+"_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
-        student  = Student.objects.create(user=user, level=g.level)
-        g.students.add(student)
- 
-
-    """
-    folders = Folder.objects.filter(subject_id=1,author__user_id=2480)
-
-
-
-    for folder in folders :
-        groups     = folder.groups.all()
-        students   = folder.students.all()  
-        parcourses = folder.parcours.all()
-        for parcours in parcourses :
-
-            groups   = parcours.groups.all()
-            students = parcours.students.all() 
-            teacher  = parcours.teacher
-
-            relationships   = parcours.parcours_relationship.all()
-            customexercises = parcours.parcours_customexercises.all()
-            courses         = parcours.course.all()        
-            quizzes         = parcours.quizz.all()
-            flashpacks      = parcours.flashpacks.all()
-            bibliotexs      = parcours.bibliotexs.all()
-
-            # clone      
-            parcours.pk = None
-            parcours.teacher = teacher
-            parcours.is_publish = 1
-            parcours.is_archive = 0
-            parcours.is_share = 0
-            parcours.is_favorite = 1
-            parcours.code = str(uuid.uuid4())[:8]
-            parcours.is_sequence = 1
-            parcours.save()
-            # fin du clone
-
-            for r  in relationships : 
-                relations = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.exercise.id  , type_id = 0 , ranking =  2 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
-                relations.students.set(students)
-
-            for c  in customexercises : 
-                relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  3 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
-                relationc.students.set(students)
-
-            for course in courses : 
-                relation = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  1 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
-                relation.students.set(students)
-            
-
-            for quizz in quizzes : 
-                relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  4 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
-                relationq.students.set(students)
-
-
-            for flashpack in flashpacks : 
-                relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  5 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
-                relationf.students.set(students)
-
-            for bibliotex in bibliotexs : 
-                relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  6 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
-                relationb.students.set(students)
-
-
-
-    """
-
 def end_of_contract() :
 
     data = {}
@@ -163,7 +88,7 @@ def end_of_contract() :
 
 def index(request):
 
-    #delete_and_erase()
+ 
 
     if request.user.is_authenticated :
         index_tdb = True  # Permet l'affichage des tutos Youtube dans le dashboard

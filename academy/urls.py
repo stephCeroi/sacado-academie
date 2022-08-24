@@ -25,6 +25,28 @@ urlpatterns = [
 
     path('contact_academy', contact_academy , name='contact_academy'),
 
+
+
+
+    path('gestion_academy_dashboard', gestion_academy_dashboard , name='gestion_academy_dashboard'),
+    path('delete_groups', delete_groups , name='delete_groups'), 
+    path('delete_parcours', delete_parcours , name='delete_parcours'),
+    path('delete_folders', delete_folders , name='delete_folders'),
+    path('delete_courses', delete_courses , name='delete_courses'),
+    path('delete_relations', delete_relations , name='delete_relations'),
+    path('delete_teachers', delete_teachers , name='delete_teachers'),
+    path('delete_users', delete_users , name='delete_users'),
+
+    
+    path('create_academy', create_academy , name='create_academy'), 
+
+
+
+
+
+
+
+
     
 ]
 

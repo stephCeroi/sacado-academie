@@ -83,7 +83,7 @@ class Supportfile(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True,   verbose_name="Titre")
     knowledge = models.ForeignKey(Knowledge, on_delete=models.PROTECT,  related_name='supportfiles', verbose_name="Savoir faire associé")
     annoncement = RichTextUploadingField( verbose_name="Précision sur le savoir faire")
-    author = models.ForeignKey(Teacher, related_name="supportfiles", on_delete=models.PROTECT, editable=False)
+    author = models.ForeignKey(Teacher, related_name="supportfiles", on_delete=models.CASCADE, editable=False)
 
  
     code = models.CharField(max_length=100, unique=True, blank=True, default='', verbose_name="Code*")
@@ -168,7 +168,7 @@ class Exercise(models.Model):
     knowledge   = models.ForeignKey(Knowledge, on_delete=models.PROTECT, related_name='exercises',
                                   verbose_name="Savoir faire associé - Titre")
     supportfile = models.ForeignKey(Supportfile, blank=True, default=1, related_name="exercises",
-                                    on_delete=models.PROTECT, verbose_name="Fichier Géogebra")
+                                    on_delete=models.CASCADE, verbose_name="Fichier Géogebra")
     ranking     = models.PositiveIntegerField(  default=0,  blank=True, null=True, editable=False)
     audiofile   = models.FileField(upload_to=audio_directory_path, verbose_name="Fichier Audio", blank=True, default="" )
 
@@ -2369,7 +2369,7 @@ class Demand(models.Model):
     demand = models.TextField(blank=True, verbose_name="Votre demande explicitée*")
     date_created = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
     file = models.FileField(upload_to= directory_path, verbose_name="Exercice souhaité", default="", null = True, blank= True) 
-    teacher = models.ForeignKey(Teacher, related_name = "demand", on_delete=models.PROTECT, editable=False, default="" )    
+    teacher = models.ForeignKey(Teacher, related_name = "demand", on_delete=models.CASCADE, editable=False, default="" )    
     done = models.BooleanField( default=0,  verbose_name="Fait", null = True, blank= True) 
     code = models.CharField(max_length=10, default='',  blank=True, null=True,  verbose_name="id de l'exercice créé")    
 
@@ -2384,7 +2384,7 @@ class Demand(models.Model):
 ########################################################################################################################################### 
 class Mastering(models.Model):
 
-    relationship = models.ForeignKey(Relationship, related_name="relationship_mastering", on_delete=models.PROTECT, verbose_name="Exercice")
+    relationship = models.ForeignKey(Relationship, related_name="relationship_mastering", on_delete=models.CASCADE, verbose_name="Exercice")
     consigne = models.CharField(max_length=255, default='',  blank=True,   verbose_name="Consigne")   
     video = models.CharField(max_length=50, default='',  blank=True,   verbose_name="code de vidéo Youtube")   
     mediation = models.FileField(upload_to= directory_path_mastering, verbose_name="Fichier", default="", null = True, blank= True) 
@@ -2393,7 +2393,7 @@ class Mastering(models.Model):
 
     scale = models.PositiveIntegerField(default=3, editable= False) 
     ranking = models.PositiveIntegerField(default=0,  editable= False) 
-    exercise = models.ForeignKey(Exercise, related_name = "exercise", on_delete=models.PROTECT, editable=False, default="", null = True, blank= True )   
+    exercise = models.ForeignKey(Exercise, related_name = "exercise", on_delete=models.CASCADE, editable=False, default="", null = True, blank= True )   
     courses = models.ManyToManyField(Course, blank=True, related_name='courses_mastering')
     
     def __str__(self):
@@ -2408,7 +2408,7 @@ class Mastering(models.Model):
 
 class Mastering_done(models.Model):
 
-    mastering = models.ForeignKey(Mastering, related_name="mastering_done", editable=False, on_delete=models.PROTECT, verbose_name="Exercice")
+    mastering = models.ForeignKey(Mastering, related_name="mastering_done", editable=False, on_delete=models.CASCADE, verbose_name="Exercice")
     student = models.ForeignKey(Student, on_delete=models.CASCADE, editable=False, related_name='students_mastering_done')
     writing = RichTextUploadingField( blank=True, verbose_name="Texte*") 
     
@@ -2448,7 +2448,7 @@ class Masteringcustom(models.Model):
 
 class Masteringcustom_done(models.Model):
 
-    mastering = models.ForeignKey(Masteringcustom, related_name="mastering_custom_done", editable=False, on_delete=models.PROTECT, verbose_name="Exercice")
+    mastering = models.ForeignKey(Masteringcustom, related_name="mastering_custom_done", editable=False, on_delete=models.CASCADE, verbose_name="Exercice")
     student = models.ForeignKey(Student, on_delete=models.CASCADE, editable=False, related_name='students_mastering_custom_done')
     writing = RichTextUploadingField( blank=True, verbose_name="Texte*") 
     

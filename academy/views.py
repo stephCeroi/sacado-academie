@@ -9,13 +9,14 @@ from django.forms.models import modelformset_factory
 from django.forms import inlineformset_factory
 from django.contrib.auth.decorators import  permission_required,user_passes_test, login_required
 from django.http import JsonResponse 
-from account.models import  Adhesion, Student, Resultknowledge , Parent
-from qcm.models import  Resultexercise, Studentanswer
+from account.models import  Adhesion, Student, Resultknowledge , Parent , Teacher , User
+from qcm.models import  Resultexercise, Studentanswer , Supportfile
 from association.models import   Activeyear
 from academy.models import  Autotest 
 from academy.forms import  AutotestForm
 from socle.models import  Level
-from qcm.models import  Studentanswer
+from group.models import  Group
+from qcm.models import  Studentanswer , Relationship , Parcours, Course, Folder , Mastering
 from bibliotex.models import  Exotex
 from django.template.loader import render_to_string
 from django.contrib import messages
@@ -48,6 +49,187 @@ import pytz
 import csv
 import html
 from general_fonctions import *
+
+
+
+#---------------------------------------------------------------------------------------------------------
+#   GESTION DE L'ACADEMIE 
+#---------------------------------------------------------------------------------------------------------
+def get_det():
+    nbg = Group.objects.filter(subject_id=1).exclude(teacher__user_id=2480).exclude(teacher__user_id=2560).count()
+    nbc = Course.objects.filter(subject_id=1).exclude(teacher__user_id=2480).exclude(teacher__user_id=2560).count()
+    nbp = Parcours.objects.filter(subject_id=1).exclude(teacher__user_id=2480).exclude(teacher__user_id=2560).count()
+    nbf = Folder.objects.filter(subject_id=1).exclude(teacher__user_id=2480).exclude(teacher__user_id=2560).count()
+
+    nbr = Relationship.objects.exclude(parcours__teacher__user_id=2480).exclude(parcours__teacher__user_id=2560).count()
+
+    nbgs = Group.objects.filter(subject_id=1).filter(teacher__user_id=2480).count()
+    nbcs = Course.objects.filter(subject_id=1).filter(teacher__user_id=2480).count()
+    nbps = Parcours.objects.filter(subject_id=1).filter(teacher__user_id=2480).count()
+    nbfs = Folder.objects.filter(subject_id=1).filter(teacher__user_id=2480).count()
+    nbrs = Relationship.objects.filter(parcours__teacher__user_id=2480).exclude(parcours__teacher__user_id=2560).count()
+
+    return nbg, nbc , nbp , nbf , nbgs, nbcs , nbps , nbfs , nbr , nbrs
+
+
+
+
+def gestion_academy_dashboard(request):
+    teachers = Teacher.objects.order_by("user__last_name")
+    nbt = teachers.count()
+    nbu = User.objects.order_by("user__last_name").count()
+    nbg, nbc , nbp , nbf , nbgs, nbcs , nbps , nbfs , nbr , nbrs = get_det()
+    context = { 'nbg' : nbg ,  'nbc' :nbc , 'nbp' : nbp , 'nbf' : nbf , 'nbgs' : nbgs ,  'nbcs' : nbcs , 'nbps' : nbps , 'nbfs' : nbfs , 'nbr' : nbr , 'nbrs' : nbrs , 'teachers' : teachers, 'nbt' : nbt, 'nbu' : nbu }
+
+    return render(request, "academy/dashboard_academy.html" , context)
+
+
+
+def delete_groups(request):
+
+    Group.objects.filter(subject_id=1).exclude(teacher__user_id=2480).delete()
+
+    return redirect("gestion_academy_dashboard" )
+ 
+
+def delete_parcours(request):
+
+    parcourses = Parcours.objects.filter(subject_id=1).exclude(teacher__user_id=2480).exclude(teacher__user_id=2560)
+    for p in parcourses :
+        Mastering.objects.filter(relationship__parcours=p).delete()
+        Relationship.objects.filter(parcours=p).delete()
+        p.delete()
+    return redirect("gestion_academy_dashboard" )
+
+
+def delete_folders(request):
+
+    Folder.objects.filter(subject_id=1).exclude(teacher__user_id=2480).delete()
+    return redirect("gestion_academy_dashboard" )
+
+def delete_courses(request):
+
+    Course.objects.filter(subject_id=1).exclude(teacher__user_id=2480).delete()
+    return redirect("gestion_academy_dashboard" )
+
+
+
+def delete_teachers(request):
+    Teacher.objects.exclude(user__is_superuser=1).delete()
+
+    return redirect("gestion_academy_dashboard" )
+
+
+def delete_users(request):
+    User.objects.exclude(is_superuser=1).delete()
+    return redirect("gestion_academy_dashboard" )
+
+def delete_relations(request):
+    parcourses = Parcours.objects.filter(subject_id=1).exclude(teacher__user_id=2480) 
+    Relationship.objects.filter(parcours__in=parcourses).delete()
+    return redirect("gestion_academy_dashboard" )
+  
+def create_academy(request):
+
+ 
+    context = {   }
+    return render(request, "academy/dashboard_academy.html" , context)
+
+
+
+
+
+
+
+def delete_and_erase():
+
+    groups = Group.objects.filter(subject_id=1,teacher__user__is_superuser=1)
+    for g in groups :
+
+        password = make_password("sacado2020") 
+        user     = User.objects.create(first_name= "Equipe " ,  last_name="Academie " + str(g.level_id) , username= "profil_e-test_" + str(g.level_id)+"_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
+        student  = Student.objects.create(user=user, level=g.level)
+        g.students.add(student)
+ 
+
+    """
+    folders = Folder.objects.filter(subject_id=1,author__user_id=2480)
+
+
+
+    for folder in folders :
+        groups     = folder.groups.all()
+        students   = folder.students.all()  
+        parcourses = folder.parcours.all()
+        for parcours in parcourses :
+
+            groups   = parcours.groups.all()
+            students = parcours.students.all() 
+            teacher  = parcours.teacher
+
+            relationships   = parcours.parcours_relationship.all()
+            customexercises = parcours.parcours_customexercises.all()
+            courses         = parcours.course.all()        
+            quizzes         = parcours.quizz.all()
+            flashpacks      = parcours.flashpacks.all()
+            bibliotexs      = parcours.bibliotexs.all()
+
+            # clone      
+            parcours.pk = None
+            parcours.teacher = teacher
+            parcours.is_publish = 1
+            parcours.is_archive = 0
+            parcours.is_share = 0
+            parcours.is_favorite = 1
+            parcours.code = str(uuid.uuid4())[:8]
+            parcours.is_sequence = 1
+            parcours.save()
+            # fin du clone
+
+            for r  in relationships : 
+                relations = Relationship.objects.create(parcours = parcours , exercise_id = r.exercise.id , document_id = r.exercise.id  , type_id = 0 , ranking =  2 , is_publish= r.is_publish  , start= None , date_limit= None, duration= r.duration, situation= r.situation ) 
+                relations.students.set(students)
+
+            for c  in customexercises : 
+                relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  3 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+                relationc.students.set(students)
+
+            for course in courses : 
+                relation = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = course.id  , type_id = 2 , ranking =  1 , is_publish= course.is_publish  , start= None , date_limit= None, duration= course.duration, situation= 0 ) 
+                relation.students.set(students)
+            
+
+            for quizz in quizzes : 
+                relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  4 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
+                relationq.students.set(students)
+
+
+            for flashpack in flashpacks : 
+                relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  5 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+                relationf.students.set(students)
+
+            for bibliotex in bibliotexs : 
+                relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  6 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+                relationb.students.set(students)
+
+
+
+    """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -158,7 +340,7 @@ def details_adhesion(request,level_id):
 
     rq_user = request.user
 
-    print("ixi") 
+ 
 
     if rq_user.is_board :
 
@@ -166,8 +348,7 @@ def details_adhesion(request,level_id):
         ay    = Activeyear.objects.get(is_active=1).year
 
         adhesions = Adhesion.objects.filter(level= level,  year = ay ).order_by("-start")
-
-        print(  adhesions  )
+ 
 
         context = { 'adhesions' : adhesions ,  'level' : level,   'historic' : False }
 

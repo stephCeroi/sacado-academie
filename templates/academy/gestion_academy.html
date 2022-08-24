@@ -42,12 +42,9 @@
             <a href="{% url 'activeyears'  %}" > Années d'exercice </a>   
         </li>
   
-        <li class="divider"></li>    
-        {% if request.user.is_superuser %}
-        <li>
-            <a href="{% url 'gestion_academy_dashboard'  %}" > Ré initialisation Académie </a>   
-        </li>   
-        {% endif %}
+        
+ 
+
 
     </ul>
 </li>

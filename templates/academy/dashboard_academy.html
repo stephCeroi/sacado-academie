@@ -1,0 +1,168 @@
+{% extends 'dashboard.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% load item_tags %}
+
+
+   
+{% block require %}
+    <script src="{% static 'js/require.js' %}"   data-main="{% static 'js/common2.js' %}"></script>
+    <script>   
+        require(['script/ajax-dashboard']);
+    </script>
+{% endblock %} 
+
+
+{% block page_title %}
+    <i class="fa fa-cloud"></i> Tableau de bord Gestion de Sacado académie 
+{% endblock %} 
+
+{% block page_menu_right %}
+ 
+{% endblock %}
+
+
+{% block body %}
+<section class="content_main"> 
+ 
+
+    {% if request.user.is_board %}
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Groupes </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbg }} </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">SACADO ACAD : {{ nbgs }} </span>
+                    </div>
+                    <a href="{% url 'delete_groups'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Parcours </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbp }} </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">SACADO ACAD : {{ nbps }} </span>
+                    </div>
+ 
+
+
+                    <a href="{% url 'delete_parcours'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Cours </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbc }} </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">SACADO ACAD : {{ nbcs }} </span>
+                    </div>
+                    <a href="{% url 'delete_courses'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                </div>
+            </div>          
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Dossiers </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbf }} </span>
+                    </div>
+                     <div class="inner">
+                        <span style="font-size: 20px">SACADO ACAD : {{ nbfs }} </span>
+                    </div>
+                    <a href="{% url 'delete_folders'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                </div>
+            </div>   
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Relations </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbr }} </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">SACADO ACAD : {{ nbrs }} </span>
+                    </div>
+                    <a href="{% url 'delete_relations'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple" style="overflow:auto;">
+                    <div class="inner">
+                        {% for t in teachers %}
+                            <li class="sanspuce">{{ t }}</li>
+                        {% endfor %}
+                    </div>                
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Enseignant</span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbt }} </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px"></span>
+                    </div>
+                    <a href="{% url 'delete_teachers'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>  
+                </div>
+            </div>          
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-purple">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <span style="font-size: 30px">Utilisateurs</span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px">{{ nbu }} </span>
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 20px"></span>
+                    </div>
+                    <a href="{% url 'delete_users'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>  
+                </div>
+            </div>  
+        </div>
+
+
+
+
+
+
+    {% endif %} 
+
+ 
+
+
+</section> 
+{% endblock %}
