@@ -202,10 +202,6 @@ class Exercise(models.Model):
         return True
 
 
-    def type_of_document(self):
-        return 0
-
-
     def score_and_time(self, student_id):
         scores_times_tab = []
         student = Student.objects.get(pk=student_id)
@@ -1438,7 +1434,7 @@ class Relationship(models.Model):
         Flashpack = apps.get_model('flashcard', 'Flashpack')
         Bibliotex = apps.get_model('bibliotex', 'Bibliotex')
         if self.type_id == 0 :
-            document = Exercise.objects.get(pk=self.document_id)
+            document = Exercise.objects.get(pk=self.exercise.id)
         if self.type_id == 1 :
             document = Customexercise.objects.get(pk=self.document_id)
         elif self.type_id == 2 :
