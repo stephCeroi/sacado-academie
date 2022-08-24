@@ -1010,7 +1010,7 @@ class Folder(models.Model):
 
 
     def __str__(self):
-        return "{}".format(self.title)
+        return "{} [{}]".format(self.title, self.groups.last().name)
 
  
 
