@@ -12,6 +12,13 @@ from django.db.models import Q
 
  
 class Group(ModelWithCode):
+
+    FORMULES = (
+        (1, "autonomie"),
+        (2, "ADAPTATIF et Perso"),
+    )
+
+
     """ Group est une classe d'élèves coté enseignant -- Ce qui permet de faire un groupe avec une ou plusieurs divisions """
     name           = models.CharField(max_length=255, verbose_name="Nom*")
     color          = models.CharField(max_length=255, default='#46119c', blank=True, null=True, verbose_name="Couleur*")
@@ -25,7 +32,10 @@ class Group(ModelWithCode):
     recuperation   = models.BooleanField(default=0)
     teachers       = models.ManyToManyField(Teacher, blank=True,   editable=False, through="Sharing_group", related_name="teacher_group")
     subject        = models.ForeignKey(Subject, default = "" ,  null=True, on_delete=models.CASCADE, related_name="subject_group", verbose_name="Matière*")
-    school         = models.ForeignKey(School, default = "" ,  editable=False, blank=True,  null=True, on_delete=models.CASCADE, related_name="school_group" ) 
+    school         = models.ForeignKey(School, default = "" ,  editable=False, blank=True,  null=True, on_delete=models.CASCADE, related_name="school_group" )
+    formule_id     = models.PositiveSmallIntegerField( default = 1 , choices=FORMULES)
+
+
 
     class Meta:
         ordering = ['name']
