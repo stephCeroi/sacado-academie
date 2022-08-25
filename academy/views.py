@@ -161,7 +161,7 @@ def create_academy(request,idl):
         else : is_sequence = 1
         if idl == 11 :
             group = Group.objects.get(pk= 198) # group de référence à cloner
-        elif idl == 11 :
+        elif idl == 12 :
             group = Group.objects.get(pk=538) # group de référence à cloner
         else : 
             group = Group.objects.get(teacher_id=2480,level_id=idl) # group de référence à cloner
