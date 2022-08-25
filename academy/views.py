@@ -146,9 +146,9 @@ def delete_relations(request):
 
 def create_academy(request,idl):
 
-    if Group.objects.filter(level_id=idl).count()>3:
-        messages.error(request,"Vous avez sans doute dejà restauré ce niveau.")
-        return redirect( "gestion_academy_dashboard" )
+    # if Group.objects.filter(level_id=idl).count()>3:
+    #     messages.error(request,"Vous avez sans doute dejà restauré ce niveau.")
+    #     return redirect( "gestion_academy_dashboard" )
 
     names    = ["Autonomie " , "Adaptatif ", "Perso "]
     suffixes = ["0","CP" , "CE1", "CE2", "CM1", "CM2", "6", "5", "4", "3", "2", "1", "T","", "Mater"]
