@@ -147,7 +147,7 @@ def delete_relations(request):
 def create_academy(request,idl):
 
     if Group.objects.filter(level_id=idl).count()>3:
-        message.error(request,"Vous avez sans doute dejà restauré ce niveau.")
+        messages.error(request,"Vous avez sans doute dejà restauré ce niveau.")
         return redirect( "gestion_academy_dashboard" )
 
     names    = ["Autonomie " , "Adaptatif ", "Perso "]
