@@ -33,7 +33,7 @@ class School(models.Model):
     logo                = models.ImageField(upload_to=image_directory_path, verbose_name="Logo de l'établissement", blank=True, default="")
 
     def __str__(self):
-        return "{} - {} - {}".format(self.name, self.town, self.country.name)
+        return "{} - {} ".format(self.name, self.town)
 
     def student_and_teacher(self):
         nbt, nbs = 0, 0
