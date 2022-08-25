@@ -37,8 +37,8 @@ urlpatterns = [
     path('delete_teachers', delete_teachers , name='delete_teachers'),
     path('delete_users', delete_users , name='delete_users'),
 
-    
-    path('create_academy', create_academy , name='create_academy'), 
+
+    path('create_academy/<int:idl>', create_academy , name='create_academy'), 
 
 
 

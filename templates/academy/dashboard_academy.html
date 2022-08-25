@@ -27,7 +27,7 @@
 <section class="content_main"> 
  
 
-    {% if request.user.is_board %}
+    {% if accept %}
         <div class="row">
             <div class="col-lg-3 col-md-4 col-xs-6">
                 <!-- small box -->
@@ -131,25 +131,29 @@
                     <div class="inner">
                         <span style="font-size: 20px">{{ nbt }} </span>
                     </div>
-                    <div class="inner">
-                        <span style="font-size: 20px"></span>
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7">
+                        <a href="{% url 'delete_teachers'   %}" class="white"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a> 
                     </div>
-                    <a href="{% url 'delete_teachers'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>  
-                </div>
-            </div>          
-            <div class="col-lg-3 col-md-4 col-xs-6">
-                <!-- small box -->
-                <div class="small-box bg-purple">
                     <div class="inner" style="border-bottom: solid 1px #f1eef7">
                         <span style="font-size: 30px">Utilisateurs</span>
                     </div>
                     <div class="inner">
                         <span style="font-size: 20px">{{ nbu }} </span>
                     </div>
-                    <div class="inner">
-                        <span style="font-size: 20px"></span>
-                    </div>
                     <a href="{% url 'delete_users'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>  
+                </div>
+            </div>          
+            <div class="col-lg-3 col-md-4 col-xs-6">
+                <!-- small box -->
+                <div class="small-box bg-red">
+                    <div class="inner" style="border-bottom: solid 1px #f1eef7;font-size: 18px">
+                        {% for data in dataset %}
+                            <li class="sanspuce"><a href="{% url 'create_academy'  data.id %}" class="white">{{ data.level }}</a></li>
+                        {% endfor %}
+                    </div>
+                    <div class="inner">
+                        <span style="font-size: 10px">Ici vous cloner tous les groupes et documents de sacadoProf</span>
+                    </div>
                 </div>
             </div>  
         </div>
