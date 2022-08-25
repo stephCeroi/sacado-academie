@@ -41,7 +41,7 @@
                     <div class="inner">
                         <span style="font-size: 20px">SACADO ACAD : {{ nbgs }} </span>
                     </div>
-                    <a href="{% url 'delete_groups'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                    <a href="{% url 'delete_groups'   %}" class="small-box-footer" onclick="return TestDelete('les groupes ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-xs-6">
@@ -59,7 +59,7 @@
  
 
 
-                    <a href="{% url 'delete_parcours'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                    <a href="{% url 'delete_parcours'   %}" class="small-box-footer" onclick="return TestDelete('les parcours ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-xs-6">
@@ -74,7 +74,7 @@
                     <div class="inner">
                         <span style="font-size: 20px">SACADO ACAD : {{ nbcs }} </span>
                     </div>
-                    <a href="{% url 'delete_courses'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                    <a href="{% url 'delete_courses'   %}" class="small-box-footer" onclick="return TestDelete('les cours ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
                 </div>
             </div>          
             <div class="col-lg-3 col-md-4 col-xs-6">
@@ -89,7 +89,7 @@
                      <div class="inner">
                         <span style="font-size: 20px">SACADO ACAD : {{ nbfs }} </span>
                     </div>
-                    <a href="{% url 'delete_folders'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                    <a href="{% url 'delete_folders'   %}" class="small-box-footer" onclick="return TestDelete('les dossiers ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
                 </div>
             </div>   
         </div>
@@ -109,7 +109,7 @@
                     <div class="inner">
                         <span style="font-size: 20px">SACADO ACAD : {{ nbrs }} </span>
                     </div>
-                    <a href="{% url 'delete_relations'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
+                    <a href="{% url 'delete_relations'   %}" class="small-box-footer"  onclick="return TestDelete('les relations ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>                    
                 </div>
             </div>
             <div class="col-lg-3 col-md-4 col-xs-6">
@@ -132,7 +132,7 @@
                         <span style="font-size: 20px">{{ nbt }} </span>
                     </div>
                     <div class="inner" style="border-bottom: solid 1px #f1eef7">
-                        <a href="{% url 'delete_teachers'   %}" class="white"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a> 
+                        <a href="{% url 'delete_teachers'   %}" class="white"  onclick="return TestDelete('les enseignants ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a> 
                     </div>
                     <div class="inner" style="border-bottom: solid 1px #f1eef7">
                         <span style="font-size: 30px">Utilisateurs</span>
@@ -140,7 +140,7 @@
                     <div class="inner">
                         <span style="font-size: 20px">{{ nbu }} </span>
                     </div>
-                    <a href="{% url 'delete_users'   %}" class="small-box-footer"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>  
+                    <a href="{% url 'delete_users'   %}" class="small-box-footer" onclick="return TestDelete('les utilisateurs ')"><i class="fa fa-arrow-circle-right"></i> Tout supprimer </a>  
                 </div>
             </div>          
             <div class="col-lg-3 col-md-4 col-xs-6">
