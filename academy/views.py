@@ -148,7 +148,7 @@ def create_academy(request,idl):
 
     if Group.objects.filter(level_id=idl).count()>3:
         message.error(request,"Vous avez sans doute dejà restauré ce niveau.")
-        return redirect("gestion_academy_dashboard" )
+        return redirect( "gestion_academy_dashboard" )
 
     names    = ["Autonomie " , "Adaptatif ", "Perso "]
     suffixes = ["0","CP" , "CE1", "CE2", "CM1", "CM2", "6", "5", "4", "3", "2", "1", "T","", "Mater"]
@@ -245,14 +245,14 @@ def create_academy(request,idl):
                         c.knowledges.set(knowledges)
                         c.parcourses.add(parcours)
 
-
+                    n_r = []
                     for course in courses : 
                         relationships_c  = course.relationships.all() 
                         course.pk      = None
                         course.parcours = parcours
                         course.teacher = teacher
                         course.save()
-                        n_r = []
+                        
                         for r in relationships_c :
                             skills = r.skills.all() 
                             r.pk       = None
