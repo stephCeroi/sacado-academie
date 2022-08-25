@@ -41,7 +41,7 @@ urlpatterns = [
     path('create_academy/<int:idl>', create_academy , name='create_academy'), 
 
 
-
+    path('associate_student_docs', associate_student_docs , name='associate_student_docs'),
 
 
 

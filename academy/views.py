@@ -314,86 +314,77 @@ def create_academy(request,idl):
 
 def associate_student_docs(request) :
 
-    names     = ["Autonomie " , "Adaptatif ", "Perso "]
-    users_ids = []
-    suffixes  = ["0","CP" , "CE1", "CE2", "CM1", "CM2", "6", "5", "4", "3", "2", "1", "T","", "Mater"]
-    u_suff    = ["0","CP" , "CE1", "CE2", "CM1", "CM2", "6.6", "5.5", "4.4", "3.3", "2.2", "1.1", "T.t","", "Mater"]
-
-    i = 1 # formule_id
- 
-    for users_id in users_ids :
-        teacher     = Teacher.objects.get(user__id = users_id )
+    teachers = Teacher.objects.filter(user__is_superuser = 1 , user__is_staff = 0 )
+    password = make_password("sacado2020") 
+    for teacher in teachers :
         # Création d'un élève du groupe profil élève de l'enseignant
-        user     = User.objects.create(first_name= "Equipe " ,  last_name="Académie " + suffixes[idl] , username= "ProfSacAdo_"+u_suff[idl]+"_e-test_" + suffixes[idl]+"_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
-        student  = Student.objects.create(user=user, level_id=idl)
-        group.students.add(student)
-        # Clone des dossiers du groupe
-        folders = group.group_folders.all() # récupération des dossiers du groupe
-        for folder in folders :
-            folder.students.add(student)
-            for parcours in parcourses :
-                relationships   = parcours.parcours_relationship.all() # récupération des relations
-                courses         = parcours.course.all() # récupération des relations
-                customexercises = parcours.parcours_customexercises.all() # récupération des customexercises
-                quizzes         = parcours.quizz.all() # récupération des quizzes
-                flashpacks      = parcours.flashpacks.all() # récupération des flashpacks
-                bibliotexs      = parcours.bibliotexs.all() # récupération des bibliotexs
+        user     = User.objects.create(first_name= "Elève " ,  last_name="Académie "  , username= teacher.user.username+"_e-test_"+str(uuid.uuid4())[:2],  password = password ,  is_superuser=0, user_type=0,school_id=50, country_id=5)
+        for group in teacher.groups.all():
+            student  = Student.objects.create(user=user, level_id=group.level.id)
+            group.students.add(student)
 
-                parcours.students.add(student)
+            folders = group.group_folders.all() # récupération des dossiers du groupe
+            for folder in folders :
+                folder.students.add(student)
+                for parcours in parcourses :
+                    relationships   = parcours.parcours_relationship.all() # récupération des relations
+                    courses         = parcours.course.all() # récupération des relations
+                    customexercises = parcours.parcours_customexercises.all() # récupération des customexercises
+                    quizzes         = parcours.quizz.all() # récupération des quizzes
+                    flashpacks      = parcours.flashpacks.all() # récupération des flashpacks
+                    bibliotexs      = parcours.bibliotexs.all() # récupération des bibliotexs
 
-                # fin du clone
-
-                if is_sequence :
-                    for r  in relationships : 
-                        r.students.add(student)
-
-                    for c  in customexercises : 
-                        c.students.add(student)
-
-                    for course in courses : 
-                        course.students.add(student)
-                    
-
-                    for quizz in quizzes : 
-                        quizz.students.add(student)
+                    parcours.students.add(student)
 
 
-                    for flashpack in flashpacks : 
-                        flashpack.students.add(student)
-
-                    for bibliotex in bibliotexs : 
-                        relationb.students.add(student)
-                
-                else :
-
-                    for c  in customexercises : 
-                        c.students.add(student)
-
-
-                    n_r = []
-                    for course in courses : 
-                        relationships_c  = course.relationships.all() 
-    
-                        for r in relationships_c :
+                    if is_sequence :
+                        for r  in relationships : 
                             r.students.add(student)
-                            n_r.append(r.id)
 
-                    for r in relationships.exclude(pk__in=n_r) :
-                        r.students.add(student)
+                        for c  in customexercises : 
+                            c.students.add(student)
 
+                        for course in courses : 
+                            course.students.add(student)
+                        
 
-                    for quizz in quizzes :  
-                        questions = quizz.questions.all()    
-                        themes    = quizz.themes.all()  
-                        levels    = quizz.levels.all()  
-
-                        for question in questions :
-                            question.students.add(student)
-                        quizz.students.add(student)
+                        for quizz in quizzes : 
+                            quizz.students.add(student)
 
 
-        #formule_id
-        i+=1
+                        for flashpack in flashpacks : 
+                            flashpack.students.add(student)
+
+                        for bibliotex in bibliotexs : 
+                            relationb.students.add(student)
+                    
+                    else :
+
+                        for c  in customexercises : 
+                            c.students.add(student)
+
+
+                        n_r = []
+                        for course in courses : 
+                            relationships_c  = course.relationships.all() 
+        
+                            for r in relationships_c :
+                                r.students.add(student)
+                                n_r.append(r.id)
+
+                        for r in relationships.exclude(pk__in=n_r) :
+                            r.students.add(student)
+
+
+                        for quizz in quizzes :  
+                            questions = quizz.questions.all()    
+                            themes    = quizz.themes.all()  
+                            levels    = quizz.levels.all()  
+
+                            for question in questions :
+                                question.students.add(student)
+                            quizz.students.add(student)
+
     
     return redirect("gestion_academy_dashboard" )
 
