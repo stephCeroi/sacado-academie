@@ -155,7 +155,7 @@ def create_academy(request,idl):
     u_suff   = ["0","CP" , "CE1", "CE2", "CM1", "CM2", "6.6", "5.5", "4.4", "3.3", "2.2", "1.1", "T.t","", "Mater"]
     teacher  = Teacher.objects.get(user__username = "ProfSacAdo"+u_suff[idl] )
     i = 1 # formule_id
-    colors = ["#605ca8" , '#ff9900' , '#e00a72' ]
+    colors = ["0", "#605ca8" , '#ff9900' , '#e00a72' ]
     for name in names :
         if i == 1 : is_sequence = 0
         else : is_sequence = 1
