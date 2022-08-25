@@ -159,7 +159,12 @@ def create_academy(request,idl):
     for name in names :
         if i == 1 : is_sequence = 0
         else : is_sequence = 1
-        group = Group.objects.get(teacher_id=2480,level_id=idl) # group de référence à cloner
+        if idl == 11 :
+            group = Group.objects.get(pk= 198) # group de référence à cloner
+        elif idl == 11 :
+            group = Group.objects.get(pk=538) # group de référence à cloner
+        else : 
+            group = Group.objects.get(teacher_id=2480,level_id=idl) # group de référence à cloner
         folders = group.group_folders.all() # récupération des dossiers du groupe
 
         group.pk = None
@@ -270,12 +275,15 @@ def create_academy(request,idl):
                             n_r.append(r.id)
 
                     for r in relationships.exclude(pk__in=n_r) :
-                        skills = r.skills.all() 
-                        r.pk       = None
-                        r.parcours = parcours
-                        r.save()
-                        r.students.add(student)
-                        r.skills.set(skills)
+                        try :
+                            skills = r.skills.all() 
+                            r.pk       = None
+                            r.parcours = parcours
+                            r.save()
+                            r.students.add(student)
+                            r.skills.set(skills)
+                        except :
+                            pass
 
 
                     for quizz in quizzes :  
