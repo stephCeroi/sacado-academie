@@ -981,7 +981,7 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
         });
  
 
-        function sorter_exercises($div_class , $exercise_class ) {
+        function sorter_exercises($div_class , $exercise_class ) { 
 
                 $($div_class).sortable({
                     cursor: "move",
@@ -1021,6 +1021,9 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                     });
                 }
 
+ 
+
+
         function sorter_sequence($div_class , $exercise_class ) {
 
                 $($div_class).sortable({
@@ -1035,21 +1038,18 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                        },
                     stop: function (event, ui) {
 
-                        let parcours = $("#parcours").val();
                         var valeurs = "";
 
-
                         $($exercise_class).each(function() {
-                            cstm = parseInt($(this).attr("data-custom"));
                             let div_exercise_id = $(this).val();
                             valeurs = valeurs + div_exercise_id +"-";
                         });
-                         console.log(valeurs);
+                         console.log(valeurs);    console.log("sequence_sorter sort_sequence");
 
                         $(ui.item).css("box-shadow", "0px 0px 0px transparent");  
 
                         $.ajax({
-                                data:   { 'valeurs': valeurs ,  'parcours' : parcours,} ,    
+                                data:   { 'valeurs': valeurs ,} ,    
                                 type: "POST",
                                 dataType: "json",
                                 url: "../../ajax/sort_sequence" 
@@ -1059,7 +1059,7 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                 }    
 
 
-
+ 
         sorter_exercises('#exercise_sorter' , ".div_exercise_id");
         sorter_sequence('#sequence_sorter' , ".relationship_id_sequence");
         sorter_exercises('#exercise_sortable_list' , ".sorted_exercise_id");
@@ -1078,7 +1078,7 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                     });
 
                         console.log(valeurs);
-                    
+
                     $(ui.item).css("box-shadow",  "2px 1px 2px gray");
 
                     if ($choice) {

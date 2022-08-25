@@ -325,6 +325,8 @@ urlpatterns = [
     path('ajax_theme_exercice', ajax_theme_exercice, name='ajax_theme_exercice'),
     path('ajax_level_exercise', ajax_level_exercise, name='ajax_level_exercise'),
     path('ajax/sort_exercise', ajax_sort_exercise, name='ajax_sort_exercise'),
+    path('ajax/sort_relationship', ajax_sort_relationship, name='ajax_sort_relationship'),
+
     path('ajax/sort_sequence', ajax_sort_sequence, name='ajax_sort_sequence'),
     path('ajax/publish', ajax_publish, name='ajax_publish'),  
     path('ajax/publish_parcours', ajax_publish_parcours, name='ajax_publish_parcours'),

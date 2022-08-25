@@ -3947,12 +3947,8 @@ def ajax_sort_exercise(request):
 def ajax_sort_sequence(request):
     """ tri des exercices""" 
     try :
-        parcours = request.POST.get("parcours")
-
         exercise_ids = request.POST.get("valeurs")
         exercise_tab = exercise_ids.split("-") 
-
-        print(exercise_tab)
 
         for i in range(len(exercise_tab)-1):
             Relationship.objects.filter(pk = exercise_tab[i]).update(ranking = i)
