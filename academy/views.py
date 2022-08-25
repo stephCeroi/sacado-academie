@@ -88,7 +88,7 @@ def gestion_academy_dashboard(request):
         data["level"] = suffixes[i] 
         dataset.append(data)
 
-    accept = request.user.id == 2480    
+    accept = request.user.id == 1    
     nbg, nbc , nbp , nbf , nbgs, nbcs , nbps , nbfs , nbr , nbrs = get_det()
     context = { 'accept' : accept ,  'dataset' : dataset ,  'nbg' : nbg ,  'nbc' :nbc , 'nbp' : nbp , 'nbf' : nbf , 'nbgs' : nbgs ,  'nbcs' : nbcs , 'nbps' : nbps , 'nbfs' : nbfs , 'nbr' : nbr , 'nbrs' : nbrs , 'teachers' : teachers, 'nbt' : nbt, 'nbu' : nbu }
 
