@@ -1006,8 +1006,6 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                             customizes = customizes + cstm +"-";
                         });
 
-                        console.log(valeurs);
- 
 
                         $(ui.item).css("box-shadow", "0px 0px 0px transparent");  
 
@@ -1044,7 +1042,6 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                             let div_exercise_id = $(this).val();
                             valeurs = valeurs + div_exercise_id +"-";
                         });
-                         console.log(valeurs);    console.log("sequence_sorter sort_sequence");
 
                         $(ui.item).css("box-shadow", "0px 0px 0px transparent");  
 
@@ -1076,8 +1073,6 @@ define(['jquery', 'bootstrap', 'ui', 'ui_sortable'], function ($) {
                         let parcours_id = $(this).attr("data-parcours_id"); 
                         valeurs = valeurs + parcours_id +"-";
                     });
-
-                        console.log(valeurs);
 
                     $(ui.item).css("box-shadow",  "2px 1px 2px gray");
 
