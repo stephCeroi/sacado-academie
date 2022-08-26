@@ -163,11 +163,11 @@
 
                     {% if parcours.is_sequence %}
 
-                        {{  parcours.nb_exercices_and_cours.nb_exercises }} document{{  parcours.nb_exercices_and_cours.nb_exercises|pluralize }} 
-                        {% if not  parcours.nb_docs.exercises_care %} 
+                        {{  parcours.nb_exercices_and_cours.nb_docs }} document{{  parcours.nb_exercices_and_cours.nb_docs|pluralize }} 
+                        {% if not  parcours.nb_docs.nb_docs_care %} 
                             <i class="fa fa-circle text-danger" style="font-size:8px"></i>
                         {% endif %}<br/> 
-                        {{  parcours.nb_exercices_and_cours.nb_only_exercises }} exercice{{  parcours.nb_exercices_and_cours.nb_only_exercises|pluralize }}   
+                        {{  parcours.nb_exercices_and_cours.nb_exercises }} exercice{{  parcours.nb_exercices_and_cours.nb_exercises|pluralize }}   
 
 
                     {% else %}
