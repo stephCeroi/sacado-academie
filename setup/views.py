@@ -74,12 +74,13 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 
 
 def attribute_student_toindex() :
-    folders = Folder.objects.filter(studens=None)
+    folders = Folder.objects.filter(students=None)
     for folder in folders :
         level = folder.level
         student = Student.objects.filter(level = level , username__contains="_e-test_").first()
         folder.students.add(student)
 
+    parcourses = Parcours.objects.filter(students=None)
     for parcours in parcourses :
         level = parcours.level
         student = Student.objects.filter(level = level , username__contains="_e-test_").first()
