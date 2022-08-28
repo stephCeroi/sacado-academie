@@ -140,7 +140,7 @@ def this_parcours_to_sequences(request,idp):
     # fin du clone
 
     for c  in customexercises : 
-        relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  200 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
+        relationc = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = c.id  , type_id = 1 , ranking =  100 , is_publish= c.is_publish  , start= None , date_limit= None, duration= c.duration, situation= 0 ) 
         relationc.students.set(students)
 
     for course in courses : 
@@ -148,15 +148,15 @@ def this_parcours_to_sequences(request,idp):
         relation.students.set(students)
     
     for quizz in quizzes : 
-        relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  200 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
+        relationq = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = quizz.id  , type_id = 3 , ranking =  300 , is_publish= quizz.is_publish , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationq.students.set(students)
 
     for flashpack in flashpacks : 
-        relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  200 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+        relationf = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = flashpack.id  , type_id = 4 , ranking =  400 , is_publish= flashpack.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationf.students.set(students)
 
     for bibliotex in bibliotexs : 
-        relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  200 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
+        relationb = Relationship.objects.create(parcours = parcours , exercise_id = None , document_id = bibliotex.id  , type_id = 5 , ranking =  500 , is_publish= bibliotex.is_publish  , start= None , date_limit= None, duration= 10, situation= 0 ) 
         relationb.students.set(students)
 
 
@@ -3665,6 +3665,57 @@ def clone_parcours(request, id, course_on ):
         else :
             return redirect('all_parcourses', 0 )
 
+
+
+
+
+@parcours_exists
+def clone_sequence(request, id ):
+    """ cloner un parcours """
+
+    teacher = request.user.teacher
+    parcours = Parcours.objects.get(pk=id) # parcours à cloner
+    relationships = parcours.parcours_relationship.all() 
+    courses = parcours.course.filter(is_share = 1)
+    # clone le parcours
+    parcours.pk = None
+    parcours.title = parcours.title+"-2"
+    parcours.teacher = teacher
+    parcours.is_publish = 0
+    parcours.is_archive = 0
+    parcours.is_share = 0
+    parcours.is_favorite = 1
+    parcours.code = str(uuid.uuid4())[:8]  
+    parcours.save()
+
+    # ajoute le group au parcours si group    
+    try :
+        group_id = request.session.get("group_id",None)
+        if group_id :
+            group = Group.objects.get(pk = group_id)
+            parcours.groups.add(group)
+            Parcours.objects.filter(pk = parcours.id).update(subject = group.subject)
+            Parcours.objects.filter(pk = parcours.id).update(level = group.level)
+        else :
+            group = None   
+    except :
+        group = None
+
+    for relationship in relationships :
+        try :
+            relationship.pk = None
+            relationship.parcours = parcours
+            relationship.save()  
+        except :
+            pass
+
+    messages.success(request, "Duplication réalisée avec succès. Bonne utilisation. Vous pouvez placer le parcours dans le dossier en cliquant sur la config. du parcours")
+
+
+    if group_id :
+        return redirect('list_parcours_group', group_id)
+    else :
+        return redirect('all_parcourses' , 2 )   
 
 
  
