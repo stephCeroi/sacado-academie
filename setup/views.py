@@ -73,6 +73,19 @@ from reportlab.lib.enums import TA_JUSTIFY,TA_LEFT,TA_CENTER,TA_RIGHT
 ############## FIN bibliothèques pour les impressions pdf  #########################
 
 
+def attribute_student_toindex() :
+    folders = Folder.objects.filter(studens=None)
+    for folder in folders :
+        level = folder.level
+        student = Student.objects.filter(level = level , username__contains="_e-test_").first()
+        folder.students.add(student)
+
+    for parcours in parcourses :
+        level = parcours.level
+        student = Student.objects.filter(level = level , username__contains="_e-test_").first()
+        parcours.students.add(student)
+
+
 
 def end_of_contract() :
 
@@ -88,7 +101,7 @@ def end_of_contract() :
 
 def index(request):
 
- 
+    attribute_student_toindex()
 
     if request.user.is_authenticated :
         index_tdb = True  # Permet l'affichage des tutos Youtube dans le dashboard
