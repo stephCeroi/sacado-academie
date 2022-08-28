@@ -77,13 +77,13 @@ def attribute_student_toindex() :
     folders = Folder.objects.filter(students=None)
     for folder in folders :
         level = folder.level
-        student = Student.objects.filter(level = level , username__contains="_e-test_").first()
+        student = Student.objects.filter(level = level , user__username__contains="_e-test_").first()
         folder.students.add(student)
 
     parcourses = Parcours.objects.filter(students=None)
     for parcours in parcourses :
         level = parcours.level
-        student = Student.objects.filter(level = level , username__contains="_e-test_").first()
+        student = Student.objects.filter(level = level , user__username__contains="_e-test_").first()
         parcours.students.add(student)
 
 
