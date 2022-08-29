@@ -3744,6 +3744,20 @@ def clone_sequence(request, id ):
     except :
         group = None
 
+    # ajoute le group au parcours si group    
+    try :
+        folder_id = request.session.get("folder_id",None)
+        if folder_id :
+            folder = Folder.objects.get(pk = folder_id)
+            parcours.folders.add(folder)
+        else :
+            folder = None   
+    except :
+        folder = None
+
+
+
+
     for relationship in relationships :
         try :
             relationship.pk = None
@@ -3754,7 +3768,8 @@ def clone_sequence(request, id ):
 
     messages.success(request, "Duplication réalisée avec succès. Bonne utilisation. Vous pouvez placer le parcours dans le dossier en cliquant sur la config. du parcours")
 
-
+    if folder_id :
+        return redirect('list_sub_parcours_group', 0 , folder_id)
     if group_id :
         return redirect('list_parcours_group', group_id)
     else :
