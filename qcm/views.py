@@ -3740,8 +3740,10 @@ def clone_sequence(request, id ):
             Parcours.objects.filter(pk = parcours.id).update(subject = group.subject)
             Parcours.objects.filter(pk = parcours.id).update(level = group.level)
         else :
+            messages.error(request,"Non affecté au groupe et placé dans le tableau de bord pour réaffectation manuelle")
             group = None   
     except :
+        messages.error(request,"Non affecté au groupe et placé dans le tableau de bord pour réaffectation manuelle")
         group = None
 
     # ajoute le group au parcours si group    
@@ -3751,8 +3753,10 @@ def clone_sequence(request, id ):
             folder = Folder.objects.get(pk = folder_id)
             parcours.folders.add(folder)
         else :
+            messages.error(request,"Non affecté au dossier et placé dans le tableau de bord pour réaffectation manuelle")
             folder = None   
     except :
+        messages.error(request,"Non affecté au dossier et placé dans le tableau de bord pour réaffectation manuelle")
         folder = None
 
 
