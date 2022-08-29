@@ -83,7 +83,7 @@ urlpatterns = [
     path('folders_all/0/', all_folders, name='all_folders'), 
 
     path('parcours_clone/<int:id>/<int:course_on>', clone_parcours, name='clone_parcours'),
-    path('sequence_clone/<int:id', clone_sequence, name='clone_sequence'),
+    path('sequence_clone/<int:id>', clone_sequence, name='clone_sequence'),
 
 
     path('parcours_clone_folder/<int:id>', clone_folder, name='clone_folder'),

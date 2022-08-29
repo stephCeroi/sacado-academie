@@ -63,7 +63,21 @@
         </div>
     </div>
     {% endif %}
-    
+
+    {% if sequences.count > 0 %} 
+    <div class="row"> 
+        <div class="col-sm-12 col-md-12">
+            <h1 class="thin"> Mes séquences  </h1>  
+                <form action="" methode="POST" id="parcours_sortable"> 
+                {% for parcours in sequences  %}  
+                    
+                    {% include 'qcm/parcours_evaluation_tag.html' %}
+         
+                {% endfor %}
+                </form>
+        </div>
+    </div>
+    {% endif %}    
     
     {% if parcourses.count > 0 %} 
     <div class="row"> 
