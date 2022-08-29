@@ -2103,7 +2103,7 @@ def clone_folder(request, id ):
     folder.teacher = request.user.teacher
     folder.is_publish = 0
     folder.is_archive = 0
-    folder.is_share = 0
+    folder.is_share = 1
     folder.is_favorite = 1
     folder.save()
 
@@ -3643,7 +3643,7 @@ def clone_parcours(request, id, course_on ):
     parcours.teacher = teacher
     parcours.is_publish = 0
     parcours.is_archive = 0
-    parcours.is_share = 0
+    parcours.is_share = 1
     parcours.is_favorite = 1
     parcours.code = str(uuid.uuid4())[:8]  
     parcours.save()
@@ -3727,6 +3727,7 @@ def clone_sequence(request, id ):
     parcours.is_archive = 0
     parcours.is_share = 0
     parcours.is_favorite = 1
+    parcours.is_sequence = 1
     parcours.code = str(uuid.uuid4())[:8]  
     parcours.save()
 
