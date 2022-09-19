@@ -737,7 +737,7 @@ def test_display(request):
 
 
 def student_to_association(request):
-
+    
     frml = Formule.objects.get(pk=1)
     formule = Formule.objects.get(pk=4)
     context = { 'frml' : frml , 'formule' : formule }
@@ -746,8 +746,9 @@ def student_to_association(request):
 
 def choice_menu(request,id):
     formule  = Formule.objects.get(pk=id)
+    print("formule choisie :", formule)
     end  = end_of_contract()
-    context = { 'formule' : formule , 'end' : end ,  }
+    context = { 'formule' : formule , 'end' : end  }
     return render(request, 'setup/menu.html', context)   
 
 
